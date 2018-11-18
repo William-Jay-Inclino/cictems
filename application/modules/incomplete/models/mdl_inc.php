@@ -1,0 +1,191 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class mdl_Inc extends CI_Model{
+
+	function read($option = 's.controlNo',$search_val = NULL, $page = '1', $per_page = '10', $termID){
+		$start = ($page - 1) * $per_page;
+		$search_val = strtr($search_val, '_', ' ');
+		if(trim($search_val) == ''){
+			if($termID == 'all'){
+				$query = $this->db->query("
+					SELECT DISTINCT s.studID,CONCAT(t.schoolYear,' ',sem.semDesc) AS term,t.termID,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, c.courseCode, y.yearDesc FROM studgrade sg
+					INNER JOIN term t ON sg.termID = t.termID
+					INNER JOIN semester sem ON t.semID = sem.semID
+					INNER JOIN student s ON sg.studID = s.studID
+					INNER JOIN users u ON s.uID = u.uID 
+					INNER JOIN studprospectus sp ON s.studID = sp.studID
+					INNER JOIN prospectus p ON sp.prosID = p.prosID 
+					INNER JOIN course c ON p.courseID = c.courseID 
+					INNER JOIN year y ON s.yearID = y.yearID 
+					WHERE sg.remarks = 'Incomplete'
+					ORDER BY name ASC 
+					LIMIT $start, $per_page
+				");
+			}else{
+				$query = $this->db->query("
+					SELECT DISTINCT s.studID,CONCAT(t.schoolYear,' ',sem.semDesc) AS term,t.termID,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, c.courseCode, y.yearDesc FROM studgrade sg
+					INNER JOIN term t ON sg.termID = t.termID
+					INNER JOIN semester sem ON t.semID = sem.semID
+					INNER JOIN student s ON sg.studID = s.studID
+					INNER JOIN users u ON s.uID = u.uID 
+					INNER JOIN studprospectus sp ON s.studID = sp.studID
+					INNER JOIN prospectus p ON sp.prosID = p.prosID 
+					INNER JOIN course c ON p.courseID = c.courseID 
+					INNER JOIN year y ON s.yearID = y.yearID 
+					WHERE sg.remarks = 'Incomplete' AND sg.termID = $termID
+					ORDER BY name ASC 
+					LIMIT $start, $per_page
+				");
+			}
+			
+		}else{
+			if($option == 'name'){
+				$option = "CONCAT(u.ln,', ',u.fn,' ',u.mn)";
+			}
+			if($termID == 'all'){
+				$query = $this->db->query("
+					SELECT DISTINCT s.studID,CONCAT(t.schoolYear,' ',sem.semDesc) AS term,t.termID,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, c.courseCode, y.yearDesc FROM studgrade sg 
+					INNER JOIN term t ON sg.termID = t.termID
+					INNER JOIN semester sem ON t.semID = sem.semID
+					INNER JOIN student s ON sg.studID = s.studID
+					INNER JOIN users u ON s.uID = u.uID 
+					INNER JOIN studprospectus sp ON s.studID = sp.studID
+					INNER JOIN prospectus p ON sp.prosID = p.prosID 
+					INNER JOIN course c ON p.courseID = c.courseID 
+					INNER JOIN year y ON s.yearID = y.yearID 
+					WHERE sg.remarks = 'Incomplete' AND $option LIKE '%".$search_val."%'
+					ORDER BY name ASC 
+					LIMIT $start, $per_page
+				");
+			}else{
+				$query = $this->db->query("
+					SELECT DISTINCT s.studID,CONCAT(t.schoolYear,' ',sem.semDesc) AS term,t.termID,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, c.courseCode, y.yearDesc FROM studgrade sg 
+					INNER JOIN term t ON sg.termID = t.termID
+					INNER JOIN semester sem ON t.semID = sem.semID
+					INNER JOIN student s ON sg.studID = s.studID
+					INNER JOIN users u ON s.uID = u.uID 
+					INNER JOIN studprospectus sp ON s.studID = sp.studID
+					INNER JOIN prospectus p ON sp.prosID = p.prosID 
+					INNER JOIN course c ON p.courseID = c.courseID 
+					INNER JOIN year y ON s.yearID = y.yearID 
+					WHERE sg.remarks = 'Incomplete' AND $option LIKE '%".$search_val."%'  AND sg.termID = $termID
+					ORDER BY name ASC 
+					LIMIT $start, $per_page
+				");
+			}
+			
+		}
+		$output = [
+			'total_rows'=>  $query->num_rows(), 
+			'records' => $query->result()
+		];
+		echo json_encode($output);
+	}
+
+	function get_stud_info($studID){
+		return $this->db->query("SELECT s.studID,CONCAT(u.fn,' ',u.mn,' ',u.ln) name,s.controlNo FROM student s INNER JOIN users u ON s.uID = u.uID WHERE s.studID = $studID LIMIT 1")->row();
+	}
+
+	function get_inc_classes($studID, $termID){
+		$inc_classes = $this->db->query("
+			SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty FROM studgrade sg
+				INNER JOIN subject s ON sg.subID = s.subID
+				INNER JOIN class c ON s.subID = c.subID
+				INNER JOIN room r ON c.roomID=r.roomID
+				INNER JOIN day d ON c.dayID=d.dayID
+				INNER JOIN faculty f ON c.facID=f.facID
+				INNER JOIN users u ON f.uID=u.uID
+				WHERE sg.remarks = 'Incomplete' AND sg.studID = $studID AND sg.termID = $termID
+		")->result();
+		if(!$inc_classes){
+			show_404();
+		}
+		return $inc_classes;
+	}
+
+	function fail_students($termID){
+		$this->db->trans_start();
+		if($termID == 'all'){
+			$this->db->update('studgrade',['remarks' => 'Failed', 'sgGrade' => 5.0], "remarks = 'Incomplete'");
+			$this->db->update('studclass',['remarks' => 'Failed', 'finalgrade' => 5.0], "remarks = 'Incomplete'");	
+		}else{
+			$this->db->update('studgrade',['remarks' => 'Failed', 'sgGrade' => 5.0], "remarks = 'Incomplete' AND termID = $termID");
+			$sql = $this->db->query("
+				SELECT sc.studID,c.classID FROM studclass sc INNER JOIN class c ON sc.classID = c.classID
+				WHERE sc.remarks = 'Incomplete' AND c.termID = $termID
+			")->result();
+			foreach($sql as $s){
+				$this->db->update('studclass',['remarks' => 'Failed', 'finalgrade' => 5.0], "studID = ".$s->studID." AND classID = ".$s->classID);
+			}
+			// $this->db->query("UPDATE studclass INNER JOIN class ON studclass.classID = class.classID SET studclass.remarks = 'Failed' AND studclass.finalgrade = '5.0' WHERE studclass.remarks = 'Incomplete' AND class.termID = $termID");
+
+			// $this->db->update('studclass',['remarks' => 'Failed', 'finalgrade' => 5.0], "remarks = 'Incomplete' AND termID = $termID");
+		}
+		
+		$this->db->trans_complete();
+	}
+
+	function get_class_info($classID, $studID){
+		return $this->db->query("
+			SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty FROM studclass sc
+			INNER JOIN class c ON sc.classID = c.classID
+			INNER JOIN subject s ON c.subID = s.subID
+			INNER JOIN room r ON c.roomID=r.roomID
+			INNER JOIN day d ON c.dayID=d.dayID
+			INNER JOIN faculty f ON c.facID=f.facID
+			INNER JOIN users u ON f.uID=u.uID
+			WHERE sc.studID = $studID AND sc.classID = $classID
+			")->row();
+	}
+
+	function get_grades($classID, $studID){
+		echo json_encode(
+			$this->db->select('prelim,midterm,prefi,final,finalgrade,remarks,(SELECT metric FROM grade_metric WHERE grade = ROUND(finalgrade) LIMIT 1) equiv')->get_where('studclass', "classID = $classID AND studID = $studID", 1)->row()
+		);
+	}
+
+	function comply(){
+		//print_r($_POST); die();
+		$studID = $this->input->post('studID');
+		$classID = $this->input->post('classID');
+		$prelim = $this->input->post('prelim')['grade'];
+		$midterm = $this->input->post('midterm')['grade'];
+		$prefi = $this->input->post('prefi')['grade'];
+		$final = $this->input->post('final')['grade'];
+		
+		$this->db->trans_start();
+
+		$gf = $this->db->get('grade_formula')->row();
+		$fg = round(($prelim * $gf->prelim) + ($midterm * $gf->midterm) + ($prefi * $gf->prefi) + ($final * $gf->final), 2);
+		$fg2 = round($fg);
+
+		if($fg2 < 75){
+			$remarks = 'Failed';
+			$equiv = '5.0';
+		}else{
+			$remarks = 'Passed';
+			$equiv = $this->db->select('metric')->get_where('grade_metric', "grade = $fg2", 1)->row()->metric;
+		}
+		$data['prelim'] = $prelim;
+		$data['midterm'] = $midterm;
+		$data['prefi'] = $prefi;
+		$data['final'] = $final;
+		$data['finalgrade'] = $fg;
+		$data['remarks'] = $remarks;
+
+		$this->db->update('studclass', $data, "studID = $studID AND classID = $classID");
+
+		$subID = $this->db->query("SELECT subID FROM class WHERE classID = $classID LIMIT 1")->row()->subID;
+
+		$this->db->update('studgrade',['sgGrade' => $equiv, 'remarks' => $remarks], "subID = $subID AND studID = $studID");
+
+		$this->db->trans_complete();
+
+		echo json_encode(['fg'=>$fg,'equiv'=>$equiv,'remarks'=>$remarks]);
+
+	}
+
+}
+
+?>

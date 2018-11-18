@@ -1,0 +1,131 @@
+.Site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.Site-content {
+  flex: 1;
+}
+
+[v-cloak] {
+display: none;
+}
+
+.animate-top{position:relative;animation:animatetop 0.4s}@keyframes animatetop{from{top:-300px;opacity:0} to{top:0;opacity:1}}
+/*.modal-card-foot{
+    justify-content: flex-end;
+}*/
+.pull-right{
+  justify-content: flex-end;
+}
+.my-body{
+    max-height: 350px; overflow-y: auto
+}
+
+.bg-success{background-color: #23d160;}
+.bg-primary{background-color: #00d1b2;}
+.bg-white{background-color: white;}
+.bg-black{background-color: #0e0e0e;}
+.txt-success{color: #23d160;}
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size:14px;
+}
+
+.pagination a.active {
+    background-color: #209cee;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+.modal-card { overflow: visible;  }
+.modal-card-body { overflow: visible; }
+
+.is-centered th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.is-centered td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/*body {
+  background: #f1f1f1;
+  
+}*/
+/*font: 400 14px 'Calibri','Arial';*/
+
+body {
+  color:#000a0e;
+  /*background: #f1f1f1;*/
+  background: #f7f7f7;
+  font-size:14px;
+  padding: 0;
+  font-family: 'Raleway', sans-serif;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+.nav-active {
+  color: #3273dc;
+}
+
+.nav-active2 {
+  background-color: #3273dc;
+  color: white;
+  pointer-events: none;
+}
+
+.button{
+  font-size:14px;
+}
+.input{
+  font-size:14px;
+}
+
+.select{
+  font-size:14px;
+}
+
+a{
+  font-size:14px;
+}
+
+.label{
+  font-size:14px;
+}
+
+
+
+.loader {
+  border: 16px solid #f2f2f2;
+  border-radius: 50%;
+  border-top: 16px solid #00d1b2;
+  width: 120px;
+  height: 120px;
+  margin: auto;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

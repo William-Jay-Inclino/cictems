@@ -1,0 +1,74 @@
+{
+  "_from": "vodal",
+  "_id": "vodal@2.3.3",
+  "_inBundle": false,
+  "_integrity": "sha512-ZMWxLm1aJdCCstXqz9KASwujnH17wvIObJnfKzGWl+aQ0O4z76JcHa1Per1kY6UdJm0SMZztMkQvXtYbC2xDgQ==",
+  "_location": "/vodal",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "vodal",
+    "name": "vodal",
+    "escapedName": "vodal",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/vodal/-/vodal-2.3.3.tgz",
+  "_shasum": "7ed3e85b4eb48d984734edb43cc44a6241b11397",
+  "_spec": "vodal",
+  "_where": "c:\\xampp\\htdocs\\samples",
+  "author": {
+    "name": "neverland"
+  },
+  "bugs": {
+    "url": "https://github.com/chenjiahan/vodal/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A vue modal with animations.",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.28.7",
+    "del": "^3.0.0",
+    "shelljs": "^0.7.7",
+    "vue": "^2.5.9",
+    "vue-loader": "^13.5.0",
+    "vue-template-compiler": "^2.5.9",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.5",
+    "webpack-merge": "^4.1.1"
+  },
+  "homepage": "https://github.com/chenjiahan/vodal#readme",
+  "keywords": [
+    "vue",
+    "modal",
+    "animation",
+    "dialog"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "name": "vodal",
+  "peerDependencies": {
+    "vue": "^2.5.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenjiahan/vodal.git"
+  },
+  "scripts": {
+    "build": "webpack -p --hide-modules --config ./build/webpack.prod.conf.js",
+    "build:doc": "webpack -p --hide-modules --config ./build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --config ./build/webpack.dev.conf.js",
+    "release": "bash ./build/release.sh"
+  },
+  "version": "2.3.3"
+}
