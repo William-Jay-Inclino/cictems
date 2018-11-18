@@ -164,13 +164,13 @@
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required :disabled="record.status2 == 1"> </td>
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required :disabled="record.status2 == 1"> </td>
 							<td class="row-10">
-								<multiselect v-bind="override" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
+								<multiselect :select-label="''" :deselect-label="''" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
 							</td>
 							<td class="row-13">
-								<multiselect v-bind="override" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
+								<multiselect :select-label="''" :deselect-label="''" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
 							</td>
 							<td class="row-19">
-								<multiselect v-bind="override" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
+								<multiselect :select-label="''" :deselect-label="''" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
 							</td>
 							<td>
 								<button class="button" @click="changeStatus2(record.status2, i)">
@@ -265,13 +265,13 @@
 								<td> <input @input="is_conflict()" v-model="class_to_be_added.timeIn" type="time" class="input" required> </td>
 								<td> <input @input="is_conflict()" v-model="class_to_be_added.timeOut" type="time" class="input" required> </td>
 								<td>
-									<multiselect @input="is_conflict()" v-bind="override" v-model="class_to_be_added.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false"></multiselect>
+									<multiselect :show-labels="false" @input="is_conflict()" v-model="class_to_be_added.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false"></multiselect>
 								</td>
 								<td>
-									<multiselect @input="is_conflict()" v-bind="override" v-model="class_to_be_added.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false"></multiselect>
+									<multiselect :show-labels="false" @input="is_conflict()" v-model="class_to_be_added.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false"></multiselect>
 								</td>
 								<td>
-									<multiselect @input="is_conflict()" v-bind="override" v-model="class_to_be_added.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
+									<multiselect :show-labels="false" @input="is_conflict()" v-model="class_to_be_added.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
 								</td>
 							</tr>
 	                    </table>
@@ -324,13 +324,13 @@
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required> </td>
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required> </td>
 							<td class="row-10">
-								<multiselect v-bind="override" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false"></multiselect>
+								<multiselect  :show-labels="false" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false"></multiselect>
 							</td>
 							<td class="row-13">
-								<multiselect v-bind="override" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false"></multiselect>
+								<multiselect  :show-labels="false" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false"></multiselect>
 							</td>
 							<td class="row-19">
-								<multiselect v-bind="override" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
+								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
 							</td>
 							<td>
 								<button class="button is-danger" @click="deleteClass(i)">
@@ -459,11 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	}
 	    },
 	    computed: {
-	    	override() {
-			    return {
-			     tabIndex: 0,
-			    }
-			},
 			sections2(){
 				const sections = this.sections 
 				const added_sections = this.added_sections 
