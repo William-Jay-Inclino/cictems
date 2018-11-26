@@ -59,8 +59,8 @@
 					<multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :multiple="true" placeholder="Filter year"></multiselect>
 				</div>
 				<div class="column is-3">
-					<button :class="{'button is-primary my-btn': true, 'is-loading': is_generating}" @click="generateFilter">Add</button>
-					<button :class="{'button is-danger my-btn': true, 'is-loading': is_removing}" @click="removeFilter">Remove</button>
+					<button :class="{'button is-primary my-btn': true, 'is-loading': is_generating}" @click="generateFilter" :disabled="filter_is_ready">Add</button>
+					<button :class="{'button is-danger my-btn': true, 'is-loading': is_removing}" @click="removeFilter" :disabled="filter_is_ready">Remove</button>
 				</div>
 			</div>
 		</div>
@@ -72,7 +72,7 @@
 					<multiselect v-model="tba_students" track-by="studID" label="name" :options="search_stud_res" :multiple="true" placeholder="Enter name / control number" :loading="isLoading" :internal-search="false" @search-change="searchStudents"></multiselect>
 				</div>
 				<div class="column is-2">
-					<button :class="{'button is-link': true, 'is-loading': is_adding}" @click="addStudents">Add Student/s</button>
+					<button :class="{'button is-link': true, 'is-loading': is_adding}" @click="addStudents" :disabled="add_is_ready">Add Student/s</button>
 				</div>
 			</div>
 			
@@ -108,7 +108,6 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 	Vue.component('multiselect', window.VueMultiselect.default) 
-	Vue.component('paginate', VuejsPaginate)
 
 	new Vue({
 	    el: '#app',
@@ -124,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	id: '<?php echo $record->feeID ?>',
 	    	termID: '<?php echo $record->termID ?>',
 	    	amount: '<?php echo $record->amount ?>',
-	       	course: null,
-	       	year: null,
-	       	tba_students: null,
+	       	course: [],
+	       	year: [],
+	       	tba_students: [],
 	       	search_stud_res: [],
 	       	courses: [],
 	       	years: [],
@@ -139,7 +138,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	    
 	    },
 	    computed: {
-	    	
+	    	filter_is_ready(){
+	    		let x = false 
+	    		if(this.course.length == 0 && this.year.length == 0){
+	    			x = true
+	    		}
+	    		return x
+	    	},
+	    	add_is_ready(){
+	    		let x = false 
+	    		if(this.tba_students.length == 0){
+	    			x = true 
+	    		}
+	    		return x
+	    	}
 	    },
 	    methods: {
 	    	populate(){
@@ -168,19 +180,21 @@ document.addEventListener('DOMContentLoaded', function() {
 		         }
 		    },
 		    generateFilter(){
-		    	if(this.course == null && this.year == null){
-		    		swal('Warning', 'Please add some filters!', 'warning')
-		    	}else{
+		    	//if(this.course == null && this.year == null){
+		    		//swal('Warning', 'Please add some filters!', 'warning')
+		    	//}else{
 		    		this.is_generating = true
 			    	this.$http.post('<?php echo base_url() ?>maintenance_fees/generateFilter',{courses: this.course, years: this.year, termID: this.termID, feeID: this.id})
 			        	.then(response => {
-			        		swal('Success','Same student/s will not be added','success')
-			        		this.involved_students = response.body
+			        		const c = response.body
+
+			        		swal('Success','Existing student/s will not be added. Added students: '+c.total_added,'success')
+			        		this.involved_students = c.involved_students
 			        		this.is_generating = false
 						 }, e => {
 						 	console.log(e.body)
 					})
-		    	}
+		    	//}
 		    	
 		    },
 		    removed_studs(){
@@ -189,11 +203,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		const filtered_courses = this.course
 	    		const filtered_years = this.year	    
 	    		const removed_studs = []	
+	    		const fc_len = filtered_courses.length
+	    		const fy_len = filtered_years.length
 
 	    		if(students){
 	    			for(let student of students){
-	    				let has_course = has_year = false	
-		    			if(filtered_courses){
+	    				let has_course = false 
+	    				let has_year = false
+
+		    			if(fc_len > 0){
 			    			for(let fc of filtered_courses){
 			    				if(student.courseID == fc.courseID){
 			    					has_course = true 
@@ -202,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			    			}
 			    		}
 
-			    		if(filtered_years){
+			    		if(fy_len > 0){
 			    			for(let fy of filtered_years){
 			    				if(student.yearID == fy.yearID){
 			    					has_year = true 
@@ -211,9 +229,20 @@ document.addEventListener('DOMContentLoaded', function() {
 			    			}
 			    		}
 
-			    		if((has_course || has_year) && student.balance == amount){
-			    			removed_studs.push(student.studID)
+			    		if(fc_len == 0 && fy_len > 0){
+			    			if(has_year && amount == student.payable){
+			    				removed_studs.push(student.studID)
+			    			}
+			    		}else if(fc_len > 0 && fy_len == 0){
+			    			if(has_course && amount == student.payable){
+			    				removed_studs.push(student.studID)
+			    			}
+			    		}else{
+			    			if((has_year && has_course) && amount == student.payable){
+			    				removed_studs.push(student.studID)
+			    			}
 			    		}
+
 		    		}
 
 	    		}
@@ -222,46 +251,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	    	},
 		    removeFilter(){
-		    	if(this.course == null && this.year == null){
-		    		swal('Warning', 'Please add some filters!', 'warning')
-		    	}else{
-		    		const removed_studs = this.removed_studs()
-		    		swal('Success','Only students that is unpaid are removed!','success')
-	        		this.involved_students = this.involved_students.filter(value => !removed_studs.includes(value.studID))
+	    		const removed_studs = this.removed_studs()
+	    		swal('Success','Only students that is unpaid are removed. Removed students: '+removed_studs.length,'success')
+        		this.involved_students = this.involved_students.filter(value => !removed_studs.includes(value.studID))
 
-			    	this.$http.post('<?php echo base_url() ?>maintenance_fees/removeFilter',{removed_studs: removed_studs, feeID: this.id})
-			        	.then(response => {
+		    	this.$http.post('<?php echo base_url() ?>maintenance_fees/removeFilter',{removed_studs: removed_studs, feeID: this.id})
+		        	.then(response => {
 
-						 }, e => {
-						 	console.log(e.body)
-					})
-		    	}
-		    	
+					 }, e => {
+					 	console.log(e.body)
+				})
 		    },
 		    addStudents(){
 		    	const tba_students = this.tba_students
-		    	console.log(tba_students);
-		    	if(tba_students){
+		    	//if(tba_students){
 		    		this.is_adding = true
-		    		this.tba_students = []
 			    	this.$http.post('<?php echo base_url() ?>maintenance_fees/addStudents', {feeID: this.id, tba_students: tba_students})
 			        	.then(response => {
-			        		console.log(response.body)
-			        		this.tba_students = null
 			        		this.is_adding = false
-			        		swal('Success','Same student/s will not be added','success')
-			        		this.involved_students = response.body
+			        		const c = response.body
+
+			        		swal('Success','Existing student/s will not be added. Added students: '+c.total_added,'success')
+			        		this.involved_students = c.involved_students
+			        		this.tba_students = [] 
+		    				this.search_stud_res = []
 						 }, e => {
 						 	console.log(e.body)
 					})
-			    }else{
-			    	swal('No student/s to add!', {icon: 'warning'})
-			    }
+			    // }else{
+			    // 	swal('No student/s to add!', {icon: 'warning'})
+			    // }
 		    },
 		    removeStud(i){
 		    	const student = this.involved_students[i]
 
-		    	if(student.balance == this.amount){
+		    	if(student.payable == this.amount){
 		    		swal({
 					  title: "Confirmation",
 					  text: "Are you sure you want to remove "+student.name+'?',
@@ -280,8 +304,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				        	.then(response => {
 				        		this.involved_students.splice(i, 1)
 				        		swal('Poof! Successfully removed '+student.name+'!', {icon: 'success'})
-				        		
-				        		this.involved_students.splice(i, 0)
 							 }, e => {
 							 	console.log(e.body)
 							})		    
@@ -309,6 +331,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
-<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-paginate/vue-paginate.js"></script>
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

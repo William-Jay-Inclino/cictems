@@ -42,7 +42,7 @@
 			<div class="field">
 			  <label class="label">Amount</label>
 			  <div class="control">
-				  	<input type="number" v-model.number="form.amount" class="input">
+				  	<input type="text" v-model.number="form.amount" class="input">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.amount}}
@@ -110,7 +110,7 @@
 		        submitForm() {
 		        	const f = this.form
 		        	if(this.checkForm(f)){
-		        		this.$http.post('<?php echo base_url() ?>maintenance_section/update',{data: f, id: this.id})
+		        		this.$http.post('<?php echo base_url() ?>maintenance_fees/update',{data: f, id: this.id})
 			        	.then(response => {
 			        		const c = response.body
 			        		console.log(c)
@@ -127,6 +127,9 @@
 								  }
 								})
 			        		}
+						 }, e => {
+						 	console.log(e.body)
+
 						 })
 		        	}else{
 		        		swal('Unable to submit. Please review the form', {

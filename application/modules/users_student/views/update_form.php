@@ -52,7 +52,7 @@
 			<div class="field">
 			  <label class="label">Course</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.course" track-by="courseID" label="courseCode" :options="courses"></multiselect>
+				  	<multiselect v-model="form.course" track-by="courseID" label="courseCode" :options="courses"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.course}}
@@ -61,7 +61,7 @@
 			<div class="field">
 			  <label class="label">Prospectus</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+				  	<multiselect v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.pros}}
@@ -70,7 +70,7 @@
 			<div class="field">
 			  <label class="label">Yearlevel</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
+				  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.year}}
@@ -88,7 +88,7 @@
 			<div class="field">
 			  <label class="label">Sex</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
+				  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.sex}}
@@ -205,12 +205,12 @@
 		    	},
 		    	prospectus(){
 		    		return this.form.pros
-		    	},
-		    	override() {
-				    return {
-				     tabIndex: 0,
-				    }
-				}
+		    	}
+		  //   	override() {
+				//     return {
+				//      tabIndex: 0,
+				//     }
+				// }
 		    },
 		    methods: {
 		    	fetchCourses(){

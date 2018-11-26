@@ -62,8 +62,8 @@
                    <a class="navbar-item <?php if($current_module == 3){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>grade">
                      Grade
                    </a>
-                   <a class="navbar-item <?php if($current_module == 4){echo 'nav-active2';} ?>" href="https://bulma.io/documentation/elements/box/">
-                     Payment &nbsp; <span class="tag is-primary is-rounded">soon</span>
+                   <a class="navbar-item <?php if($current_module == 4){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>payment">
+                     Payment
                    </a>
                  </div>
                </div>
@@ -144,8 +144,11 @@
                    <a class="navbar-item <?php if($current_module == 20.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/remark">
                      Remark
                    </a>
-                   <a class="navbar-item <?php if($current_module == 21){echo 'nav-active2';} ?>" href="https://bulma.io/documentation/elements/box/">
-                     Departmental Fees &nbsp; <span class="tag is-primary is-rounded">soon</span>
+                   <a class="navbar-item <?php if($current_module == 21){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/fees">
+                     Departmental Fees
+                   </a>
+                   <a class="navbar-item <?php if($current_module == 21.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/payment-logs">
+                     Payment Logs
                    </a>
                    <a class="navbar-item <?php if($current_module == 22){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/class">
                      Class Schedules

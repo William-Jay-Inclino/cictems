@@ -54,7 +54,7 @@
 			<div class="field">
 			  <label class="label">Sex</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
+				  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.sex}}
@@ -90,7 +90,7 @@
 			<div class="field">
 			  <label class="label">Specialization</label>
 			  <div class="control">
-				 <multiselect v-bind="override" :multiple="true" v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
+				 <multiselect :multiple="true" v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.spec}}
@@ -146,13 +146,6 @@
 		    created(){
 		    	this.fetchSpec()
 		    	this.populateSpec()
-		    },
-		    computed: {
-		    	override() {
-				    return {
-				     tabIndex: 0,
-				    }
-				},
 		    },
 		    methods: {
 		    	populateSpec(){

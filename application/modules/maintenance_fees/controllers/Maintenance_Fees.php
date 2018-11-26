@@ -95,6 +95,10 @@ class Maintenance_Fees extends MY_Controller{
 		$this->mdl_fees->removeFilter();		
 	}
 
+	function cancelPayment($id){
+		$this->mdl_fees->cancelPayment($id[0]);			
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

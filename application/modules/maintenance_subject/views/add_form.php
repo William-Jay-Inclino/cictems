@@ -36,7 +36,7 @@
 			<div class="field">
 			  <label class="label">Prospectus</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+				  	<multiselect v-model="form.prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.prospectus}}
@@ -45,7 +45,7 @@
 			<div class="field">
 			  <label class="label">Year</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
+				  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.year}}
@@ -54,7 +54,7 @@
 			<div class="field">
 			  <label class="label">Semester</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.sem" track-by="semID" label="semDesc" :options="sems"></multiselect>
+				  	<multiselect v-model="form.sem" track-by="semID" label="semDesc" :options="sems"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.sem}}
@@ -65,7 +65,7 @@
 			  <div class="columns">
 			  	<div class="column is-half">
 			  		<div class="control">
-			  			<multiselect v-bind="override" :multiple="true" v-model="form.pre" track-by="subID" label="subCode" :options="pres" placeholder="Subject"></multiselect>
+			  			<multiselect :multiple="true" v-model="form.pre" track-by="subID" label="subCode" :options="pres" placeholder="Subject"></multiselect>
 			  		</div>
 			  		<p class="help has-text-danger">
 						{{error.pre}}
@@ -73,7 +73,7 @@
 			  	</div>
 			  	<div class="column">
 			  		<div class="control">
-			  			<multiselect v-bind="override" v-model="form.pre2" track-by="yearID" label="yearDesc" :options="years2" placeholder="Yearlevel"></multiselect>
+			  			<multiselect v-model="form.pre2" track-by="yearID" label="yearDesc" :options="years2" placeholder="Yearlevel"></multiselect>
 			  		</div>
 			  		<p class="help has-text-danger">
 						{{error.pre2}}
@@ -84,7 +84,7 @@
 			<div class="field">
 			  <label class="label">Corequisites</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" :multiple="true" v-model="form.coreq" track-by="subID" label="subCode" :options="coreqs"></multiselect>
+				  	<multiselect :multiple="true" v-model="form.coreq" track-by="subID" label="subCode" :options="coreqs"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.coreq}}
@@ -93,7 +93,7 @@
 			<div class="field">
 			  <label class="label">Type</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
+				  	<multiselect v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.spec}}
@@ -222,12 +222,7 @@
 		    	},
 		    	sem(){
 		    		return this.form.sem	
-		    	},
-		    	override() {
-				    return {
-				     tabIndex: 0,
-				    }
-				}
+		    	}
 		    },
 		    methods: {
 		    	populate2(){

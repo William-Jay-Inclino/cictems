@@ -79,16 +79,52 @@ class mdl_Fees extends CI_Model{
 		$exist = false;
 		$data = $this->input->post('data');
 		$id = $this->input->post('id');
+		$data['termID'] = $data['termID']['termID'];
 
+		$this->db->trans_start();
 		$this->check_exist($data,$exist,$id);
 
 		if($exist){
 			$output = ['status' => 0];
 		}else{
+			$new_amount = (double)$data['amount'];
+			$amount = (double)$this->db->select('amount')->get_where('fees',"feeID = $id", 1)->row()->amount;
+
 			$this->db->update('fees', $data, "feeID = $id");
+			
+			if($amount != $new_amount){
+				$diff = $new_amount - $amount;
+
+				$payers = $this->db->select('sfID,payable,receivable')->get_where('stud_fee', "feeID = $id")->result();
+
+				foreach($payers as $p){
+					if($diff > 0){ //ge pa dako ang amount
+						if($p->receivable > 0.00){ 
+							$x = $diff - $p->receivable;
+							if($x >= 0){ //mas dako ang ge dagdag sa receivable
+								$this->db->update('stud_fee',['payable'=>$x, 'receivable'=>0.00], "sfID = ".$p->sfID);	
+							}else{
+								$this->db->update('stud_fee',['receivable'=>abs($x)], "sfID = ".$p->sfID);	
+							}
+						}else{
+							$this->db->update('stud_fee',['payable'=>$p->payable + $diff], "sfID = ".$p->sfID);	
+						}
+						
+					}else{ //ge pa gamyan ang amount
+						$x = $p->payable - abs($diff);
+						if($x < 0){
+							$this->db->update('stud_fee', ['payable'=>0.00, 'receivable' => abs($x)], "sfID = ".$p->sfID);
+						}else{
+							$this->db->update('stud_fee', ['payable'=>$x], "sfID = ".$p->sfID);
+						}
+					}
+				}
+			}
+
+			
 			$output = ['status' => 1];
 		}
-
+		$this->db->trans_complete();
 		echo json_encode($output);
 	}
 
@@ -135,7 +171,7 @@ class mdl_Fees extends CI_Model{
 
 	function get_involved_students($feeID){
 		return $this->db->query("
-				SELECT s.studID,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,y.yearID,y.yearDesc,course.courseID,course.courseCode,y.yearID,course.courseID,sf.balance
+				SELECT s.studID,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,y.yearID,y.yearDesc,course.courseID,course.courseCode,y.yearID,course.courseID,sf.payable
 				FROM stud_fee sf
 				INNER JOIN student s ON sf.studID = s.studID 
 				INNER JOIN users u ON s.uID = u.uID 
@@ -156,12 +192,14 @@ class mdl_Fees extends CI_Model{
 	}
 
 	function generateFilter(){
+		$total_added = 0;
 		$courses = $this->input->post('courses');
 		$years = $this->input->post('years');
 		$termID = $this->input->post('termID');
 		$feeID = $this->input->post('feeID');
 		$students = [];
 
+		$this->db->trans_start();
 		$enrolled_students = $this->db->query("
 			SELECT DISTINCT s.studID,s.controlNo,CONCAT(u.fn,' ',u.mn,' ',u.ln,' | ',s.controlNo) name,y.yearDesc,course.courseCode,y.yearID,course.courseID FROM studclass sc 
 			INNER JOIN class c ON sc.classID = c.classID
@@ -198,23 +236,19 @@ class mdl_Fees extends CI_Model{
 				}
 			}
 
-			if($has_year || $has_course){
-				$students[] = $es;
+			if(!$courses && $years){
+				if($has_year){
+					$students[] = $es;
+				}
+			}else if($courses && !$years){
+				if($has_course){
+					$students[] = $es;
+				}
+			}else{
+				if($has_year && $has_course){
+					$students[] = $es;
+				}
 			}
-
-			// if(!$courses && $years){
-			// 	if($has_year){
-			// 		$students[] = $es;
-			// 	}
-			// }else if($courses && !$years){
-			// 	if($has_course){
-			// 		$students[] = $es;
-			// 	}
-			// }else{
-			// 	if($has_year && $has_course){
-			// 		$students[] = $es;
-			// 	}
-			// }
 
 		}
 
@@ -232,11 +266,12 @@ class mdl_Fees extends CI_Model{
 			}
 			
 			if(!$exist){
-				$this->db->insert('stud_fee', ['studID'=>$s->studID,'feeID'=>$feeID,'balance'=>$amount]);
+				$this->db->insert('stud_fee', ['studID'=>$s->studID,'feeID'=>$feeID,'payable'=>$amount]);
+				++$total_added;
 			}
 		}	
-		
-		echo json_encode($this->get_involved_students($feeID));
+		$this->db->trans_complete();
+		echo json_encode(['involved_students'=>$this->get_involved_students($feeID), 'total_added'=>$total_added]);
 	}
 
 	function search_student($search_value = '', $termID){
@@ -258,17 +293,19 @@ class mdl_Fees extends CI_Model{
 	}
 
 	function addStudents(){
+		$total_added = 0;
 		$feeID = $this->input->post('feeID');
 		$tba_students = $this->input->post('tba_students');
 		$involved_students = $this->db->query("SELECT studID FROM stud_fee WHERE feeID = $feeID")->result();
 		$amount = $this->db->select('amount')->get_where('fees', "feeID = $feeID", 1)->row()->amount;
+		$exist_studIDs = [];
 
 		if($involved_students){
 			$i = 0;
 			foreach($tba_students as $s){
 				foreach($involved_students as $is){
 					if($s['studID'] == $is->studID){
-						array_splice($tba_students, $i, 1);
+						$exist_studIDs[] = $s['studID'];
 					}
 				}
 				++$i;
@@ -277,9 +314,12 @@ class mdl_Fees extends CI_Model{
 
 
 		foreach($tba_students as $tba){
-			$this->db->insert('stud_fee', ['studID'=>$tba['studID'], 'feeID'=>$feeID, 'balance'=>$amount]);
+			if(!in_array($tba['studID'], $exist_studIDs)){
+				$this->db->insert('stud_fee', ['studID'=>$tba['studID'], 'feeID'=>$feeID, 'payable'=>$amount]);
+				++$total_added;
+			}
 		}
-		echo json_encode($this->get_involved_students($feeID));
+		echo json_encode(['involved_students'=>$this->get_involved_students($feeID), 'total_added'=>$total_added]);
 	}
 
 	function removeStud(){
@@ -296,6 +336,22 @@ class mdl_Fees extends CI_Model{
 			$this->db->delete('stud_fee', "feeID = $feeID AND studID = $studID");
 		}
 
+	}
+
+	function cancelPayment($feeID){
+		$this->db->trans_start();
+		$amount = $this->db->select('amount')->get_where('fees', "feeID = $feeID", 1)->row()->amount;
+		$payers = $this->db->select('sfID,payable')->get_where('stud_fee', "feeID = $feeID AND payable < '$amount'")->result();
+
+		$this->db->update('fees', ['feeStatus'=>'cancelled'], "feeID = $feeID");
+		//$this->db->update('stud_fee', ['is_refunded'=>'no', 'receivable'=>"$amount - payable"], "feeID = $feeID AND payable < '$amount'");
+		foreach($payers as $p){
+			$this->db->update('stud_fee', ['receivable'=>$amount - $p->payable], "sfID = ".$p->sfID);
+		}
+		//echo $this->db->last_query(); die();
+		$this->db->update('stud_fee', ['payable'=>0.00], "feeID = $feeID");
+		
+		$this->db->trans_complete();
 	}
 
 }

@@ -41,7 +41,7 @@
 			<div class="field">
 			  <label class="label">Amount</label>
 			  <div class="control">
-				  	<input type="number" v-model.number="form.amount" class="input">
+				  	<input type="text" v-model.number="form.amount" class="input">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.amount}}

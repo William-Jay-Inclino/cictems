@@ -10,14 +10,19 @@
 	</div>
 	<div class="container" style="max-width: 600px;">
 		<div class="box">
-			<a :href="page.edit" class="button">
-				<i class="fa fa-pencil"></i>
-			</a>
-			<button class="button is-danger" v-on:click="is_safe_delete">
-				<i class="fa fa-trash"></i>
-			</button>
-			<a :href="page.involved" class="button is-primary is-pulled-right">Manage Involved Students</a>
-			<hr>
+			<div v-if="feeStatus != 'cancelled'">
+				<a :href="page.edit" class="button">
+					<i class="fa fa-pencil"></i>
+				</a>
+				<button class="button is-danger" v-on:click="is_safe_delete">
+					<i class="fa fa-trash"></i>
+				</button>
+				<div class="is-pulled-right">
+					<button class="button is-danger" @click="cancelPayment">Cancel Payment</button>
+					<a :href="page.involved" class="button is-primary">Involved Students</a>
+				</div>
+				<hr>
+			</div>
 			<table class="table is-fullwidth">
 				<tr>
 					<td><b>Term:</b> </td>
@@ -126,8 +131,40 @@
 					 }, e => {
 					 	console.log(e.body)
 					 })
+		    	},
+		    	cancelPayment(){
+		    		swal({
+					  title: "Are you sure?",
+					  text: "Once cancelled, you will not be able to edit this fee and students who paid can be refunded",
+					  icon: "warning",
+					  buttons: {
+					  	cancel: true,
+					  	confirm: {
+					  		closeModal: false
+					  	}
+					  },
+					  dangerMode: true
+					})
+					.then((cancel) => {
+					  if (cancel) {
+					  	this.$http.get('<?php echo base_url() ?>maintenance_fees/cancelPayment/'+this.id)
+		        		.then(response => {
+		        			console.log(response.body);
+		        		this.feeStatus = 'cancelled'
+					    swal('Success!', 'Students who paid can now claim their refund!', 'success')
+						 }, e => {
+						 	console.log(e.body)
+						 })
+					    
+					  }
+					})
 		    	}
-		    }
+		    },
+
+		   http: {
+            emulateJSON: true,
+            emulateHTTP: true
+    		}
 
 
 		});

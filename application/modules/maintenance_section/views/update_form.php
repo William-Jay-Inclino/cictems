@@ -36,7 +36,7 @@
 			<div class="field">
 			  	<label class="label">Year</label>
 			  	<div class="control">
-				  	<multiselect v-bind="override" v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
+				  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
 			  	</div>
 			  	<p class="help has-text-danger">
 					{{error.year}}
@@ -45,7 +45,7 @@
 			<div class="field">
 			  	<label class="label">Semester</label>
 			  	<div class="control">
-				  	<multiselect v-bind="override" v-model="form.sem" track-by="semID" label="semDesc" :options="sems"></multiselect>
+				  	<multiselect v-model="form.sem" track-by="semID" label="semDesc" :options="sems"></multiselect>
 			  	</div>
 			  	<p class="help has-text-danger">
 					{{error.sem}}
@@ -97,13 +97,6 @@
 		    created(){
 		    	this.populate()
 		    	this.fetchYears(0)
-		    },
-		    computed: {
-		    	override() {
-				    return {
-				     tabIndex: 0,
-				    }
-				},
 		    },
 		    methods: {
 		    	populate(){

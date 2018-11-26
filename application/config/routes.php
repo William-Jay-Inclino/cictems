@@ -138,6 +138,9 @@ $route['reports/grade/(:num)'] = 'reports_grade/index/$1';
 
 $route['reports/remark'] = 'reports_remark';
 
+$route['reports/fees'] = 'reports_fees';
+$route['reports/payment-logs'] = 'reports_payment_logs';
+
 $route['reports/class'] = 'reports_class';
 
 // --------------END REPORTS-----------------
