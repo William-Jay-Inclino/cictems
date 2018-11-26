@@ -22,17 +22,10 @@ class Reports_Payment_Logs extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
-	function populate($termID){
-		$this->mdl_payment_logs->populate($termID[0]);
+	function populate(){
+		$this->mdl_payment_logs->populate();
 	}
 
-	function changeTerm($termID){
-		$this->mdl_payment_logs->changeTerm($termID[0]);
-	}
-
-	function getStudents($feeID){
-		$this->mdl_payment_logs->getStudents($feeID[0]);
-	}
 
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
