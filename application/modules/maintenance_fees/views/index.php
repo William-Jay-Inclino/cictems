@@ -1,4 +1,11 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
+
+<style>
+	.tag-width{
+		width: 70px;
+	}
+</style>
+
 <section class="hero is-primary">
   <div class="hero-body">
     <div class="container">
@@ -16,7 +23,7 @@
 	<div class="container">
 		<div class="columns">
 			<div class="column is-4">
-				<multiselect v-model="current_term" track-by="termID" label="term" :options="terms"></multiselect>
+				<multiselect v-model="current_term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
 			</div>
 		</div>
 		<div class="box">
@@ -93,14 +100,14 @@
 						<td>{{record.amount}}</td>
 						<td>{{record.dueDate}}</td>
 						<td>
-							<span v-if="record.feeStatus == 'ongoing'">
-								<span class="tag is-link">On going</span>
+							<span v-if="record.termID != termID && record.feeStatus != 'cancelled'">
+								<span class="tag is-success tag-width">Done</span>
 							</span>
-							<span v-else-if="record.feeStatus == 'done'">
-								<span class="tag is-success">Done</span>
+							<span v-else-if="record.feeStatus == 'cancelled'">
+								<span class="tag is-danger tag-width">Cancelled</span>
 							</span>
 							<span v-else>
-								<span class="tag is-danger">Cancelled</span>
+								<span class="tag is-link tag-width">On going</span>
 							</span>
 						</td>
 						<td>
@@ -144,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	pagination: true,
 	    	msg: false,
 	    	current_term: {termID: '<?php echo $current_term->termID; ?>', term: '<?php echo $current_term->term; ?>'},
+	    	termID: '<?php echo $current_term->termID; ?>',
 	    	page:{
 		    	data_list: 'List of Fees',
 		    	add: 'Add Fees',

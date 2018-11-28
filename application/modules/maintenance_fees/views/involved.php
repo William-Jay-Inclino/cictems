@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma_checkbox/bulma-checkbox.min.css">
 <style>
 	.my-btn{
 		width: 65px
@@ -51,12 +52,24 @@
 		<div class="box">
 			<h5 class="title is-5">Filter</h5>
 			<hr>	
+			
+			<div class="field">
+			    <p class="control">
+			        <div class="b-checkbox is-primary">
+			            <input id="checkbox" class="styled" type="checkbox" v-model="chkAll">
+			            <label for="checkbox">
+			                All Students
+			            </label>
+			        </div>
+			    </p>
+			</div>
+
 			<div class="columns">
 				<div class="column">
-					<multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" :multiple="true" placeholder="Filter course"></multiselect>
+					<multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" :multiple="true" placeholder="Filter course" :disabled="chkAll"></multiselect>
 				</div>
 				<div class="column">
-					<multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :multiple="true" placeholder="Filter year"></multiselect>
+					<multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :multiple="true" placeholder="Filter year" :disabled="chkAll"></multiselect>
 				</div>
 				<div class="column is-3">
 					<button :class="{'button is-primary my-btn': true, 'is-loading': is_generating}" @click="generateFilter" :disabled="filter_is_ready">Add</button>
@@ -116,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		show: '<?php echo base_url()."maintenance/fees/show/".$record->feeID ?>',
 	    		list: '<?php echo base_url()?>maintenance/fees'
 	    	},
+	    	chkAll: null,
 	    	isLoading: false,
 	    	is_generating: false,
 	    	is_removing: false,
@@ -135,7 +149,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	this.populate()
 	    },
 	    watch: {
-	    
+	    	chkAll(is_checked){
+	    		if(is_checked){
+	    			this.year = [] 
+	    			const c = []
+	    			const courses = this.courses 
+	    			for(let x of courses){
+	    				c.push(x)
+	    			}
+	    			this.course = c
+	    		}else{
+	    			this.course = []
+	    		}
+	    	}
 	    },
 	    computed: {
 	    	filter_is_ready(){

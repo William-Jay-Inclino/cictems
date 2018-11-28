@@ -8,7 +8,7 @@ class mdl_Payment extends CI_Model{
 		$data['course'] = $query->courseCode;
 		$data['year'] = $query->yearDesc;
 
-		$data['fees'] = $this->db->select('f.feeID,f.feeName,sf.payable,sf.receivable')->join('fees f', 'sf.feeID = f.feeID')->get_where('stud_fee sf', "studID = $studID AND (sf.payable > 0 OR sf.receivable > 0)")->result();
+		$data['fees'] = $this->db->select('f.feeID,f.amount,f.feeName,sf.payable,sf.receivable')->join('fees f', 'sf.feeID = f.feeID')->get_where('stud_fee sf', "studID = $studID AND (sf.payable > 0 OR sf.receivable > 0)")->result();
 
 		echo json_encode($data);
 	}
@@ -30,7 +30,7 @@ class mdl_Payment extends CI_Model{
 		$amount = $this->input->post('amount');
 		$or_number = $this->input->post('or_number');
 
-		$is_or_number_exist = $this->db->select('1')->get_where('payments', "or_number = $or_number", 1)->row();
+		$is_or_number_exist = $this->db->select('1')->get_where('payments', "or_number = '$or_number'", 1)->row();
 		if($is_or_number_exist){
 			die('_error0');
 		}else{

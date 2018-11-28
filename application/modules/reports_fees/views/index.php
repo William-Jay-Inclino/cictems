@@ -50,14 +50,14 @@
                 <td> {{fee.amount}} </td>
                 <td> {{fee.dueDate}} </td>
                 <td>
-                  <span v-if="fee.feeStatus == 'ongoing'">
-                    <span class="tag is-link">On going</span>
+                  <span v-if="fee.termID != current_termID && fee.feeStatus != 'cancelled'">
+                    <span class="tag is-success tag-width">Done</span>
                   </span>
-                  <span v-else-if="fee.feeStatus == 'done'">
-                    <span class="tag is-success">Done</span>
+                  <span v-else-if="fee.feeStatus == 'cancelled'">
+                    <span class="tag is-danger tag-width">Cancelled</span>
                   </span>
                   <span v-else>
-                    <span class="tag is-danger">Cancelled</span>
+                    <span class="tag is-link tag-width">On going</span>
                   </span>
                 </td>
               </tbody>
@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
       loader: false,
       ready: false,
       term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
+      current_termID: '<?php echo $current_term->termID ?>',
       terms: [],
       fee: null,
       fees: [],

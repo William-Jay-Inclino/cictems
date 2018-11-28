@@ -47,14 +47,14 @@
 				<tr>
 					<td><b>Status:</b> </td>
 					<td>
-						<span v-if="feeStatus == 'ongoing'">
-							<span class="tag is-link">On going</span>
+						<span v-if="term.termID != termID && feeStatus != 'cancelled'">
+							<span class="tag is-success tag-width">Done</span>
 						</span>
-						<span v-else-if="feeStatus == 'done'">
-							<span class="tag is-success">Done</span>
+						<span v-else-if="feeStatus == 'cancelled'">
+							<span class="tag is-danger tag-width">Cancelled</span>
 						</span>
 						<span v-else>
-							<span class="tag is-danger">Cancelled</span>
+							<span class="tag is-link tag-width">On going</span>
 						</span>
 					</td>
 				</tr>
@@ -75,6 +75,7 @@
 		    data: {
 		    	id: '<?php echo $record->feeID ?>',
 		    	term: {termID: '<?php echo $record->termID ?>', term: '<?php echo $record->term ?>'},
+		    	termID: '<?php echo $current_term->termID; ?>',
 		    	feeName: '<?php echo $record->feeName ?>',
 		    	feeDesc: '<?php echo $record->feeDesc ?>',
 		    	amount: '<?php echo $record->amount ?>',

@@ -43,14 +43,14 @@ class mdl_Fees extends CI_Model{
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT feeID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
+				SELECT feeID,termID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
 				WHERE termID = $termID
 				LIMIT $start, $per_page
 			");
 			$num_records = $this->count_all($termID);
 		}else{
 			$query = $this->db->query("
-				SELECT feeID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
+				SELECT feeID,termID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
 				WHERE $option LIKE '%".$search_val."%' AND termID = $termID
 				LIMIT $start, $per_page"
 			);

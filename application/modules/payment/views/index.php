@@ -46,14 +46,16 @@
 			<div v-if="fees.length > 0">
 				<table class="table is-fullwidth">
 					<thead>
-						<th width="25%">Name of fee</th>
-						<th width="25%">Payable</th>
-						<th width="25%">Receivable</th>
-						<th width="25%">Action</th>
+						<th width="20%">Name of fee</th>
+						<th width="20%">Fee amount</th>
+						<th width="20%">Payable</th>
+						<th width="20%">Receivable</th>
+						<th width="20%">Action</th>
 					</thead>
 					<tbody>
 						<tr v-for="fee, i in fees" :class="{'active-input': fee.collect || fee.refund}">
 							<td> {{fee.feeName}} </td>
+							<td> {{fee.feeAmount}} </td>
 							<td> {{fee.payable}} </td>
 							<td> {{fee.receivable}} </td>
 							<td>
@@ -67,7 +69,7 @@
 											</div>
 											<p class="help has-text-danger"> {{fee.error_amount}} </p>
 										</div>
-										<div class="field">
+										<div class="field" v-if="fee.collect">
 											<label class="label">OR #</label>
 											<div class="control">
 												<input type="text" class="input" v-model.trim="fee.or_number">
@@ -170,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			fees2.push({
 	    				feeID: f.feeID,
 	    				feeName: f.feeName,
+	    				feeAmount: f.amount,
 	    				payable: f.payable,
 	    				receivable: f.receivable,
 	    				collect: false,
@@ -219,12 +222,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			fee.error_amount = ''
 	    		}
 
-	    		if(!fee.or_number){
-	    			ok = false 
-	    			fee.error_or_no = msg
-	    		}else{
-	    			fee.error_or_no = ''
+	    		if(fee.collect){
+	    			if(!fee.or_number){
+		    			ok = false 
+		    			fee.error_or_no = msg
+		    		}else{
+		    			fee.error_or_no = ''
+		    		}	
 	    		}
+	    		
 	    		return ok
 	    	},
 	    	collectPayment(i){
