@@ -23,28 +23,20 @@ class Reports_Student extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
-	function populate($termID){
-		$this->mdl_student->populate($termID[0]);
+	function populate(){
+		$this->mdl_student->populate($this->_data['current_term']->termID);
 	}
 
 	function fetchData($data){
-		$this->mdl_student->fetchData($data[0],$data[1],$data[2]);
+		$this->mdl_student->fetchData($data[0],$data[1],$data[2],$data[3],$data[4]);
 	}
 
 	function fetchSubjects($search_value){
 		$this->mdl_student->fetchSubjects($search_value[0]);
 	}
 
-	function get_students_per_sub($data){
-		$this->mdl_student->get_students_per_sub($data[0],$data[1]);	
-	}
-
-	function get_students_per_fac($data){
-		$this->mdl_student->get_students_per_sub($data[0],$data[1],$data[2]);	
-	}
-
-	function get_subjects_of_instructor($data){
-		$this->mdl_student->get_subjects_of_instructor($data[0],$data[1]);	
+	function fetchStudent_sub($id){
+		$this->mdl_student->fetchStudent_sub($id[0], $id[1]);
 	}
 
 	private function prevent_url_access(){

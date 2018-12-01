@@ -66,16 +66,16 @@
 					<tr v-for="student,i in students">
 						<td style="text-align: left"> {{ student.name }} </td>
 						<td>
-							<multiselect :tabindex="1" :disabled="is_disabled(i, student.prelim)" :show-no-results="false" :options-limit="2" v-model="student.prelim" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'p')" :loading="student.prelim_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="1" :disabled="is_disabled(i, student.prelim)" :show-no-results="false" :options-limit="2" v-model="student.prelim" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'p')" :loading="student.prelim_loader"></multiselect>
 						</td>
 						<td>
-							<multiselect :tabindex="2" :disabled="is_disabled(i, student.midterm)" :show-no-results="false" :options-limit="2" v-model="student.midterm" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'m')" :loading="student.midterm_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="2" :disabled="is_disabled(i, student.midterm)" :show-no-results="false" :options-limit="2" v-model="student.midterm" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'m')" :loading="student.midterm_loader"></multiselect>
 						</td>
 						<td>
-							<multiselect :tabindex="3" :disabled="is_disabled(i, student.prefi)" :show-no-results="false" :options-limit="2" v-model="student.prefi" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'sf')" :loading="student.prefi_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="3" :disabled="is_disabled(i, student.prefi)" :show-no-results="false" :options-limit="2" v-model="student.prefi" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'sf')" :loading="student.prefi_loader"></multiselect>
 						</td>
 						<td>
-							<multiselect :tabindex="4" :disabled="is_disabled(i, student.final)" :show-no-results="false" :options-limit="2" v-model="student.final" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'f')" :loading="student.final_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="4" :disabled="is_disabled(i, student.final)" :show-no-results="false" :options-limit="2" v-model="student.final" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'f')" :loading="student.final_loader"></multiselect>
 						</td>
 						<td> {{ student.finalgrade }} </td>
 						<td> {{ student.equiv }} </td>
