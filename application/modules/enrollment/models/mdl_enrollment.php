@@ -254,6 +254,25 @@ class mdl_Enrollment extends CI_Model{
 		$this->db->trans_complete();
 	}
 
+	function get_sections($termID){
+		$sql = $this->db->query("SELECT DISTINCT c.secID, s.secName FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
+		echo json_encode($sql);
+	}
+
+	function get_classes($termID, $secID){
+		$sql = $this->db->query("
+			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+			FROM class c 
+			INNER JOIN subject s ON c.subID = s.subID
+			INNER JOIN room r ON c.roomID = r.roomID
+			INNER JOIN day d ON c.dayID = d.dayID
+			INNER JOIN faculty f ON c.facID = f.facID
+			INNER JOIN users u ON f.uID = u.uID 
+			WHERE c.termID = $termID AND c.secID = $secID LIMIT 10 
+		")->result();
+		echo json_encode($sql);
+	}
+
 }
 
 ?>

@@ -32,13 +32,6 @@
          
          <section class="section">
             <div class="container">
-               <?php 
-                  if(in_array('20', $user_access) || $roleID == 1){ ?>
-                     <a v-show="ready" :href="grade_link" class="button is-primary is-pulled-right" target="_blank">View student's grade</a>
-                     <br><br>
-                     <?php
-                  }
-               ?>
                <div class="box">
                   <div class="columns">
                      <div class="column is-half">
@@ -48,23 +41,42 @@
                               <multiselect v-model="selected_student" label="student" track-by="studID" placeholder="Enter name / control no" :options="suggestions" :loading="isLoading" :internal-search="false" @search-change="search">
                               </multiselect>
                            </div>
+                           <table v-show="ready">
+                              <tr>
+                                 <td>Status:</td><td :class="statusClass">&ensp; {{status2}}</td>   
+                              </tr>
+                           </table>
                         </div>
                      </div>
-                        <div class="column" v-if="stud != null && ready">
-                           <label class="label">Course</label>
-                           {{stud.courseCode}}
-                        </div>
-                        <div class="column" v-if="stud != null && ready">
-                           <label class="label">Yearlevel</label>
-                           {{stud.yearDesc}}
-                        </div>
-                        <div class="column" v-if="ready">
-                           <label class="label">Status</label>
-                           <span :class="statusClass"> {{status2}} </span>
-                        </div>
+                     <?php 
+                        if(in_array('20', $user_access) || $roleID == 1){ ?>
+                           <div class="column" v-show="ready">
+                              <a :href="grade_link" class="button is-primary is-pulled-right" target="_blank">View student's grade</a>
+                              <br>
+                           </div>
+                           <?php
+                        }
+                     ?>
                   </div>
                </div>
                <div v-show="ready">
+                  <br>
+                  <div class="box" v-if="stud != null">
+                     <table class="table is-fullwidth">
+                        <thead>
+                           <th>Control number</th>
+                           <th>Name</th>
+                           <th>Course</th>
+                           <th>Yearlevel</th>
+                        </thead>
+                        <tbody>
+                           <td> {{stud.controlNo}} </td>
+                           <td> {{stud.name}} </td>
+                           <td> {{stud.courseCode}} </td>
+                           <td> {{stud.yearDesc}} </td>
+                        </tbody>
+                     </table>
+                  </div>
                   <div class="field has-addons" v-show="status == 'Empty'">
                      <div class="control" style="width: 25%">
                         <multiselect v-model="section" track-by="secID" label="secName" :options="sections" placeholder="Select Section"></multiselect>
@@ -161,27 +173,29 @@
                <button class="delete" aria-label="close" v-on:click="close_classModal"></button>
             </header>
             <section class="modal-card-body">
-               <div class="field">
-                  <label class="label">Select section</label>
+               <label class="label">Search Class:</label>
+               <div class="field has-addons">
                   <div class="control">
-                     <multiselect @input="get_classes" v-model="active_section" track-by="secID" label="secName" :options="active_sections" placeholder=""></multiselect>   
+                     <span class="select">
+                        <select v-model="searchClass_opt" style="height: 40px;">
+                           <option value="c.classCode">Class Code</option>
+                           <option value="s.subDesc">Description</option>
+                        </select>
+                     </span>
                   </div>
-               </div>
-               <div class="field">
-                  <label class="label">Enter class code</label>
-                  <div class="control">
-                     <multiselect open-direction="bottom" v-model="selected_class" label="classCode" track-by="classID" placeholder="" :options="class_suggestions" :loading="isLoading2" :internal-search="false" @search-change="searchClass">
-                     </multiselect>      
+                  <div class="control" style="width: 100%">
+                     <multiselect open-direction="bottom" v-model="selected_class" label="classLabel" track-by="classID" :placeholder="class_ph" :options="class_suggestions" :loading="isLoading2" :internal-search="false" @search-change="searchClass">
+                     </multiselect>
                   </div>
                </div>
                <div v-if="selected_class != null">
                   <hr>
                   <table class="table is-fullwidth">
                      <tr>
-                        <td><b>Description: </b></td>
-                        <td> {{selected_class.subDesc}} </td>
-                        <td><b>Faculty: </b></td>
-                        <td> {{ selected_class.faculty }} </td>
+                        <td><b>Room: </b></td>
+                        <td> {{ selected_class.roomName }} </td>
+                        <td><b>Section: </b></td>
+                        <td> {{ selected_class.secName }} </td>
                      </tr>
                      <tr>
                         <td><b>Days: </b></td>
@@ -196,8 +210,8 @@
                         <td>{{ selected_class.lab }}</td>
                      </tr>
                      <tr>
-                        <td><b>Room: </b></td>
-                        <td> {{ selected_class.roomName }} </td>
+                        <td><b>Faculty: </b></td>
+                        <td> {{ selected_class.faculty }} </td>
                         <td><b>Total</b></td>
                         <td>{{ Number(selected_class.lec) + Number(selected_class.lab) }}</td>
                      </tr>
@@ -278,6 +292,8 @@ document.addEventListener('DOMContentLoaded', function() {
       status: '',
       classes: [],
 
+      searchClass_opt: 'c.classCode',
+      searchClass_ph: '',
       classModal: false,
       selected_class: null,
       class_suggestions: [],
@@ -289,12 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
       failed_classes: [],
       sections: [],
       sections2: [],
-      active_sections: [],
-      active_section: null
     },   
-    created(){
-      this.get_sections()
-    },
     watch: {
       selected_student(value){
          if(value == null){
@@ -312,6 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
          if(x != null){
             return this.link + x.studID
          }
+          
       },
       statusClass(){
          let y = this.status2
@@ -358,6 +370,14 @@ document.addEventListener('DOMContentLoaded', function() {
          }
       	return k
       },
+      class_ph(){
+      	const x = this.searchClass_opt
+      	let j = 'Enter class code'
+      	if(x == 's.subDesc'){
+      		j = 'Enter subject description'
+      	}
+      	return j
+      },
       units(){
          const a = this.classes
          let lec = 0
@@ -398,33 +418,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     },
     methods: {
-      get_sections(){
-         this.$http.get('<?php echo base_url() ?>enrollment/get_sections')
-         .then(response => {
-            console.log(response.body)
-            this.active_sections = response.body
-         }, e => {
-            console.log(e.body)
-
-         })
-      },
-      get_classes(){
-         const section = this.active_section
-         if(section){
-            this.isLoading2 = true
-            this.$http.get('<?php echo base_url() ?>enrollment/get_classes/'+section.secID)
-            .then(response => {
-               this.isLoading2 = false
-               this.class_suggestions = response.body
-            }, e => {
-               console.log(e.body)
-
-            })   
-         }else{
-            this.class_suggestions = []
-            this.selected_class = null
-         }
-      },
       search(value){
          if(value.trim() != ''){
             this.isLoading = true
@@ -508,16 +501,12 @@ document.addEventListener('DOMContentLoaded', function() {
 				      icon: 'success',
 				    })
          		this.selected_class = null
-               this.active_section = null 
-               this.class_suggestions = []
          	}
          })
       },
       close_classModal(){
       	this.classModal = false
       	this.selected_class = null
-         this.class_suggestions = []
-         this.active_section = null
       },
       remove(classID,subCode,index){
       	this.$http.get('<?php echo base_url() ?>enrollment/deleteClass/'+classID+'/'+this.selected_student.studID)

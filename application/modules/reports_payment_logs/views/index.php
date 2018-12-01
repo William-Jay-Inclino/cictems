@@ -5,6 +5,9 @@
   .my-height{
     height: 40px;
   }
+  .table__wrapper {
+  overflow-x: auto;
+}
 </style>
 
 <section class="hero is-primary">
@@ -57,34 +60,36 @@
           </div>
         </div>
         <br>
-        <table class="table is-fullwidth">
-          <thead>
-            <th>Control no</th>
-            <th>Student</th>
-            <th>Payee</th>
-            <th>Fee</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Action</th>
-            <th>OR #</th>
-          </thead>
+        <div class="table__wrapper">
+          <table class="table is-fullwidth">
+            <thead>
+              <th>Control no</th>
+              <th>Student</th>
+              <th>Payee</th>
+              <th>Fee</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Action</th>
+              <th>OR #</th>
+            </thead>
 
-          <td colspan="7" class="has-text-centered" v-show="loading">Loading please wait ...</td>
-          <td colspan="7" class="has-text-centered" v-show="msg">No record found</td>
+            <td colspan="7" class="has-text-centered" v-show="loading">Loading please wait ...</td>
+            <td colspan="7" class="has-text-centered" v-show="msg">No record found</td>
 
-          <tbody>
-            <tr v-for="record, i in records">
-              <td> {{record.controlNo}} </td>
-              <td> {{record.student}} </td>
-              <td> {{record.faculty}} </td>
-              <td> {{record.feeName}} </td>
-              <td> {{record.paidDate}} </td>
-              <td> {{record.amount}} </td>
-              <td> {{record.action}} </td>
-              <td> {{record.or_number}} </td>
-            </tr>
-          </tbody>
-        </table>
+            <tbody>
+              <tr v-for="record, i in records">
+                <td> {{record.controlNo}} </td>
+                <td> {{record.student}} </td>
+                <td> {{record.faculty}} </td>
+                <td> {{record.feeName}} </td>
+                <td> {{record.paidDate}} </td>
+                <td> {{record.amount}} </td>
+                <td> {{record.action}} </td>
+                <td> {{record.or_number}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <hr>
         <div class="is-pulled-right">
           <div v-if="pagination">

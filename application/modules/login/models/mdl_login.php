@@ -12,16 +12,22 @@ class mdl_login extends CI_Model{
 			if($status == 'active'){
 				$session_data['uID'] = $sql->uID;
 	         	$this->session->set_userdata($session_data);  
-
+	         	redirect(base_url() . 'dashboard');
+				// if($sql->is_new == 'yes' && ($sql->roleID == 2 || $sql->roleID == 3)){
+				// 	redirect(base_url() . 'first-time-login');
+				// }else{
+				// 	redirect(base_url() . 'dashboard');
+					
+				// }	
+			}else{
 				if($sql->is_new == 'yes' && ($sql->roleID == 2 || $sql->roleID == 3)){
+					$session_data['uID'] = $sql->uID;
+	         		$this->session->set_userdata($session_data); 
 					redirect(base_url() . 'first-time-login');
 				}else{
-					redirect(base_url() . 'dashboard');
-					
-				}	
-			}else{
-				$this->session->set_flashdata('error', 'Unable to login. Your account is inactive!');  
-				redirect(base_url() . 'login');
+					$this->session->set_flashdata('error', 'Unable to login. Your account is inactive!');  
+					redirect(base_url() . 'login');	
+				}
 			}
 		}else{
 			$this->session->set_flashdata('error', 'Invalid Username or Password!');  

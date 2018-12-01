@@ -70,6 +70,14 @@ class Enrollment extends MY_Controller{
 		$this->mdl_enrollment->change_enrolStatus($this->_data['current_term']->termID);
 	}
 
+	function get_sections(){
+		$this->mdl_enrollment->get_sections($this->_data['current_term']->termID);
+	}
+
+	function get_classes($secID){
+		$this->mdl_enrollment->get_classes($this->_data['current_term']->termID, $secID[0]);
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();
