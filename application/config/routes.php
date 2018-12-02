@@ -154,3 +154,14 @@ $route['my-class/student-grade/(:num)/(:num)'] = 'my_class/student_grade/$1/$2';
 $route['my-class/update-grade/(:any)/(:num)'] = 'my_class/update_grade/$1/$2';
 
 // -------------------------END MY CLASS---------------------------------
+
+// -------------------------STUDENT NAVIGATION---------------------------------
+
+$route['student/my-classes'] = 'student_users/my_classes';
+$route['student/class-schedules'] = 'student_users/class_schedules';
+$route['student/grades-by-prospectus'] = 'student_users/grades_by_prospectus';
+$route['student/grades-by-class'] = 'student_users/grades_by_class';
+$route['student/fees'] = 'student_users/fees';
+$route['student/payment-logs'] = 'student_users/payment_logs';
+
+// -------------------------END STUDENT NAVIGATION---------------------------------

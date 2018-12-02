@@ -15,23 +15,12 @@ class Templates extends MY_Controller {
 		$this->load->view('staff_template', $data);	
 	}
 
+	function student($data){
+		$this->load->view('student_template', $data);	
+	}
+
 	function outside($data){
 		$this->load->view('outside_template', $data);		
 	}
-	// function faculty($data){
-	// 	print_r($data);
-	// }
-	
-	// function staff($data){
-	// 	print_r($data);
-	// }
-
-	// function student($data){
-	// 	print_r($data);
-	// }
-
-	// function guardian($data){
-	// 	print_r($data);
-	// }
 
 }

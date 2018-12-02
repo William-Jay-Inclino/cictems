@@ -1,24 +1,12 @@
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Dashboard
-      </h1>
-    </div>
-  </div>
-</section>
-
-<section id="app" class="section" v-cloak>
+<section id="app" class="section">
 	<div class="container">
-		<div class="box">
-
-		</div>
+		<h3 class="title is-3 my-title">Dashboard</h3>
 	</div>
 
 </section>
 
 
-<script>
+<!-- <script>
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -46,4 +34,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-</script>
+</script> -->

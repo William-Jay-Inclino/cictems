@@ -13,12 +13,6 @@ class mdl_login extends CI_Model{
 				$session_data['uID'] = $sql->uID;
 	         	$this->session->set_userdata($session_data);  
 	         	redirect(base_url() . 'dashboard');
-				// if($sql->is_new == 'yes' && ($sql->roleID == 2 || $sql->roleID == 3)){
-				// 	redirect(base_url() . 'first-time-login');
-				// }else{
-				// 	redirect(base_url() . 'dashboard');
-					
-				// }	
 			}else{
 				if($sql->is_new == 'yes' && ($sql->roleID == 2 || $sql->roleID == 3)){
 					$session_data['uID'] = $sql->uID;

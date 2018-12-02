@@ -79,7 +79,7 @@
 				<tr>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-no-results="false" v-bind="override" :options-limit="2" v-model="prelim" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="prelim" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.prelim}} </p>
 						</span>
 						<span v-else>
@@ -88,7 +88,7 @@
 					</td>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-no-results="false" v-bind="override" :options-limit="2" v-model="midterm" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="midterm" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.midterm}} </p>
 						</span>
 						<span v-else>
@@ -97,7 +97,7 @@
 					</td>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-no-results="false" v-bind="override" :options-limit="2" v-model="prefi" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="prefi" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.prefi}} </p>
 						</span>
 						<span v-else>
@@ -106,7 +106,7 @@
 					</td>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-no-results="false" v-bind="override" :options-limit="2" v-model="final" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="final" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.final}} </p>
 						</span>
 						<span v-else>
