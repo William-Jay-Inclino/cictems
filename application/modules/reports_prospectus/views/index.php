@@ -52,7 +52,7 @@
                         {{ subject.term }}
                      </h6>
                      <hr>
-                     <table class="table is-fullwidth is-bordered">
+                     <table class="table is-fullwidth">
                         <thead>
                            <th width="15%">Subject Code</th>
                            <th width="30%">Description</th>
@@ -61,7 +61,7 @@
                         </thead>
                         <tbody>
                            <tr v-for="row of subject.subjects">
-                              <td> {{row.subject.subCode}} </td>
+                              <td> {{row.subject.subCode}} <span v-if="row.subject.type == 'lab'"><b>(lab)</b></span> </td>
                               <td> {{row.subject.subDesc}} </td>
                               <td> {{row.subject.units}} </td>
                               <td>
@@ -135,10 +135,14 @@ document.addEventListener('DOMContentLoaded', function() {
          this.$http.get('<?php echo base_url() ?>reports_prospectus/get_subjects/' + prosID)
          .then(response => {
             const c = response.body
+            console.log(c)
             this.titlePros = c.prospectus
             this.subjects = c.subjects
             this.loader = false
             this.ready = true
+         }, e => {
+          console.log(e.body)
+
          })
       }
    },

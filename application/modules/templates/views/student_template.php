@@ -1,3 +1,10 @@
+<?php 
+  
+  if(($current_module == 1 && $shared_data['enrol_status'] == 'inactive') || ($current_module == 2 && $shared_data['stud_enrol_status'] != 'Enrolled')){
+    show_404();
+  }
+
+?>
 <!DOCTYPE html>
 <html class="has-navbar-fixed-top">
   <head>
@@ -40,15 +47,24 @@
 
            <div id="navbarExampleTransparentExample" class="navbar-menu">
              <div class="navbar-start">
-              <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>dashboard">
+              <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/dashboard">
                  Dashboard
               </a>
-              <a class="navbar-item <?php if($current_module == 1){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/enrolment">
-                 Enrolment
-              </a>
-              <a class="navbar-item <?php if($current_module == 2){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/my-classes">
-                 My Classes
-              </a>
+              <?php 
+                if($shared_data['enrol_status'] == 'active'){ ?>
+                  <a class="navbar-item <?php if($current_module == 1){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/enrolment">
+                    Enrolment
+                  </a>
+                  <?php
+                }
+
+                if($shared_data['stud_enrol_status'] == 'Enrolled'){ ?>
+                  <a class="navbar-item <?php if($current_module == 2){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/my-classes">
+                     My Classes
+                  </a>
+                  <?php
+                }
+              ?>
               <a class="navbar-item <?php if($current_module == 3){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/class-schedules">
                  Class Schedules
               </a>
@@ -66,16 +82,16 @@
                  </div>
                </div>
                <div class="navbar-item has-dropdown is-hoverable">
-                 <a class="navbar-link <?php if($current_module == 26){echo 'nav-active';} ?>" href="#">
+                 <a class="navbar-link <?php if($current_module == 6 || $current_module == 7){echo 'nav-active';} ?>" href="#">
                    Payments
                  </a>
                  <div class="navbar-dropdown is-boxed">
-                  <a class="navbar-item <?php if($current_module == 26){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>student/fees">
+                  <a class="navbar-item <?php if($current_module == 6){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>student/fees">
                    Fees
                  </a>
-                   <a class="navbar-item" href="<?php echo base_url() ?>student/payment-logs">
-                     Logs
-                   </a>
+                   <a class="navbar-item <?php if($current_module == 7){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>student/payment-logs">
+                   Logs
+                 </a>
                  </div>
                </div>
              </div>
@@ -128,12 +144,10 @@
       
       <br><br><br><br><br><br><br><br><br><br>
       
-      <footer class="footer bg-black">
+      <footer class="footer bg-white">
         <div class="container">
           <div class="content has-text-centered">
-            <h6 class="title is-6 has-text-white">
-              Developed by <a href="#"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
-            </h6>
+              Developed by <a href="#" class="has-text-primary"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
           </div>
         </div>
       </footer>

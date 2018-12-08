@@ -19,7 +19,7 @@
 			<div class="field">
 			  <label class="label">Subject Code</label>
 			  <div class="control">
-				  	<input class="input" type="text" v-model.trim="form.subCode" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
+				  	<input class="input" type="text" v-model.trim="form.subCode" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces." autofocus="true">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.subCode}}
@@ -37,7 +37,7 @@
 			<div class="field">
 			  <label class="label">Prospectus</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+				  	<multiselect v-model="form.prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.prospectus}}
@@ -46,7 +46,7 @@
 			<div class="field">
 			  <label class="label">Year</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
+				  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.year}}
@@ -55,7 +55,7 @@
 			<div class="field">
 			  <label class="label">Semester</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.sem" track-by="semID" label="semDesc" :options="sems"></multiselect>
+				  	<multiselect v-model="form.sem" track-by="semID" label="semDesc" :options="sems"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.sem}}
@@ -66,7 +66,7 @@
 			  <div class="columns">
 			  	<div class="column is-half">
 			  		<div class="control">
-			  			<multiselect v-bind="override" :multiple="true" v-model="form.pre" track-by="subID" label="subCode" :options="pres" placeholder="Subject"></multiselect>
+			  			<multiselect :multiple="true" v-model="form.pre" track-by="subID" label="subCode" :options="pres" placeholder="Subject"></multiselect>
 			  		</div>
 			  		<p class="help has-text-danger">
 						{{error.pre}}
@@ -74,7 +74,7 @@
 			  	</div>
 			  	<div class="column">
 			  		<div class="control">
-			  			<multiselect v-bind="override" v-model="form.pre2" track-by="yearID" label="yearDesc" :options="years2" placeholder="Yearlevel"></multiselect>
+			  			<multiselect v-model="form.pre2" track-by="yearID" label="yearDesc" :options="years2" placeholder="Yearlevel"></multiselect>
 			  		</div>
 			  		<p class="help has-text-danger">
 						{{error.pre2}}
@@ -85,7 +85,7 @@
 			<div class="field">
 			  <label class="label">Corequisites</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" :multiple="true" v-model="form.coreq" track-by="subID" label="subCode" :options="coreqs"></multiselect>
+				  	<multiselect :multiple="true" v-model="form.coreq" track-by="subID" label="subCode" :options="coreqs"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.coreq}}
@@ -94,28 +94,10 @@
 			<div class="field">
 			  <label class="label">Type</label>
 			  <div class="control">
-				  	<multiselect v-bind="override" v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
+				  	<multiselect v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.spec}}
-				</p>
-			</div>
-			<div class="field">
-			  <label class="label">Units</label>
-			  <div class="columns">
-			  	<div class="column is-half">
-			  		<div class="control">
-			  			<input type="number" class="input" v-model.number.trim="form.lec" onpaste="return false;" onKeyPress="if(this.value.length==1 && event.keyCode>47 && event.keyCode < 58)return false;" placeholder="Lecture">
-			  		</div>
-			  	</div>
-			  	<div class="column">
-			  		<div class="control">
-			  			<input type="number" class="input" v-model.number.trim="form.lab" onpaste="return false;" onKeyPress="if(this.value.length==1 && event.keyCode>47 && event.keyCode < 58)return false;" placeholder="Laboratory">
-			  		</div>
-			  	</div>
-			  </div>
-			  	<p class="help has-text-danger">
-					{{error.units}}
 				</p>
 			</div>
 			<br>
@@ -141,22 +123,21 @@
 		    	page:{
 		    		title: 'Update Subject',
 		    		list: '<?php echo base_url() ?>maintenance/subject',
-		    		show: '<?php echo base_url()."maintenance/subject/show/".$record->subID ?>'
+		    		show: '<?php echo base_url()."maintenance/subject/show/".$id."/" ?>'
 		    	},
 
 		    	form: {
-		    		id: '<?php echo $record->subID ?>',
-		    		prospectus: {prosID: '<?php echo $record->prosID ?>', prosCode: '<?php echo $record->prosCode ?>'},
-		    		year: {yearID: '<?php echo $record->yearID ?>', yearDesc: '<?php echo $record->yearDesc ?>'},
-		    		sem: {semID: '<?php echo $record->semID ?>', semDesc: '<?php echo $record->semDesc ?>'},
-		    		subCode: '<?php echo $record->subCode ?>',
-		    		subDesc: '<?php echo $record->subDesc ?>',
-		    		lec: '<?php echo $record->lec ?>',
-		    		lab: '<?php echo $record->lab ?>',
+		    		id: '<?php echo $id ?>',
+		    		subID: '<?php echo $records[0]->subID ?>',
+		    		prospectus: {prosID: '<?php echo $prosID ?>', prosCode: '<?php echo $records[0]->prosCode ?>'},
+		    		year: {yearID: '<?php echo $records[0]->yearID ?>', yearDesc: '<?php echo $records[0]->yearDesc ?>'},
+		    		sem: {semID: '<?php echo $records[0]->semID ?>', semDesc: '<?php echo $records[0]->semDesc ?>'},
+		    		subCode: '<?php echo $records[0]->subCode ?>',
+		    		subDesc: '<?php echo $records[0]->subDesc ?>',
 		    		pre: null,
 		    		pre2: null,
 		    		coreq: null,
-		    		spec: {specID: '<?php echo $record->specID ?>', specDesc: '<?php echo $record->specDesc ?>'},
+		    		spec: {specID: '<?php echo $records[0]->specID ?>', specDesc: '<?php echo $records[0]->specDesc ?>'},
 		    	},
 		    	error: {
 		    		prospectus: '',
@@ -164,7 +145,6 @@
 		    		sem: '',
 		    		subCode: '',
 		    		subDesc: '',
-		    		units: '',
 		    		pre: '',
 		    		pre2: '',
 		    		coreq: '',
@@ -231,16 +211,11 @@
 		    	},
 		    	sem(){
 		    		return this.form.sem	
-		    	},
-		    	override() {
-				    return {
-				     tabIndex: 0,
-				    }
-				},
+		    	}
 		    },
 		    methods: {
 		    	populate(){
-		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/populate/'+this.form.id)
+		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/populate/'+this.form.subID)
 		    		.then(response => {
 		    			const c = response.body
 		    			console.log(c)
@@ -263,7 +238,8 @@
 		        		this.form.coreq = arr2
 
 		    		}, e => {
-		    			this.populate()
+		    			console.log(e.body)
+		    			//this.populate()
 		    		})
 		    	},
 		    // 	fetch_requisites(){
@@ -316,7 +292,7 @@
 		    		})
 		    	},
 		    	fetchReqs(prosID,yearID,semID){
-		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_reqs/'+prosID+'/'+yearID+'/'+semID)
+		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_reqs/'+prosID+'/'+yearID+'/'+semID+'/'+this.form.id)
 		    		.then(response => {
 		    			const c = response.body
 		    			this.years2 = this.years
@@ -325,7 +301,8 @@
 		    			
 		    			//console.log(this.years2)
 		    		}, e => {
-		    			this.fetchReqs(prosID,yearID,semID)
+		    			console.log(e.body)
+		    			//this.fetchReqs(prosID,yearID,semID)
 		    		})
 		    	},
 		        submitForm() {
@@ -334,6 +311,7 @@
 		        		this.$http.post('<?php echo base_url() ?>maintenance_subject/update',f)
 			        	.then(response => {
 			        		const c = response.body
+			        		console.log(c)
 			        		if(c == 'exist'){
 			        			swal('Subject already exist', {
 							      icon: 'warning',
@@ -343,10 +321,13 @@
 							      icon: 'success',
 							    }).then((x) => {
 								  if (x) {
-								    window.location.href = this.page.show
+								    window.location.href = this.page.show + f.prospectus.prosID
 								  }
 								})
 			        		}
+						 }, e => {
+						 	console.log(e.body)
+
 						 })
 		        	}else{
 		        		swal('Unable to submit. Please review the form', {
@@ -398,12 +379,6 @@
 		        		ok = false
 		        	}else{
 		        		this.error.spec = ''
-		        	}
-		        	if(!f.lec && !f.lab){
-		        		this.error.units = errMsg
-		        		ok = false
-		        	}else{
-		        		this.error.units = ''
 		        	}
 		        	return ok
 		        }

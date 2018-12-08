@@ -19,7 +19,7 @@
 			<hr>
 			<table class="table is-fullwidth">
 				<tr>
-					<td><b>Specialization:</b> </td>
+					<td><b>Subject Type:</b> </td>
 					<td> {{specDesc}} </td>
 				</tr>
 			</table>

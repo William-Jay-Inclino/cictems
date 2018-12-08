@@ -42,7 +42,7 @@ display: none;
 }
 
 .pagination a.active {
-    background-color: #209cee;
+    background-color: #00d1b2;
     color: white;
 }
 
@@ -82,7 +82,7 @@ body {
 }
 
 .nav-active2 {
-  background-color: #3273dc;
+  background-color: #00d1b2;
   color: white;
   pointer-events: none;
 }

@@ -15,7 +15,7 @@
 		<h5 class="title is-4" style="text-align: center">{{ page.title }}</h5>
 		<div class="box">
 			<div class="field">
-			  <label class="label">Specialization</label>
+			  <label class="label">Subject Type</label>
 			  <div class="control">
 				  	<input class="input" type="text" v-model.trim="form.spec" required>
 			  </div>
@@ -41,7 +41,7 @@
 		    el: '#app',
 		    data: {
 		    	page:{
-		    		title: 'Add Specialization',
+		    		title: 'Add Subject Type',
 		    		list: '<?php echo base_url() ?>maintenance/specialization',
 		    		success: '<?php echo base_url() ?>maintenance/specialization/form-success/'
 		    	},

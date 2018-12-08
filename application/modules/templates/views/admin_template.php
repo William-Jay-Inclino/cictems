@@ -10,7 +10,13 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/headroom/headroom.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/custom.css">
+    <style>
+    body{
+      background-image: url("<?php echo base_url() ?>assets/img/bg-tile.png");
+    }
+  </style>
   </head>
+  
   <body class="Site">
 
       <header class="header">
@@ -90,11 +96,11 @@
                    <a class="navbar-item <?php if($current_module == 9.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/day">
                      Day
                    </a>
+                   <a class="navbar-item <?php if($current_module == 10.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/specialization">
+                     Subject Type
+                   </a>
                    <a class="navbar-item <?php if($current_module == 10){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/subject">
                      Subject
-                   </a>
-                   <a class="navbar-item <?php if($current_module == 10.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/specialization">
-                     Specialization
                    </a>
                    <a class="navbar-item <?php if($current_module == 12){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/grade-formula">
                      Grade Formula
@@ -203,12 +209,10 @@
       </main>
       
       
-      <footer class="footer bg-black">
+      <footer class="footer bg-white">
         <div class="container">
           <div class="content has-text-centered">
-            <h6 class="title is-6 has-text-white">
-              Developed by <a href="#"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
-            </h6>
+              Developed by <a href="#" class="has-text-primary"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
           </div>
         </div>
       </footer>

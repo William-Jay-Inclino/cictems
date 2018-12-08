@@ -158,19 +158,21 @@
 				<table v-for="record, i in classes" class="table is-fullwidth is-centered">
 					<tbody>
 						<tr :class="{err: record.error}">
-							<td class="row-10" style="text-align: left">{{record.subCode}}</td>
+							<td class="row-10" style="text-align: left">
+								{{record.subCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span>
+							</td>
 							<td class="row-17" style="text-align: left">{{record.subDesc}}</td>
 							<td>{{record.units}}</td>
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required :disabled="record.status2 == 1"> </td>
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required :disabled="record.status2 == 1"> </td>
 							<td class="row-10">
-								<multiselect :select-label="''" :deselect-label="''" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
+								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
 							</td>
 							<td class="row-13">
-								<multiselect :select-label="''" :deselect-label="''" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
+								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
 							</td>
 							<td class="row-19">
-								<multiselect :select-label="''" :deselect-label="''" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
+								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
 							</td>
 							<td>
 								<button class="button" @click="changeStatus2(record.status2, i)">
@@ -200,6 +202,7 @@
 						</tr>
 					</tbody>
 				</table>
+				
 				<div class="is-pulled-right">
 					<button :class="{'button is-link': true, 'is-loading': isLoading}" @click="submitForm" v-if="classes.length > 0">Create schedule</button>	
 				</div>
@@ -318,7 +321,9 @@
 				<table v-for="record, i in classes2" class="table is-fullwidth is-centered">
 					<tbody>
 						<tr :class="{err: record.error}">
-							<td class="row-10" style="text-align: left">{{record.subCode}}</td>
+							<td class="row-10" style="text-align: left">
+								{{record.subCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span>
+							</td>
 							<td class="row-17" style="text-align: left">{{record.subDesc}}</td>
 							<td>{{record.units}}</td>
 							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required> </td>
@@ -641,6 +646,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		        			subCode: s.subCode,
 		        			subDesc: s.subDesc,
 		        			units: s.units,
+		        			type: s.type,
 		        			day: null,
 		        			timeIn: '',
 		        			timeOut: '',
@@ -693,6 +699,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		this.sections3 = c.sections
 	        		this.update_sec = c.section
 	        		this.prepareForm2(c.classes)
+				}, e => {
+					console.log(e.body)
+
 				})
 	    	},
 	    	createForm(){
@@ -711,6 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			subCode: '',
 	    			subDesc: '',
 	    			units: null,
+	    			type: '',
 	    			day: null,
 	    			timeIn: '',
 	    			timeOut: '',
@@ -962,8 +972,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	        	this.$http.get('<?php echo base_url() ?>schedule/fetchClasses/' + this.year.yearID +'/'+ this.prospectus.prosID +'/'+this.current_term.termID)
 	        	.then(response => {
 	        		const c = response.body
+	        		console.log(c)
 	        		this.sections = c.sections
 	        		this.prepareForm(c.classes)
+				 }, e => {
+				 	console.log(e.body)
+
 				 })
 	        },
 	        prepareForm(classes){
@@ -976,6 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        			subCode: c.subCode,
 	        			subDesc: c.subDesc,
 	        			units: c.units,
+	        			type: c.type,
 	        			day: null,
 	        			timeIn: '',
 	        			timeOut: '',
@@ -998,6 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        			subCode: c.subCode,
 	        			subDesc: c.subDesc,
 	        			units: c.units,
+	        			type: c.type,
 	        			day: {dayID: c.dayID, dayDesc: c.dayDesc, dayCount: c.dayCount},
 	        			timeIn: c.timeIn,
 	        			timeOut: c.timeOut,

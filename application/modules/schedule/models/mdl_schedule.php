@@ -73,7 +73,7 @@ class mdl_Schedule extends CI_Model{
 	function populate($termID){
 		$this->get_terms($term);
 		$data['term'] = $term;
-		$data['prospectus'] = $this->db->query('SELECT prosID,prosCode FROM prospectus ORDER BY prosCode ASC')->result();
+		$data['prospectus'] = $this->db->query('SELECT prosID,prosCode FROM prospectus ORDER BY prosID DESC, prosCode ASC')->result();
 		$data['rooms'] = $this->db->query("SELECT roomID,roomName FROM room")->result();
 		$data['days'] = $this->db->get('day')->result();
 		$data['faculties'] = $this->db->query("SELECT f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) as faculty FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active'")->result();
@@ -103,9 +103,10 @@ class mdl_Schedule extends CI_Model{
 
 	function fetchClasses($yearID, $prosID, $termID){
 		$data['classes'] = $this->db->query("
-			SELECT subID,subCode,subDesc,(lec + lab) units FROM subject WHERE prosID = $prosID AND yearID = $yearID AND
+			SELECT subID,subCode,subDesc,units,type FROM subject WHERE prosID = $prosID AND yearID = $yearID AND
 			semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1)
 		")->result();
+		//die($this->db->last_query());
 		$data['sections'] = $this->get_sections($yearID, $prosID, $termID);
 		echo json_encode($data);
 	}
@@ -121,7 +122,7 @@ class mdl_Schedule extends CI_Model{
 
 	function get_sec_info($secID, $termID){
 		$data['classes'] = $this->db->query("
-				SELECT c.classID,sub.subID,sub.subCode,sub.subDesc,(sub.lec + sub.lab) units,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time FROM class c 
+				SELECT c.classID,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time FROM class c 
 				INNER JOIN room r ON c.roomID = r.roomID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 
@@ -182,7 +183,7 @@ class mdl_Schedule extends CI_Model{
 
 	function search_subject($search_value, $prosID){
 		$search_value = strtr($search_value, '_', ' ');
-		$query = $this->db->select("subID,subCode,CONCAT(subCode,' | ',subDesc) subject,subDesc,(lec + lab) units")->like("CONCAT(subCode,' | ',subDesc)",$search_value)->get_where('subject', "prosID = $prosID" , 10);
+		$query = $this->db->select("subID,subCode,CONCAT(subCode,' | ',subDesc,' (',type,')') subject,subDesc, units, type")->like("CONCAT(subCode,' | ',subDesc)",$search_value)->get_where('subject', "prosID = $prosID" , 10);
 		echo json_encode($query->result());
 	}
 

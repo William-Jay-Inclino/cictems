@@ -3,6 +3,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Student_Users extends CI_Model{
 
+	function shared_data($termID){
+		$data['stud_enrol_status'] = 'Unenrolled';
+		
+		$data['enrol_status'] = $this->db->select('some_value')->get_where('enrolment_settings', "name = 'status'", 1)->row()->some_value;
+		$stud_enrol_status = $this->db->query("SELECT sc.status FROM studclass sc INNER JOIN class c ON sc.classID = c.classID WHERE c.termID = $termID AND sc.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1) LIMIT 1")->row();
+
+		if($stud_enrol_status){
+			$data['stud_enrol_status'] = $stud_enrol_status->status;
+		}
+		return $data;
+	}
+
+	function get_enrol_status($termID){
+		$sql = $this->db->query("SELECT sc.status FROM studclass sc INNER JOIN class c ON sc.classID=c.classID WHERE c.termID = $termID AND sc.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1) LIMIT 1")->row();
+		if(!$sql){
+			$data['status'] = 'Unenrolled';
+		}else{
+			$data['status'] = $sql->status;
+		}
+		return $data;
+	}
+
 	function get_student_classes($termID){
 		return $this->db->query("
 			SELECT s.subCode,s.subDesc,s.lec,s.lab,d.dayDesc,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty
@@ -13,7 +35,7 @@ class mdl_Student_Users extends CI_Model{
 			INNER JOIN room r ON c.roomID = r.roomID
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID  
-			WHERE c.termID = $termID AND sc.studID = ".$this->session->userdata('uID')."
+			WHERE sc.status = 'Enrolled' AND c.termID = $termID AND sc.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1)
 		")->result();
 	}
 
@@ -144,6 +166,150 @@ class mdl_Student_Users extends CI_Model{
 		}
 
 		return $arr2;
+
+	}
+
+	function get_student_fees(){
+		return $this->db->query("
+			SELECT f.feeName,f.amount,sf.payable,sf.receivable FROM stud_fee sf INNER JOIN fees f ON sf.feeID=f.feeID 
+			WHERE (sf.payable > 0.00 OR sf.receivable > 0.00) AND sf.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1) 
+			ORDER BY f.dueDate DESC
+		")->result();
+	}
+
+	function enrolment_populate($termID){
+		$data['sections'] = [];
+		$data['classes'] = [];
+
+		$sql = $this->db->query("
+			SELECT p.courseID,s.yearID
+			FROM studprospectus sp
+			INNER JOIN student s ON sp.studID = s.studID 
+			INNER JOIN users u ON s.uID = u.uID 
+			INNER JOIN prospectus p ON sp.prosID = p.prosID 
+			WHERE u.uID = ".$this->session->userdata('uID')." LIMIT 1    
+		")->row();
+		
+		$sections = $this->db->query("
+			SELECT DISTINCT s.secID,s.secName 
+			FROM class c 
+			INNER JOIN section s ON c.secID = s.secID
+			WHERE c.termID = $termID AND s.yearID = ".$sql->yearID." AND 
+			s.semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1) AND
+			s.courseID = ".$sql->courseID."
+		")->result();
+		if($sections){
+			$data['sections'] = $sections;
+		}
+
+		$classes = $this->db->query("
+			SELECT c.classID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
+			FROM studclass sc 
+			INNER JOIN class c ON sc.classID = c.classID
+			INNER JOIN subject s ON c.subID = s.subID 
+			INNER JOIN day d ON c.dayID = d.dayID 
+			WHERE sc.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1)
+		")->result();
+		if($classes){
+			$data['classes'] = $classes;
+		}
+
+		$active_sections = $this->db->query("SELECT DISTINCT c.secID, s.secName FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
+
+		if($active_sections){
+			$data['active_sections'] = $active_sections;
+		}
+
+		echo json_encode($data);
+	}
+
+	function enrolment_section_add($secID, $termID){
+		$studID = $this->db->select('studID')->get_where('student', "uID = ".$this->session->userdata('uID'), 1)->row()->studID;
+
+		$classes = $this->db->query("
+			SELECT c.classID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
+			FROM class c 
+			INNER JOIN subject s ON c.subID = s.subID 
+			INNER JOIN day d ON c.dayID = d.dayID 
+			WHERE c.termID = $termID AND c.secID = $secID
+		")->result();
+
+		$this->db->trans_start();
+		foreach($classes as $class){
+			$this->db->insert('studclass', ['classID' => $class->classID, 'studID' => $studID]);
+		}
+		$this->db->trans_complete();
+		echo json_encode($classes);
+	}
+
+	function enrolment_deleteClass($classID){
+		$this->db->query("DELETE FROM studclass WHERE classID = $classID AND studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1)");
+	}
+
+	function enrolment_get_classes($secID, $termID){
+		$sql = $this->db->query("
+			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+			FROM class c 
+			INNER JOIN subject s ON c.subID = s.subID
+			INNER JOIN room r ON c.roomID = r.roomID
+			INNER JOIN day d ON c.dayID = d.dayID
+			INNER JOIN faculty f ON c.facID = f.facID
+			INNER JOIN users u ON f.uID = u.uID 
+			WHERE c.termID = $termID AND c.secID = $secID LIMIT 10 
+		")->result();
+		echo json_encode($sql);
+	}
+
+	function enrolment_addClass($classID){
+		$studID = $this->db->select('studID')->get_where('student', "uID = ".$this->session->userdata('uID'), 1)->row()->studID;
+		$query = $this->db->select('1')->get_where('studclass', "classID = $classID AND studID = $studID");
+		if(!$query->row()){
+			$this->db->insert('studclass',['studID'=>$studID,'classID'=>$classID,'status'=>'Unenrolled']);
+		}
+	}
+
+	function populate_payment_logs(){
+		//die(print_r($_POST));
+		$page = $this->input->post("page");
+		$per_page = $this->input->post("per_page");
+		$filteredDate = $this->input->post("filteredDate");
+		$studID = $this->session->userdata('uID');
+
+		$start = ($page - 1) * $per_page;
+
+		if($filteredDate){
+			$dateFrom = $this->input->post("filteredDate")['dateFrom'];
+			$dateTo = $this->input->post("filteredDate")['dateTo'];
+
+			$records = $this->db->query("
+				SELECT CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+				f.feeName,p.paidDate,p.amount,p.action,p.or_number
+				FROM payments p
+				INNER JOIN users uu ON p.uID = uu.uID  
+				INNER JOIN fees f ON p.feeID = f.feeID 
+				WHERE p.paidDate BETWEEN '$dateFrom' AND DATE_ADD('$dateTo', INTERVAL 1 DAY) AND 
+				p.studID = $studID
+				ORDER BY p.paidDate DESC
+				LIMIT $start, $per_page
+			");
+			$data['total_rows'] = $this->db->query("SELECT COUNT(1) total_rows FROM payments WHERE paidDate BETWEEN '$dateFrom' AND DATE_ADD('$dateTo', INTERVAL 1 DAY) AND 
+				studID = $studID")->row()->total_rows;
+		}else{
+			$records = $this->db->query("
+				SELECT CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+				f.feeName,p.paidDate,p.amount,p.action,p.or_number
+				FROM payments  p
+				INNER JOIN users uu ON p.uID = uu.uID  
+				INNER JOIN fees f ON p.feeID = f.feeID 
+				WHERE p.studID = $studID
+				ORDER BY p.paidDate DESC
+				LIMIT $start, $per_page
+			");
+			$data['total_rows'] = $this->db->query("SELECT COUNT(1) total_rows FROM payments WHERE studID = $studID")->row()->total_rows;
+		}
+
+		$data['records'] = $records->result();
+		echo json_encode($data);
 
 	}
 

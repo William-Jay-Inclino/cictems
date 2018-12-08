@@ -67,9 +67,9 @@ $route['maintenance/day/form-success/(:num)'] = 'maintenance_day/success_page/$1
 
 $route['maintenance/subject'] = 'maintenance_subject';
 $route['maintenance/subject/form'] = 'maintenance_subject/form';
-$route['maintenance/subject/form/(:num)'] = 'maintenance_subject/form/$1';
-$route['maintenance/subject/show/(:num)'] = 'maintenance_subject/show/$1';
-$route['maintenance/subject/form-success/(:num)'] = 'maintenance_subject/success_page/$1';
+$route['maintenance/subject/form/(:num)/(:num)'] = 'maintenance_subject/form/$1/$2';
+$route['maintenance/subject/show/(:num)/(:num)'] = 'maintenance_subject/show/$1/$2';
+$route['maintenance/subject/form-success/(:num)/(:num)'] = 'maintenance_subject/success_page/$1/$2';
 
 $route['maintenance/specialization'] = 'maintenance_specialization';
 $route['maintenance/specialization/form'] = 'maintenance_specialization/form';
@@ -157,7 +157,9 @@ $route['my-class/update-grade/(:any)/(:num)'] = 'my_class/update_grade/$1/$2';
 
 // -------------------------STUDENT NAVIGATION---------------------------------
 
+$route['student/dashboard'] = 'student_users';
 $route['student/my-classes'] = 'student_users/my_classes';
+$route['student/enrolment'] = 'student_users/enrolment';
 $route['student/class-schedules'] = 'student_users/class_schedules';
 $route['student/grades-by-prospectus'] = 'student_users/grades_by_prospectus';
 $route['student/grades-by-class'] = 'student_users/grades_by_class';

@@ -102,29 +102,18 @@
                      </div>
                      <table class="table is-fullwidth is-centered" v-show="status != 'Empty' && !loading_class_sel">
                         <thead>
-                           <tr>
-                              <th style="text-align: left">Class Code</th>
-                              <th style="text-align: left">Description</th>
-                              <th colspan="3" class="has-text-centered">Units</th>
-                              <th>Days</th>
-                              <th>Time</th>
-                              <th v-if="status == 'Unenrolled'">Remove</th>
-                           </tr>
-                           <tr>
-                              <th colspan="2"></th>
-                              <th>Lec</th>
-                              <th>Lab</th>
-                              <th>Total</th>
-                              <th colspan="3"></th>
-                           </tr>
+                           <th style="text-align: left">Class Code</th>
+                           <th style="text-align: left">Description</th>
+                           <th>Units</th>
+                           <th>Days</th>
+                           <th>Time</th>
+                           <th v-if="status == 'Unenrolled'">Remove</th>
                         </thead>
                         <tbody>
                            <tr v-for="record, i in classes">
-                              <td style="text-align: left">{{record.classCode}}</td>
+                              <td style="text-align: left">{{record.classCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span> </td>
                               <td style="text-align: left">{{record.subDesc}}</td>
-                              <td>{{record.lec}}</td>
-                              <td>{{record.lab}}</td>
-                              <td>{{ Number(record.lec) + Number(record.lab) }}</td>
+                              <td> {{record.units}} </td>
                               <td>{{record.day}}</td>
                               <td>{{record.class_time}}</td>
                               <td v-if="status == 'Unenrolled'">
@@ -138,9 +127,7 @@
                            <tr>
                               <th></th>
                               <th>Total number of units: </th>
-                              <th>{{ units.lec }}</th>
-                              <th>{{ units.lab }}</th>
-                              <th>{{ units.tot  }}</th>
+                              <th>{{ tot_units }}</th>
                               <th colspan="3"></th>
                            </tr>
                         </tbody>
@@ -170,7 +157,7 @@
                <div class="field">
                   <label class="label">Enter class code</label>
                   <div class="control">
-                     <multiselect open-direction="bottom" v-model="selected_class" label="classCode" track-by="classID" placeholder="" :options="class_suggestions" :loading="isLoading2" :internal-search="false" @search-change="searchClass">
+                     <multiselect open-direction="bottom" v-model="selected_class" label="codelabel" track-by="classID" placeholder="" :options="class_suggestions" :loading="isLoading2">
                      </multiselect>      
                   </div>
                </div>
@@ -186,20 +173,14 @@
                      <tr>
                         <td><b>Days: </b></td>
                         <td> {{ selected_class.day }} </td>
-                        <td><b>Lec</b></td>
-                        <td>{{ selected_class.lec }}</td>
+                        <td><b>Room: </b></td>
+                        <td> {{ selected_class.roomName }} </td>
                      </tr>
                      <tr>
                         <td><b>Time: </b></td>
                         <td> {{ selected_class.class_time }} </td>
-                        <td><b>Lab</b></td>
-                        <td>{{ selected_class.lab }}</td>
-                     </tr>
-                     <tr>
-                        <td><b>Room: </b></td>
-                        <td> {{ selected_class.roomName }} </td>
-                        <td><b>Total</b></td>
-                        <td>{{ Number(selected_class.lec) + Number(selected_class.lab) }}</td>
+                        <td><b>Units: </b></td>
+                        <td> {{ selected_class.units }} </td>
                      </tr>
                   </table>
                </div>
@@ -358,19 +339,13 @@ document.addEventListener('DOMContentLoaded', function() {
          }
       	return k
       },
-      units(){
+      tot_units(){
          const a = this.classes
-         let lec = 0
-         let lab = 0
+         let tot = 0
          for(x of a){
-            lec += Number(x.lec)
-            lab += Number(x.lab)
+            tot += Number(x.units)
          }
-         return {
-            lec: lec,
-            lab: lab,
-            tot: lec + lab
-         }
+         return tot
       },
       classID_in_failed_classes(){
          const x = this.failed_classes
@@ -409,20 +384,22 @@ document.addEventListener('DOMContentLoaded', function() {
          })
       },
       get_classes(){
+         this.class_suggestions = []
+         this.selected_class = null
          const section = this.active_section
          if(section){
             this.isLoading2 = true
             this.$http.get('<?php echo base_url() ?>enrollment/get_classes/'+section.secID)
             .then(response => {
                this.isLoading2 = false
-               this.class_suggestions = response.body
+               this.class_suggestions = response.body.map(g => {
+                  g.codelabel = (g.type == 'lab') ? g.classCode +' (' + g.type + ')' : g.classCode
+                  return g
+               })
             }, e => {
                console.log(e.body)
 
             })   
-         }else{
-            this.class_suggestions = []
-            this.selected_class = null
          }
       },
       search(value){
@@ -455,19 +432,19 @@ document.addEventListener('DOMContentLoaded', function() {
             this.stud = c.stud
          })
       },
-      searchClass(value){
-      	if(value.trim() != ''){
-            this.isLoading2 = true
-            value = value.replace(/\s/g, "_")
-            this.$http.get('<?php echo base_url() ?>enrollment/searchClass/'+value+'/'+this.searchClass_opt)
-            .then(response => {
-               this.isLoading2 = false
-               this.class_suggestions = response.body
-            })
-         }else{
-            this.class_suggestions = []
-         }
-      },
+      // searchClass(value){
+      // 	if(value.trim() != ''){
+      //       this.isLoading2 = true
+      //       value = value.replace(/\s/g, "_")
+      //       this.$http.get('<?php echo base_url() ?>enrollment/searchClass/'+value+'/'+this.searchClass_opt)
+      //       .then(response => {
+      //          this.isLoading2 = false
+      //          this.class_suggestions = response.body
+      //       })
+      //    }else{
+      //       this.class_suggestions = []
+      //    }
+      // },
       section_add(){
          this.loading_btn = true
          this.$http.get('<?php echo base_url() ?>enrollment/section_add/' + this.section.secID + '/' + this.selected_student.studID)

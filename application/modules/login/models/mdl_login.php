@@ -78,6 +78,7 @@ class mdl_login extends CI_Model{
 
 	function submit_registration(){
 		$data = $this->input->post('data');
+		$sex = '';
 		// $is_un_exist = $this->db->select('1')->get_where('registration', "userName = '".$data['userName']."'")->row();
 		// $is_un_exist2 = $this->db->select('1')->get_where('users', "userName = '".$data['userName']."'")->row();
 		// if($is_un_exist || $is_un_exist2){
@@ -96,6 +97,7 @@ class mdl_login extends CI_Model{
 		if($data['role'] == 'Student'){
 			$data['roleID'] = 4;
 			$data['uID'] = $data['student']['uID'];
+			$sex = $this->db->query("SELECT sex FROM users WHERE uID = ".$data['uID']." LIMIT 1")->row()->sex;
 			$sql =  $this->db->select('fn,mn,ln')->get_where('users', 'uID = '.$data['uID'], 1)->row();
 			$data['fn'] = $sql->fn;
 			$data['mn'] = $sql->mn;
@@ -133,9 +135,10 @@ class mdl_login extends CI_Model{
 			$this->db->query("INSERT INTO counter2(module,total) VALUES('reg_requests','1')");
 		}
 
+		
 		$this->db->trans_complete();	
 
-		echo json_encode(['output' => 'success', 'un' => $data['userName']]);
+		echo json_encode(['output' => 'success','sex'=>$sex, 'un' => $data['userName']]);
 
 	}
 	

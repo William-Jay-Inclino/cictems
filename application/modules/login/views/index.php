@@ -22,6 +22,9 @@
       .login-btn{
         width: 50%; font-size: 16px
       }
+      body{
+      background-image: url("<?php echo base_url() ?>assets/img/bg-tile.png");
+    }
     </style>
   </head>
 <body class="Site">
@@ -59,8 +62,7 @@
 
   <main class="Site-content">
     <section class="section">
-      <div class="container" style="max-width: 500px">
-        <h3 class="title is-3 has-text-centered has-text-primary">Login</h3>
+      <div class="container" style="max-width: 500px"> <br>
         <?php 
             if($this->session->flashdata("error")){ ?>
                 <div class="message is-danger">
@@ -113,12 +115,10 @@
 
 
 
-  <footer class="footer bg-black">
+  <footer class="footer bg-white">
     <div class="container">
       <div class="content has-text-centered">
-        <h6 class="title is-6 has-text-white">
-          Developed by <a href="#"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
-        </h6>
+          Developed by <a href="#" class="has-text-primary"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
       </div>
     </div>
   </footer>

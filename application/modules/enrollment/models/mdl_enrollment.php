@@ -8,7 +8,7 @@ class mdl_Enrollment extends CI_Model{
 	}
 
 	function get_enrol_data($studID, $termID){
-		$query = $this->db->select("c.classID,sc.status,s.subID,c.classCode,s.lec,s.lab,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time")
+		$query = $this->db->select("c.classID,sc.status,s.subID,c.classCode,s.units,s.type,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time")
 		->join('class c','sc.classID = c.classID')
 		->join('subject s','c.subID = s.subID')
 		->join('day d','c.dayID = d.dayID')
@@ -52,7 +52,7 @@ class mdl_Enrollment extends CI_Model{
 		}
 
 		$classes = $this->db->query("
-			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
+			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.units,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
 			FROM class c 
 			INNER JOIN subject s ON c.subID = s.subID 
 			INNER JOIN day d ON c.dayID = d.dayID 
@@ -261,7 +261,7 @@ class mdl_Enrollment extends CI_Model{
 
 	function get_classes($termID, $secID){
 		$sql = $this->db->query("
-			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.units,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
 			FROM class c 
 			INNER JOIN subject s ON c.subID = s.subID
 			INNER JOIN room r ON c.roomID = r.roomID

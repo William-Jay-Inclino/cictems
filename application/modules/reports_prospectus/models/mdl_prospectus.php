@@ -5,12 +5,13 @@ class mdl_Prospectus extends CI_Model{
 
 	function get_prospectuses(){
 		echo json_encode(
-			$this->db->query("SELECT prosID,prosCode FROM prospectus ORDER BY prosCode ASC")->result()
+			$this->db->query("SELECT prosID,prosCode FROM prospectus ORDER BY prosID DESC, prosCode ASC")->result()
 		);
 	}
 
 	function get_subjects($prosID){
 		//echo $prosID; die();
+		$holder2 = [];
 		$query2 = $this->db->select('CONCAT(c.courseDesc," (",c.courseCode,")") AS description,p.effectivity')->get_where('course c,prospectus p', 'p.courseID = c.courseID AND p.prosID = '.$prosID, 1);
 		$prospectus = $query2->row_array();
 
@@ -22,7 +23,7 @@ class mdl_Prospectus extends CI_Model{
 
 				$term =  $row4['yearDesc'].' - '.$row4['semDesc'];
 
-				$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,(s.lec + s.lab) units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req')->get_where('subject s','s.prosID = '.$prosID.' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
+				$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,s.type,s.units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req')->get_where('subject s','s.prosID = '.$prosID.' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
 				$row5 = $query5->result_array();
 
 				foreach($row5 as $val){

@@ -18,7 +18,7 @@
 			<div class="field">
 			  <label class="label">Subject Code</label>
 			  <div class="control">
-				  	<input class="input" type="text" v-model.trim="form.subCode" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
+				  	<input class="input" type="text" v-model.trim="form.subCode" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces." autofocus="true">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.subCode}}
@@ -104,12 +104,12 @@
 			  <div class="columns">
 			  	<div class="column is-half">
 			  		<div class="control">
-			  			<input type="number" class="input" v-model.number.trim="form.lec" onpaste="return false;" onKeyPress="if(this.value.length==1 && event.keyCode>47 && event.keyCode < 58)return false;" placeholder="Lecture">
+			  			<multiselect v-model="form.lec" track-by="unit" label="unit" :options="units" placeholder="Lecture"></multiselect>
 			  		</div>
 			  	</div>
 			  	<div class="column">
 			  		<div class="control">
-			  			<input type="number" class="input" v-model.number.trim="form.lab" onpaste="return false;" onKeyPress="if(this.value.length==1 && event.keyCode>47 && event.keyCode < 58)return false;" placeholder="Laboratory">
+			  			<multiselect v-model="form.lab" track-by="unit" label="unit" :options="units" placeholder="Laboratory"></multiselect>
 			  		</div>
 			  	</div>
 			  </div>
@@ -149,8 +149,8 @@
 		    		sem: null,
 		    		subCode: '',
 		    		subDesc: '',
-		    		lec: '',
-		    		lab: '',
+		    		lec: null,
+		    		lab: null,
 		    		pre: null,
 		    		pre2: null,
 		    		coreq: null,
@@ -222,6 +222,13 @@
 		    	},
 		    	sem(){
 		    		return this.form.sem	
+		    	},
+		    	units(){
+		    		const units = []
+		    		for(let i = 1; i < 10; ++i){
+		    			units.push({unit: i})
+		    		}
+		    		return units
 		    	}
 		    },
 		    methods: {
@@ -252,12 +259,16 @@
 		    		})
 		    	},
 		    	fetchReqs(prosID,yearID,semID){
-		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_reqs/'+prosID+'/'+yearID+'/'+semID)
+		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_reqs/'+prosID+'/'+yearID+'/'+semID+'/'+0)
 		    		.then(response => {
 		    			const c = response.body
+		    			console.log(c)
 		    			this.pres = c
 		    			this.coreqs = c
 		    			this.years2 = this.years
+		    		}, e => {
+		    			console.log(e.body)
+
 		    		})
 		    	},
 		        submitForm() {
@@ -266,13 +277,18 @@
 		        		this.$http.post('<?php echo base_url() ?>maintenance_subject/create',f)
 			        	.then(response => {
 			        		const c = response.body
+			        		console.log(c)
+
 			        		if(c == 'exist'){
 			        			swal('Subject already exist', {
 							      icon: 'warning',
 							    });
 			        		}else{
-			        			window.location.href = this.page.success + c
+			        			window.location.href = this.page.success + c.id + '/' +c.prosID
 			        		}
+						 }, e => {
+						 	console.log(e.body)
+
 						 })
 		        	}else{
 		        		swal('Unable to submit. Please review the form', {

@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/headroom/headroom.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/custom.css">
+    <style>
+    body{
+      background-image: url("<?php echo base_url() ?>assets/img/bg-tile.png");
+    }
+  </style>
   </head>
   <body class="Site">
 
@@ -266,12 +271,10 @@
       
       <br><br><br><br><br><br><br><br><br><br>
       
-      <footer class="footer bg-black">
+      <footer class="footer bg-white">
         <div class="container">
           <div class="content has-text-centered">
-            <h6 class="title is-6 has-text-white">
-              Developed by <a href="#"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
-            </h6>
+              Developed by <a href="#" class="has-text-primary"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
           </div>
         </div>
       </footer>

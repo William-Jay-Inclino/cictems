@@ -24,7 +24,8 @@ class Dashboard extends MY_Controller{
 		}else if($this->_data['roleID'] == 3){
 			$view = 'staff';
 		}else if($this->_data['roleID'] == 4){
-			$view = 'student';
+			// $view = 'student';
+			redirect(base_url().'student/dashboard');
 		}
 		$this->_data['module_view'] = $view;
 		echo Modules::run($this->_template, $this->_data);

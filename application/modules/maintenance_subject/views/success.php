@@ -2,65 +2,78 @@
 <section class="section">
 
 	<div class="container" style="max-width: 600px;">
-		<div class="box">
-			<h5 class="title is-5 has-text-success" style="text-align: center">{{ page.title }}</h5>
-			<hr>
-			<table class="table is-fullwidth">
-				<tr>
-					<td><b>Subject Code:</b> </td>
-					<td> {{subCode}} </td>
-				</tr>
-				<tr>
-					<td><b>Description:</b> </td>
-					<td> {{subDesc}} </td>
-				</tr>
-				<tr>
-					<td><b>Prospectus:</b> </td>
-					<td> {{prosCode}} </td>
-				</tr>
-				<tr>
-					<td><b>Lecture:</b> </td>
-					<td> {{lec}} </td>
-				</tr>
-				<tr>
-					<td><b>Laboratory:</b> </td>
-					<td> {{lab}} </td>
-				</tr>
-				<tr>
-					<td><b>Year:</b> </td>
-					<td> {{yearDesc}} </td>
-				</tr>
-				<tr>
-					<td><b>Semester:</b> </td>
-					<td> {{semDesc}} </td>
-				</tr>
-				<tr>
-					<td><b>Prerequisite:</b> </td>
-					<td> 
-						{{year_req}} &nbsp;
-						<span v-if="reqs.length != 0" v-for="req in reqs">
-							<span v-if="req.req_type == 1">
-								{{req.req_code}} &nbsp;
-							</span>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td><b>Corequisite:</b> </td>
-					<td>
-						<span v-if="reqs.length != 0" v-for="req in reqs">
-							<span v-if="req.req_type == 2">
-								{{req.req_code}}
-							</span>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td><b>Type:</b> </td>
-					<td> {{specDesc}} </td>
-				</tr>
-			</table>
-		</div>
+		<h5 class="title is-5 has-text-success" style="text-align: center">
+			<?php 
+				$tit = 'Subject';
+				if(count($records) > 1){
+					$tit = $tit.'s';
+				}
+				echo $tit.' successfully added!';
+			?>
+		</h5>
+		<?php 
+			foreach($records as $record){ ?>
+				<div class="box">
+					<table class="table is-fullwidth">
+						<tr>
+							<td><b>Subject Code:</b> </td>
+							<td> <?php echo $record->subCode ?> </td>
+						</tr>
+						<tr>
+							<td><b>Description:</b> </td>
+							<td> <?php echo $record->subDesc ?> </td>
+						</tr>
+						<tr>
+							<td><b>Prospectus:</b> </td>
+							<td> <?php echo $record->prosCode ?> </td>
+						</tr>
+						<tr>
+							<td><b>Units:</b> </td>
+							<td> <?php echo $record->units ?> </td>
+						</tr>
+						<tr>
+							<td><b>Unit Type:</b></td>
+							<td> <?php echo $record->type ?> </td>
+						</tr>
+						<tr>
+							<td><b>Year:</b> </td>
+							<td> <?php echo $record->yearDesc ?> </td>
+						</tr>
+						<tr>
+							<td><b>Semester:</b> </td>
+							<td> <?php echo $record->semDesc ?> </td>
+						</tr>
+						<tr>
+							<td><b>Prerequisite:</b> </td>
+							<td> 
+								 <?php echo $record->year_req.' '; ?> 
+								<span v-if="reqs.length != 0" v-for="req in reqs">
+									<span v-if="req.req_type == 1">
+										{{req.req_code}} &nbsp;
+									</span>
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td><b>Corequisite:</b> </td>
+							<td>
+								<span v-if="reqs.length != 0" v-for="req in reqs">
+									<span v-if="req.req_type == 2">
+										{{req.req_code}}
+									</span>
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td><b>Subject Type:</b> </td>
+							<td> <?php echo $record->specDesc ?> </td>
+						</tr>
+					</table>
+				</div>
+				
+				<?php
+			}
+		?>
 		<div style="text-align: center">
 			<a :href="page.add" class="button is-primary" style="width: 100px">Add New</a>
 			<a :href="page.edit" class="button is-primary" style="width: 100px">Edit</a>
@@ -79,21 +92,14 @@
 		new Vue({
 		    el: '#app',
 		    data: {
-		    	id: '<?php echo $record->subID ?>',
-		    	subCode: '<?php echo $record->subCode ?>',
-		    	subDesc: '<?php echo $record->subDesc ?>',
-		    	prosCode: '<?php echo $record->prosCode ?>',
-		    	lec: '<?php echo $record->lec ?>',
-		    	lab: '<?php echo $record->lab ?>',
-		    	year_req: '<?php echo $record->year_req ?>',
-		    	semDesc: '<?php echo $record->semDesc ?>',
-		    	yearDesc: '<?php echo $record->yearDesc ?>',
-		    	specDesc: '<?php echo $record->specDesc ?>',
+		    	id: '<?php echo $records[0]->id ?>',
+		    	subID: '<?php echo $records[0]->subID ?>',
+		    	prosID: '<?php echo $records[0]->prosID ?>',
 		    	reqs: [],
 		    	page:{
 		    		title: 'Subject successfully added!',
 		    		add: '<?php echo base_url() ?>maintenance/subject/form',
-		    		edit: '<?php echo base_url()."maintenance/subject/form/".$record->subID ?>',
+		    		edit: '<?php echo base_url()."maintenance/subject/form/".$records[0]->id."/".$records[0]->prosID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/subject'
 		    	},
 
@@ -104,10 +110,10 @@
 		    },	
 		    methods: {
 		    	fetch_requisites(){
-		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_requisites/'+this.id)
+		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_requisites/'+this.subID)
 		        	.then(response => {
-		        		console.log(response.body)
 		        		this.reqs = response.body
+		        		console.log(response.body)
 					 })
 		    	}
 		    }

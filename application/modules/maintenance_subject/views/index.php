@@ -84,7 +84,7 @@
 						<td>{{record.subDesc}}</td>
 						<td>{{record.prosCode}}</td>
 						<td>
-							<a :href="page.show + '/' + record.subID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
+							<a :href="page.show + '/' + record.id + '/' + record.prosID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 						</td>
 					</tr>
 				</tbody>

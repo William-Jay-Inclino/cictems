@@ -2,7 +2,7 @@
   <div class="hero-body">
     <div class="container">
       <h1 class="title">
-        Specialization
+        Subject Type
       </h1>
       <h2 class="subtitle">
         Maintenance
@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	msg: false,
 
 	    	page:{
-		    	data_list: 'Specialization list',
-		    	add: 'Add Specialization',
+		    	data_list: 'Subject Type list',
+		    	add: 'Add Subject Type',
 		    	add_link: '<?php echo base_url() ?>maintenance/specialization/form',
 		    	show: '<?php echo base_url() ?>maintenance/specialization/show'
 	    	},
