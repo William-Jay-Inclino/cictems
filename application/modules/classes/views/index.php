@@ -45,9 +45,6 @@
 						<th class="has-text-centered">Done</th>
 						<th>Subject Code</th>
 						<th>Description</th>
-						<th>Day</th>
-						<th>Time</th>
-						<th>Room</th>
 						<th>Section</th>
 						<th>Select</th>
 					</thead>
@@ -63,12 +60,9 @@
 							</td>
 							<td> {{c.subCode}} </td>
 							<td> {{c.subDesc}} </td>
-							<td> {{c.day}} </td>
-							<td> {{c.class_time}} </td>
-							<td> {{c.roomName}} </td>
 							<td> {{c.secName}} </td>
 							<td>
-								<a :href="selected_link + c.classID" class="button is-outlined is-primary">
+								<a :href="selected_link + c.facID + '/' + c.termID + '/' + c.id + '/' + c.prosID" class="button is-outlined is-primary">
 									<i class="fa fa-angle-double-right fa-lg"></i>
 								</a>
 							</td>
@@ -147,8 +141,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	        fetchClasses(facID){
 	        	this.$http.get('<?php echo base_url() ?>classes/get_classes/'+facID+'/'+this.current_term.termID)
 	        	.then(response => {
+	        		console.log(response.body)
 	        		this.classes = response.body;
-				 });
+				 }, e => {
+				 	console.log(e.body);
+
+				 })
 	        }
 	    }
 	});

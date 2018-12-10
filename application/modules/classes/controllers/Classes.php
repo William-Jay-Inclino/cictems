@@ -11,8 +11,7 @@ class Classes extends MY_Controller{
 	}
 
 	function _remap($method, $params = []){
-        if ($method != 'index' && $method != 'class_selected' && $method != 'student_grade' 
-        	&& $method != 'update_grade'){
+        if ($method != 'index' && $method != 'class_selected' && $method != 'grade_sheet'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -24,10 +23,28 @@ class Classes extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
-	function class_selected($classID){
+	function class_selected($id){
 		$this->_data['module_view'] = 'class_selected';
-		$this->_data['classID'] = $classID[0];
+		$this->_data['facID'] = $id[0];
+		$this->_data['termID'] = $id[1];
+		$this->_data['id'] = $id[2];
+		$this->_data['prosID'] = $id[3];
 		echo Modules::run($this->_template, $this->_data);
+	}
+
+	function grade_sheet($id){
+		// require_once __DIR__ . '/vendor/autoload.php';
+		$this->_data['facID'] = $id[0];
+		$this->_data['data'] = $this->mdl_classes->grade_sheet($id[0],$id[1],$id[2],$id[3]);
+
+		$mpdf = new \Mpdf\Mpdf();
+
+		$html = $this->load->view('classes/grade_sheet',$this->_data, true);
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
+		
+		// $this->load->view('classes/grade_sheet', $this->_data); 
 	}
 
 	function saveGrade(){
@@ -42,13 +59,13 @@ class Classes extends MY_Controller{
 		$this->mdl_classes->get_classes($data[0],$data[1]);
 	}
 
-	function fetch_Class_Selected($classID){
-		$this->mdl_classes->fetch_Class_Selected($classID[0]);
+	function populate_class_sel($ids){
+		$this->mdl_classes->populate_class_sel($ids[0],$ids[1],$ids[2],$ids[3]);
 	}
 
-	function fetch_Students($classID){
-		$this->mdl_classes->fetch_Students($classID[0]);
-	}
+	// function fetch_Students($classID){
+	// 	$this->mdl_classes->fetch_Students($classID[0]);
+	// }
 
 	function finalized_grade(){
 		$this->mdl_classes->finalized_grade();		

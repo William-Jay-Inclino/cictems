@@ -18,9 +18,10 @@ $route['e-confirmation/show/(:num)'] = 'e_confirmation/show/$1';
 
 // -------------------------CLASS---------------------------------
 
-$route['class-selected/(:num)'] = 'classes/class_selected/$1';
-$route['student-grade/(:num)/(:num)'] = 'classes/student_grade/$1/$2';
-$route['update-grade/(:any)/(:num)'] = 'classes/update_grade/$1/$2';
+$route['class-selected/(:num)/(:num)/(:num)/(:num)'] = 'classes/class_selected/$1/$2/$3/$4';
+$route['grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$3/$4';
+// $route['student-grade/(:num)/(:num)'] = 'classes/student_grade/$1/$2';
+// $route['update-grade/(:any)/(:num)'] = 'classes/update_grade/$1/$2';
 
 // --------------END CLASS-----------------
 

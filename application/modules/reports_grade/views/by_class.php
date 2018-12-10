@@ -27,6 +27,9 @@
       text-align: center; 
       vertical-align: middle;
    }
+   .table__wrapper {
+  overflow-x: auto;
+}
 </style>
 
 <section class="hero is-primary">
@@ -76,38 +79,40 @@
                   {{ c.term }}
                </h6>
                <hr>
-               <table class="table is-fullwidth is-bordered">
-                  <tr class="tbl-headers">
-                     <th>Code</th>
-                     <th>Description</th>
-                     <th>Day</th>
-                     <th>Time</th>
-                     <th>Room</th>
-                     <th>Instructor</th>
-                     <th class="row-5">PR</th>
-                     <th class="row-5">MD</th>
-                     <th class="row-5">SF</th>
-                     <th class="row-5">F</th>
-                     <th class="row-5">FG</th>
-                     <th class="row-5">Equiv</th>
-                     <th class="row-10">Remarks</th>
-                  </tr>
-                  <tr v-for="cc of c.class2">
-                     <td>{{cc.class.classCode}}</td>
-                     <td> {{cc.class.subDesc}} </td>
-                     <td> {{cc.class.day}} </td>
-                     <td> {{cc.class.class_time}} </td>
-                     <td> {{cc.class.roomName}} </td>
-                     <td> {{cc.class.faculty}} </td>
-                     <td> {{cc.class.prelim}} </td>
-                     <td> {{cc.class.midterm}} </td>
-                     <td> {{cc.class.prefi}} </td>
-                     <td> {{cc.class.final}} </td>
-                     <td> {{cc.class.finalgrade}} </td>
-                     <td> {{cc.equiv}} </td>
-                     <td> {{cc.class.remarks}} </td>
-                  </tr>
-               </table>
+               <div class="table__wrapper">
+                  <table class="table is-fullwidth is-bordered">
+                     <tr class="tbl-headers">
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Room</th>
+                        <th>Instructor</th>
+                        <th class="row-5">PR</th>
+                        <th class="row-5">MD</th>
+                        <th class="row-5">SF</th>
+                        <th class="row-5">F</th>
+                        <th class="row-5">FG</th>
+                        <th class="row-5">Equiv</th>
+                        <th class="row-10">Remarks</th>
+                     </tr>
+                     <tr v-for="cc of c.class2">
+                        <td>{{cc.class.classCode}} <span v-if="cc.class.type == 'lab'"><b>(lab)</b></span> </td>
+                        <td> {{cc.class.subDesc}} </td>
+                        <td> {{cc.class.day}} </td>
+                        <td> {{cc.class.class_time}} </td>
+                        <td> {{cc.class.roomName}} </td>
+                        <td> {{cc.class.faculty}} </td>
+                        <td> {{cc.class.prelim}} </td>
+                        <td> {{cc.class.midterm}} </td>
+                        <td> {{cc.class.prefi}} </td>
+                        <td> {{cc.class.final}} </td>
+                        <td> {{cc.class.finalgrade}} </td>
+                        <td> {{cc.equiv}} </td>
+                        <td> {{cc.class.remarks}} </td>
+                     </tr>
+                  </table>
+               </div>
             </div>
          </div>
       </div>

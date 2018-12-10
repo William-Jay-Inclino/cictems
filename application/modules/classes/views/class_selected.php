@@ -1,3 +1,7 @@
+<?php 
+	$report_link = base_url().'grade-sheet/'.$facID.'/'.$termID.'/'.$id.'/'.$prosID;
+?>
+
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
 <style>
 	.row-12{
@@ -7,25 +11,34 @@
 
 <section id="app" class="section" v-cloak>
 	<div class="container">
-		<nav class="breadcrumb has-bullet-separator" aria-label="breadcrumbs">
-		  <ul>
-		    <li><a :href="page.main">Main</a></li>
-		    <li class="is-active"><a href="#" aria-current="page">Selected Class</a></li>
-		  </ul>
-		</nav>
-		<br>
+		<div class="columns">
+			<div class="column">
+				<nav class="breadcrumb has-bullet-separator" aria-label="breadcrumbs">
+				  <ul>
+				    <li><a :href="page.main">Main</a></li>
+				    <li class="is-active"><a href="#" aria-current="page">Selected Class</a></li>
+				  </ul>
+				</nav>
+			</div>
+			<div class="column">
+				<a href="<?php echo $report_link; ?>" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+			</div>
+		</div>
+		
 
-		<button class="button is-primary" v-on:click="add_student_modal = true" v-if="cs.status == 'unlocked'">
+		<br>
+		
+		<button class="button is-primary" v-on:click="add_student_modal = true" v-if="status == 'unlocked'">
 			Add student to class
 		</button>
-		<button class="button is-link is-pulled-right" v-on:click="finGrade" v-if="cs.status == 'unlocked' && studLength > 0">Finalize Grades</button>
-		<div v-if="cs.status == 'locked'" class="is-pulled-right">
+		<button class="button is-link is-pulled-right" v-on:click="finGrade" v-if="status == 'unlocked' && studLength > 0">Finalize Grades</button>
+		<div v-if="status == 'locked'" class="is-pulled-right">
 			<h5 class="title is-5 has-text-success"> <i class="fa fa-check"></i> Submitted</h5>
-			{{cs.date_submitted}}
+			{{date_submitted}}
 		</div>
 		<br><br>
 		<div class="box">
-			<h5 class="title is-5">Class selected</h5>
+			<h5 class="title is-5"><span v-if="classes.length > 1">Classes</span> <span v-else>Class</span> selected</h5>
 			<hr>
 			<table class="table is-fullwidth">
 				<tr>
@@ -37,14 +50,14 @@
 					<th>Room</th>
 					<th>Section</th>
 				</tr>
-				<tr>
+				<tr v-for="cs of classes">
 					<td>{{ cs.faculty }}</td>
-					<td>{{ cs.subCode }}</td>
-					<td>{{ cs.desc }}</td>
-					<td>{{ cs.day }}</td>
-					<td>{{ cs.time }}</td>
-					<td>{{ cs.room }}</td>
-					<td>{{ cs.section }}</td>
+					<td>{{ cs.subCode }} <b> <span v-if="cs.type == 'lec'">(lec)</span><span v-else> (lab) </span></b> </td>
+					<td>{{ cs.subDesc }}</td>
+					<td>{{ cs.dayDesc }}</td>
+					<td>{{ cs.class_time }}</td>
+					<td>{{ cs.roomName }}</td>
+					<td>{{ cs.secName }}</td>
 				</tr>
 			</table>
 		</div>
@@ -127,33 +140,31 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		main: '<?php echo base_url() ?>classes'
 	    	},
 	    	add_student_modal: false,
-	    	classID: '<?php echo $classID ?>',
-	    	cs: {
-	    		faculty: '',
-	    		subCode: '',
-	    		desc: '',
-	    		day: '',
-	    		time: '',
-	    		room: '',
-	    		section: '',
-	    		status: '',
-	    		date_submitted: ''
-	    	},
+	    	facID: '<?php echo $facID ?>',
+	    	termID: '<?php echo $termID ?>',
+	    	id: '<?php echo $id ?>',
+	    	prosID: '<?php echo $prosID ?>',
+	    	status: '',
+	    	date_submitted: '',
 	    	students: [],
-
+	    	classes: [],
 	    	selected_student: null,
 	    	suggestions: [],
 	    	isLoading: false,
 
 	    },
 	    created() {
-	        this.fetch_Class_Selected()
-	        
+	        this.populate()
 	    },
 	    watch: {
 	    	
 	    },
 	    computed: {
+	    	classIDs(){
+	    		return this.classes.map(x => {
+	    			return x.classID
+	    		})
+	    	},
 	    	checkRemarks(){
 	    		const s = this.students
 	    		const arr = []
@@ -185,6 +196,41 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	}
 	    },
 	    methods: {
+	    	populate(){
+	    		this.$http.get('<?php echo base_url() ?>classes/populate_class_sel/'+this.facID+'/'+this.termID+'/'+this.id+'/'+this.prosID)
+	            .then(response => {
+	            	const c = response.body 
+	               	this.classes = c.class 
+	               	this.status = c.class[0].status
+	               	this.date_submitted = c.class[0].date_submitted
+	               	this.prepareForm(c.students)
+	               	
+	            }, e => {
+	            	console.log(e.body)
+				})
+	    	},
+	    	prepareForm(students){
+	    		if(students.length > 0){
+	    			this.students = students.map(s => {
+	    				s.prelim = {grade: s.prelim}
+		    			s.midterm = {grade: s.midterm}
+		    			s.prefi = {grade: s.prefi}
+		    			s.final = {grade: s.final}
+		    			if(s.finalgrade != ''){
+		    				s.finalgrade = parseFloat(s.finalgrade).toFixed(2)
+		    			}
+		    			if(this.status == 'locked' && s.remarks != 'Incomplete' && s.equiv == null){
+		    				s.equiv = '5.0'
+		    			}
+		    			s.prelim_loader = false
+		    			s.midterm_loader = false
+		    			s.prefi_loader = false
+		    			s.final_loader = false
+
+	    				return s
+	    			})
+	    		}
+	    	},
 	    	saveGrade(i, x){
 	    		const s = this.students[i]
 	    		const data = this.get_grade_data(s, x)
@@ -213,13 +259,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	            	}
 
 	            }, response => {
-					this.saveGrade(i, x)
+	            	console.log(response.body)
 				})
 	    	},
 	    	is_disabled(i, tg){
 	    		let x = false
 	    		const s = this.students[i]
-	    		if(this.cs.status == 'locked'){
+	    		if(this.status == 'locked'){
 	    			x = true 
 	    		}else{
 	    			if(tg){
@@ -272,58 +318,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		}
 	    		return {
 	    			studID: s.studID,
-	    			classID: this.classID,
+	    			classIDs: this.classIDs,
 	    			gradeDesc: gradeDesc,
 	    			grade: grade,
 	    			midterm: s.midterm,
 	    			prefi: s.prefi,
 	    			final: s.final
 	    		}
-	    	},
-	    	fetch_Class_Selected(){
-	    		this.$http.get('<?php echo base_url() ?>classes/fetch_Class_Selected/'+this.classID)
-	            .then(response => {
-	               const c = response.body
-	               this.cs.faculty = c.faculty
-	               this.cs.subCode = c.subCode
-	               this.cs.desc = c.subDesc
-	               this.cs.day = c.dayDesc
-	               this.cs.time = c.class_time
-	               this.cs.room = c.roomName
-	               this.cs.section = c.secName
-	               this.cs.status = c.status
-	               this.cs.date_submitted = c.date_submitted
-	               this.fetch_Students()
-	            }, response => {
-					this.fetch_Class_Selected()
-				})
-	    	},
-	    	fetch_Students(){
-	    		this.$http.get('<?php echo base_url() ?>classes/fetch_Students/'+this.classID)
-	            .then(response => {
-	               this.prepareForm(response.body)
-	            }, response => {
-					this.fetch_Students()
-				})
-	    	},
-	    	prepareForm(students){
-	    		for(s of students){
-	    			s.prelim = {grade: s.prelim}
-	    			s.midterm = {grade: s.midterm}
-	    			s.prefi = {grade: s.prefi}
-	    			s.final = {grade: s.final}
-	    			if(s.finalgrade != ''){
-	    				s.finalgrade = parseFloat(s.finalgrade).toFixed(2)
-	    			}
-	    			if(this.cs.status == 'locked' && s.remarks != 'Incomplete' && s.equiv == null){
-	    				s.equiv = '5.0'
-	    			}
-	    			s.prelim_loader = false
-	    			s.midterm_loader = false
-	    			s.prefi_loader = false
-	    			s.final_loader = false
-	    		}
-	    		this.students = students
 	    	},
 	    	searchStudent(value){
 	    		if(value.trim() != ''){
@@ -339,18 +340,37 @@ document.addEventListener('DOMContentLoaded', function() {
 		         }
 	    	},
 	    	add_student(){
-	    		const data = {classID: this.classID, studID: this.selected_student.studID}
+	    		const studSel = this.selected_student
+	    		const data = {classIDs: this.classIDs, studID: studSel.studID}
 	    		this.$http.post('<?php echo base_url() ?>classes/add_student', data)
 	            .then(response => {
 	               const c = response.body
+	               console.log(c)
 	               if(c == 'exist'){
 	               		swal('Student is already in this class!', {icon: 'warning'})
 	               }else{
+	               		const j = {
+	               			studID: studSel.studID,
+	               			name: studSel.student.split(' | ')[0],
+	               			prelim: {grade: null},
+			    			midterm: {grade: null},
+			    			prefi: {grade: null},
+			    			final: {grade: null},
+			    			finalgrade: '',
+			    			equiv: '',
+			    			prelim_loader: false,
+			    			midterm_loader: false,
+			    			prefi_loader: false,
+			    			final_loader: false
+	               		}
+	               		this.students.push(j)
 	               		swal('Student successfully added!', {icon: 'success'})
-	               		this.students.push(c)
 	               		this.selected_student = null
 	               		this.add_student_modal = false
 	               }
+	            }, e => {
+	            	console.log(e.body)
+
 	            })
 	    	},
 	    	remarkClass(remark){
@@ -373,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		if(x.length == 0){
 	    			swal({
 					  title: "Are you sure?",
-					  text: "Once finalized, This class will no longer be editable. Except for complying incomplete grades",
+					  text: "Once finalized, This class will no longer be editable.",
 					  icon: "warning",
 					  buttons: {
 					  	cancel: true,
@@ -399,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            .then((value) => {
 			            	if(value){
 			            		const j = {
-			            			classID: this.classID,
+			            			classIDs: this.classIDs,
 			            			value: value
 			            		}
 			            		this.$http.post('<?php echo base_url() ?>classes/finalized_grade', j)
@@ -407,8 +427,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				                  	const cc = response.body
 				                    if(cc.status == 'success'){
 				                    	swal('Grades successfully finalized!', {icon: 'success'})
-				                    	this.cs.status = 'locked'
-				                    	this.cs.date_submitted = cc.date_submitted
+				                    	this.status = 'locked'
+				                    	this.date_submitted = cc.date_submitted
 				                    }else{
 				                   		swal('Password is incorrect!', {icon: 'error'})
 				                    }
