@@ -7,9 +7,9 @@
 	<style>
 		body {
 		  font-size:12px;
-		  padding: 0;
+		  /*padding: 0;
 		  font-family: 'Raleway', sans-serif;
-		  -webkit-font-smoothing: antialiased !important;
+		  -webkit-font-smoothing: antialiased !important;*/
 		}
 		.is-centered th {
 		    text-align: center;
@@ -29,34 +29,24 @@
 </head>
 <body>
 
-	<section class="section">
-		<div class="container has-text-centered">
-			<h1 class="title">
-				<b>WESTERN LEYTE COLLEGE</b>
-			</h1>
-			<h2 class="subtitle">
-				<b>
+	<!-- <section class="section"> -->
+		<div class="has-text-centered">
+				<b>WESTERN LEYTE COLLEGE<br>
 				A. Bonifacio St., Ormoc City <br>
-				Tel. Nos (053) 255-8549; 561-5310
-				</b>
-			</h2>
+				Tel. Nos (053) 255-8549; 561-5310<br><br>
+				GRADE SHEET</b>
 		</div>
 		<br>
-		<h2 class="subtitle has-text-centered"><b>GRADE SHEET</b></h2>
-		<br>
-		
-		<table class="is-centered" style="width: 100%;">
+		<table style="width: 100%;">
 			<tr>
 				<th><?php echo $data['class']->subCode ?></th>
 				<th><?php echo $data['class']->subDesc ?></th>
-				<td style="width: 15%"></td>
-				<th><?php echo $data['sem'].'-' ?></th>
+				<th><?php echo $data['sem'].' ' ?></th>
 				<th><?php echo $data['sy'] ?></th>
 			</tr>
 			<tr>
 				<td>Course Code</td>
 				<td>Descriptive Title</td>
-				<td></td>
 				<td>Semester</td>
 				<td>S.Y.</td>
 			</tr>
@@ -86,7 +76,15 @@
 						<td> <?php echo $student->prefi; ?> </td>
 						<td> <?php echo $student->final; ?> </td>
 						<td> <?php echo $student->finalgrade; ?> </td>
-						<td> <?php echo $student->equiv; ?> </td>
+						<td> 
+							<?php 
+								if(($student->equiv == NULL || $student->equiv == '') && $student->remarks != 'INCOMPLETE'){
+									echo "5.0";
+								}else{
+									echo $student->equiv;
+								} 
+							?> 
+						</td>
 						<td> <?php echo $student->remarks; ?> </td>
 					</tr>
 
@@ -152,11 +150,10 @@
 				
 			</tr>
 		</table>
-		<table class="table is-centered">
+		<table class="table" style="width: 100%">
 			<tr>
-				<td style="text-align: left">Submitted by:</td>
+				<td style="text-align: right">Submitted by:</td>
 				<td></td>
-				<td style="width: 25%"></td>
 				<td></td>
 			</tr>
 			<tr>
@@ -166,25 +163,25 @@
 					College Instructor
 				</td>
 				<td></td>
-				<td></td>
 			</tr>
 			<tr>
-				<td colspan="4"></td>
+				<td colspan="3"></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>
-					<?php echo "Ms. Cheryl M. Tarre" ?> <br>
-					Dean
+					<?php 
+						echo  "Mrs. Cheryl M. Tarre, DBA (cand)";
+					?>
+					<br>Dean
 				</td>
-				<td></td>
 				<td>
 					<?php echo "Ms. Maricel Salibongcogon" ?> <br>
 					College Registrar
 				</td>
 			</tr>
 		</table>
-	</section>
+<!-- 	</section> -->
 	
 </body>
 </html>

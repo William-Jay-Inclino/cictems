@@ -21,9 +21,14 @@
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
-        <div class="column is-half">
-          <label class="label">Term</label>
-          <multiselect v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false" @input="changeTerm"></multiselect>
+        <div class="columns">
+          <div class="column">
+            <label class="label">Term</label>
+            <multiselect v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false" @input="changeTerm"></multiselect>
+          </div>
+          <div class="column">
+            <button @click="generateReport" class="button is-primary is-pulled-right" class="button is-primary">Generate Report</button>
+          </div>
         </div>
         
         <div class="box">
@@ -216,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
           for(let s of students){
             if(fee.feeStatus == 'cancelled' && s.payable == 0 & s.receivable == 0){
               status = ''
-            }else if(s.payable >= 0 && s.receivable == 0){
+            }else if(s.payable > 0 && s.receivable == 0){
               if(s.payable == fee.amount){
                 status = 'Unpaid'
               }else if(s.payable == 0){
@@ -224,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
               }else{
                 status = 'Partial'
               }
-            }else if(s.receivable >= 0 && s.payable == 0){
+            }else if(s.receivable > 0 && s.payable == 0){
               status = 'Refundable'
             }
 
@@ -243,6 +248,17 @@ document.addEventListener('DOMContentLoaded', function() {
       }, e => {
         console.log(e.body)
       })
+    },
+    generateReport(){
+      swal("Which type of account?", {
+        buttons: {
+          Paid: true,
+          Unpaid: true,
+          Refundable: true,
+        }
+      }).then(val => {
+        window.open('<?php echo base_url() ?>reports/fees/download/'+this.term.termID+'/'+val.toLowerCase(), '_blank')
+      })
     }
    },
 
@@ -260,4 +276,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

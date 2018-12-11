@@ -27,7 +27,7 @@ class mdl_Classes extends CI_Model{
 			INNER JOIN users u ON s.uID = u.uID
 			AND sc.classID = ".$data['class']->classID."
 		")->result();
-
+		//die(var_dump($data['students']));
 		$grades = $this->db->order_by('metric','ASC')->get('grade_metric')->result();
 
 		$arr = $new_grade = $new_grade2 = $new_grade3 = [];
