@@ -48,7 +48,7 @@
 				<td>Course Code</td>
 				<td>Descriptive Title</td>
 				<td>Semester</td>
-				<td>S.Y.</td>
+				<td>S.Y</td>
 			</tr>
 		</table>
 		<br><br>

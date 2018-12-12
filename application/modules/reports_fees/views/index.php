@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
       })
     },
     generateReport(){
-      swal("Which type of account?", {
+      swal("Please select type of report", {
         buttons: {
           Paid: true,
           Unpaid: true,
