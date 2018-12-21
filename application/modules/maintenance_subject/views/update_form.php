@@ -83,6 +83,12 @@
 			  </div>
 			</div>
 			<div class="field">
+				<label class="label">Non-subject prerequisite</label>
+				<div class="control">
+					<input type="text" class="input" v-model.trim="form.nonSub_pre">
+				</div>
+			</div>
+			<div class="field">
 			  <label class="label">Corequisites</label>
 			  <div class="control">
 				  	<multiselect :multiple="true" v-model="form.coreq" track-by="subID" label="subCode" :options="coreqs"></multiselect>
@@ -134,6 +140,7 @@
 		    		sem: {semID: '<?php echo $records[0]->semID ?>', semDesc: '<?php echo $records[0]->semDesc ?>'},
 		    		subCode: '<?php echo $records[0]->subCode ?>',
 		    		subDesc: '<?php echo $records[0]->subDesc ?>',
+		    		nonSub_pre: '<?php echo $records[0]->nonSub_pre ?>',
 		    		pre: null,
 		    		pre2: null,
 		    		coreq: null,

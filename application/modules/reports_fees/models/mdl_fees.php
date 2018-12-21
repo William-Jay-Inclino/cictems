@@ -49,16 +49,6 @@ class mdl_Fees extends CI_Model{
 				")->result();
 				break;
 		}
-		// $students = $this->db->query("
-		// 	SELECT s.controlNo,sf.feeID,sf.studID, CONCAT(u.ln,', ',u.fn,' ',u.mn) name,
-		// 	(SELECT SUM(payable) FROM stud_fee WHERE feeID = sf.feeID AND studID = sf.studID) total_payable,
-		// 	(SELECT SUM(receivable) FROM stud_fee WHERE feeID = sf.feeID AND studID = sf.studID)  total_receivable
-		// 	FROM fees f
-		// 	INNER JOIN stud_fee sf ON f.feeID = sf.feeID 
-		// 	INNER JOIN student s ON sf.studID = s.studID 
-		// 	INNER JOIN users u ON s.uID = u.uID 
-		// 	WHERE f.termID = $termID
-		// ")->result();
 		$data['students'] = $students;
 		$data['term'] = $this->db->query("SELECT CONCAT(t.schoolYear,' ',s.semDesc) term FROM term t INNER JOIN semester s ON t.semID = s.semID WHERE t.termID = $termID LIMIT 1")->row()->term;
 		return $data;

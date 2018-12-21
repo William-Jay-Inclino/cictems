@@ -37,7 +37,7 @@ class Incomplete extends MY_Controller{
 	function completion($data){
 		$this->_data['module_view'] = 'completion';
 		$this->_data['record'] = $this->mdl_inc->get_stud_info($data[1]);
-		$this->_data['class'] = $this->mdl_inc->get_class_info($data[0], $data[1]);
+		$this->_data['classes'] = $this->mdl_inc->get_class_info($data[0], $data[1], $data[2]);
 		$this->_data['classID'] = $data[0];
 		$this->_data['studID'] = $data[1];
 		$this->_data['termID'] = $data[2];

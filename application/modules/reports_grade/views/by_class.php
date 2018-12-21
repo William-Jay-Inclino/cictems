@@ -32,22 +32,10 @@
 }
 </style>
 
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Grade 
-      </h1>
-      <h2 class="subtitle">
-        Reports
-      </h2>
-    </div>
-  </div>
-</section>
-
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
+         <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
          <div class="box columns bg-white">
             <div class="column is-half">
                <div class="field">
@@ -132,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+      page_title: 'Grade Reports',
       loader: false,
       studID: '<?php echo $studID ?>',
       ready: false,

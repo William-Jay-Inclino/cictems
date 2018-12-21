@@ -126,17 +126,28 @@ class mdl_Inc extends CI_Model{
 		$this->db->trans_complete();
 	}
 
-	function get_class_info($classID, $studID){
-		return $this->db->query("
-			SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty FROM studclass sc
-			INNER JOIN class c ON sc.classID = c.classID
-			INNER JOIN subject s ON c.subID = s.subID
-			INNER JOIN room r ON c.roomID=r.roomID
-			INNER JOIN day d ON c.dayID=d.dayID
-			INNER JOIN faculty f ON c.facID=f.facID
-			INNER JOIN users u ON f.uID=u.uID
-			WHERE sc.studID = $studID AND sc.classID = $classID
+	function get_class_info($classID, $studID, $termID){
+		$data = [];
+		$sql = $this->db->query("
+			SELECT s.id, s.prosID FROM subject s INNER JOIN class c ON s.subID = c.subID WHERE c.classID = $classID LIMIT 1
+		")->row();
+
+		$subIDs = $this->db->query("SELECT subID FROM subject WHERE id = ".$sql->id." AND prosID = ".$sql->prosID)->result();
+
+		foreach($subIDs as $s){
+			$data[] = $this->db->query("
+				SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty FROM studclass sc
+				INNER JOIN class c ON sc.classID = c.classID
+				INNER JOIN subject s ON c.subID = s.subID
+				INNER JOIN room r ON c.roomID=r.roomID
+				INNER JOIN day d ON c.dayID=d.dayID
+				INNER JOIN faculty f ON c.facID=f.facID
+				INNER JOIN users u ON f.uID=u.uID
+				WHERE sc.studID = $studID AND sc.classID = (SELECT classID FROM class WHERE termID = $termID AND subID=".$s->subID." LIMIT 1)
 			")->row();
+
+		}
+		return $data;
 	}
 
 	function get_grades($classID, $studID){
@@ -147,14 +158,26 @@ class mdl_Inc extends CI_Model{
 
 	function comply(){
 		//print_r($_POST); die();
+		$classIDs = [];
 		$studID = $this->input->post('studID');
 		$classID = $this->input->post('classID');
+		$termID = $this->input->post('termID');
 		$prelim = $this->input->post('prelim')['grade'];
 		$midterm = $this->input->post('midterm')['grade'];
 		$prefi = $this->input->post('prefi')['grade'];
 		$final = $this->input->post('final')['grade'];
 		
 		$this->db->trans_start();
+
+		$sql = $this->db->query("
+			SELECT s.id, s.prosID FROM subject s INNER JOIN class c ON s.subID = c.subID WHERE c.classID = $classID LIMIT 1
+		")->row();
+
+		$subIDs = $this->db->query("SELECT subID FROM subject WHERE id = ".$sql->id." AND prosID = ".$sql->prosID)->result();
+
+		foreach($subIDs as $s){
+			$classIDs[] = $this->db->query("SELECT classID FROM class WHERE termID = $termID AND subID=".$s->subID." LIMIT 1")->row()->classID;
+		}
 
 		$gf = $this->db->get('grade_formula')->row();
 		$fg = round(($prelim * $gf->prelim) + ($midterm * $gf->midterm) + ($prefi * $gf->prefi) + ($final * $gf->final), 2);
@@ -174,11 +197,14 @@ class mdl_Inc extends CI_Model{
 		$data['finalgrade'] = $fg;
 		$data['remarks'] = $remarks;
 
-		$this->db->update('studclass', $data, "studID = $studID AND classID = $classID");
+		foreach($classIDs as $classID){
+			$this->db->update('studclass', $data, "studID = $studID AND classID = ".$classID);
+		}
 
-		$subID = $this->db->query("SELECT subID FROM class WHERE classID = $classID LIMIT 1")->row()->subID;
+		foreach($subIDs as $s){
+			$this->db->update('studgrade',['sgGrade' => $equiv, 'remarks' => $remarks], "subID = ".$s->subID." AND studID = $studID");
+		}
 
-		$this->db->update('studgrade',['sgGrade' => $equiv, 'remarks' => $remarks], "subID = $subID AND studID = $studID");
 
 		$this->db->trans_complete();
 

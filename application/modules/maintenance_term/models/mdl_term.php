@@ -25,8 +25,13 @@ class mdl_Term extends CI_Model{
 		if($exist){
 			$output = ['status' => 0];
 		}else{
+			$this->db->trans_start();
+
 			$this->db->insert('term', $data);
-			$output = ['status'=> 1,'id'=>$this->db->insert_id()];
+			$insertID = $this->db->insert_id();
+			$output = ['status'=> 1,'id'=>$insertID];
+
+			$this->db->insert('counter', ['module'=>'enrol_studs', 'termID'=>$insertID, 'total'=>0]);
 
 			$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'term' LIMIT 1");
 			$row =  $query->row();
@@ -35,6 +40,7 @@ class mdl_Term extends CI_Model{
 			}else{
 				$this->db->query("INSERT INTO counter2(module,total) VALUES('term','1')");
 			}
+			$this->db->trans_complete();
 		}
 
 		echo json_encode($output);

@@ -1,20 +1,9 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Class Schedules 
-      </h1>
-      <h2 class="subtitle">
-        Reports
-      </h2>
-    </div>
-  </div>
-</section>
 
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
+        <h3 class="title is-3 my-title"> {{page_title}} </h3>
         <div class="box">
           <div class="columns">
             <div class="column">
@@ -48,7 +37,7 @@
                      </thead>
                      <tbody>
                         <tr v-for="x of c.classes">
-                           <td> {{x.classCode}} </td>
+                           <td> {{x.classCode}} <span v-if="x.type == 'lab'"><b>(lab)</b></span> </td>
                            <td> {{x.subDesc}} </td>
                            <td> {{x.day}} </td>
                            <td> {{x.class_time}} </td>
@@ -80,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+      page_title: 'Class Schedules',
       loader: true,
       term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
       terms: [],

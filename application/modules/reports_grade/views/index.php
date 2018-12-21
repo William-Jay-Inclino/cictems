@@ -4,22 +4,11 @@
       width: 90px;
    }
 </style>
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Grade 
-      </h1>
-      <h2 class="subtitle">
-        Reports
-      </h2>
-    </div>
-  </div>
-</section>
 
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
+         <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
          <div class="box columns bg-white">
             <div class="column is-half">
                <div class="field">
@@ -79,12 +68,17 @@
                         </thead>
                         <tbody>
                            <tr v-for="row of subject.subjects">
-                              <td>
-                                 <span v-if="row.subject.grade == 0.0">
-                                    INC
+                              <td style="text-align: center">
+                                 <span v-if="row.subject.grade_type == 'Credit'">
+                                    <i class="fa fa-check has-text-primary"></i>
                                  </span>
                                  <span v-else>
-                                    {{row.subject.grade}}
+                                    <span v-if="row.subject.grade == 0.0">
+                                       INC
+                                    </span>
+                                    <span v-else>
+                                       {{row.subject.grade}}
+                                    </span>
                                  </span>
                               </td>
                               <td> {{row.subject.subCode}} <span v-if="row.subject.type == 'lab'"><b>(lab)</b></span> </td>
@@ -102,8 +96,8 @@
                                     Standing
                                  </span>
                               </td>
-                              <td>{{display_term('sy',row.subject.term)}}</td>
-                              <td>{{display_term('sem',row.subject.term)}}</td>
+                              <td>{{row.subject.sy}}</td>
+                              <td>{{row.subject.sem}}</td>
                            </tr>
                         </tbody>
                      </table>
@@ -128,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+      page_title: 'Grade Reports',
       loader: false,
       studID: '<?php echo $studID ?>',
 
@@ -178,9 +173,22 @@ document.addEventListener('DOMContentLoaded', function() {
          this.$http.get('<?php echo base_url() ?>reports_grade/get_grade_by_pros/'+this.selected_student.studID)
          .then(response => {
             const c = response.body
-            console.log(c)
             this.prospectus = c.prospectus
-            this.subjects = c.subjects
+            this.subjects = c.subjects.map(x => {
+               
+               for(let s of x.subjects){
+                  if(s.subject.term){
+                     const arr = s.subject.term.split('|')
+                     s.subject.grade_type = arr[0]
+                     s.subject.sy = arr[1]
+                     s.subject.sem = arr[2]   
+                  }
+                  
+               }
+
+               return x
+            })
+            console.log(this.subjects)
             this.loader = false
             this.ready = true
          })

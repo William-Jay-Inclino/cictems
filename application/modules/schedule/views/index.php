@@ -67,6 +67,7 @@
 
 <section id="app" class="section" v-cloak>
 	<div class="container">
+		<h3 class="title is-3 my-title"> {{page_title}} </h3>
 		<div class="columns">
 			<div class="column">
 				<label class="label">Term</label>
@@ -379,6 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	page_title: 'Schedule',
 	    	subject: null,
 	    	searchSection: null,
 	    	prospectus: null,

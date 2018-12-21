@@ -5,22 +5,10 @@
   }
 </style>
 
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Departmental Fees 
-      </h1>
-      <h2 class="subtitle">
-        Reports
-      </h2>
-    </div>
-  </div>
-</section>
-
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
+        <h3 class="title is-3 my-title"> {{page_title}} </h3>
         <div class="columns">
           <div class="column">
             <label class="label">Term</label>
@@ -143,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+    page_title: 'Fees Report',
       loader: false,
       ready: false,
       term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},

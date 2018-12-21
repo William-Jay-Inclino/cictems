@@ -16,6 +16,7 @@
 			<button class="button is-danger" v-on:click="is_safe_delete">
 				<i class="fa fa-trash"></i>
 			</button>
+			<a :href="page.credit" class="button is-primary is-pulled-right">Credit Subjects</a>
 			<hr>
 			<table class="table is-fullwidth">
 				<tr>
@@ -100,7 +101,8 @@
 		    	email: '<?php echo $record->email ?>',
 		    	page:{
 		    		edit: '<?php echo base_url()."users/student/form/".$record->studID ?>',
-		    		list: '<?php echo base_url() ?>users/student'
+		    		list: '<?php echo base_url() ?>users/student',
+		    		credit: '<?php echo base_url()."users/student/credit-subjects/".$record->studID ?>'
 		    	},
 		    },
 		    methods: {

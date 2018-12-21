@@ -216,6 +216,120 @@ class mdl_Student extends CI_Model{
 		$this->db->update('users', $data, "uID = $uID");
 	}
 
+	function get_credited_subjects($studID, $value = NULL){
+		$data = $arr = [];
+		$sql = $this->db->query("SELECT s.prosID,s.id,s.units,s.subCode,s.subDesc FROM studgrade sg INNER JOIN subject s ON sg.subID=s.subID WHERE sg.studID = $studID AND sg.grade_type = 'Credit'")->result();
+
+		//loop that combine subjects with lec and lab and add their units
+		foreach($sql as $s){
+			$ok = true;
+
+			$i = 0;
+			foreach($data as $d){ //check if exist
+				if($d->id == $s->id){
+					$data[$i]->units += $s->units;
+					$ok = false;
+					break;
+				}
+				++$i;
+			}
+
+			if($ok){
+				$data[] = $s;
+			}
+
+		}
+
+		if($value == NULL){
+			echo json_encode($data);
+		}else{
+			return $data;
+		}
+		
+	}
+
+	function searchSubjects(){
+		$data = [];
+		$studID = $this->input->post("studID");
+		$value = $this->input->post("value");
+
+		$credited_subjects = $this->get_credited_subjects($studID, 'search');
+
+		$searched_subjects = $this->db->query("
+			SELECT DISTINCT id,prosID,subCode
+			FROM subject
+			WHERE prosID = (SELECT prosID FROM studprospectus WHERE studID = $studID LIMIT 1) AND
+			subCode LIKE '%".$value."%' 
+			LIMIT 10
+		")->result();
+
+		if($credited_subjects){
+			foreach($searched_subjects as $ss){
+
+				$ok = true;
+
+				foreach($credited_subjects as $cs){
+					if($cs->id == $ss->id){
+						$ok = false;
+						break;
+					}
+				}
+
+				if($ok){
+					$data[] = $ss;
+				}
+
+			}
+		}else{
+			$data = $searched_subjects;
+		}
+
+		
+
+		echo json_encode($data);
+
+	}
+
+	function add_credit($termID){
+		$studID = $this->input->post("studID");
+		$subjects = $this->input->post("subjects");
+		$this->db->trans_start();
+
+		foreach($subjects as $subject){
+			$subIDs = $this->db->query("SELECT subID FROM subject WHERE id = ".$subject['id']." AND prosID = ".$subject['prosID'])->result();
+			foreach($subIDs as $s){
+				$this->db->insert('studgrade', [
+					'studID'=>$studID, 
+					'subID'=>$s->subID, 
+					'uID'=>$this->session->userdata('uID'),
+					'termID'=>$termID,
+					'grade_type'=>'Credit'
+				]);
+			}
+		}
+
+		$this->db->trans_complete();
+
+		$this->get_credited_subjects($studID);
+
+	}
+
+	function remove_credit(){
+		$studID = $this->input->post("studID");
+		$subject = $this->input->post("subject");
+
+		$this->db->trans_start();
+
+		$subIDs = $this->db->query("SELECT subID FROM subject WHERE id = ".$subject['id']." AND prosID = ".$subject['prosID'])->result();
+
+		foreach($subIDs as $s){
+			$this->db->delete('studgrade', "studID = $studID AND grade_type = 'Credit' AND subID = ".$s->subID);
+		}
+
+		$this->db->trans_complete();
+		
+	}
+
 	private function send_mail($data){
 		$name = $data['fn'].' '.$data['mn'].' '.$data['ln'];
 

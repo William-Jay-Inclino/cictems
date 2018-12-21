@@ -1,17 +1,9 @@
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Grade Formula 
-      </h1>
-      <h2 class="subtitle">
-        Maintenance
-      </h2>
-    </div>
-  </div>
-</section>
 
 <section id="app" class="section" v-cloak>
+	<div class="container">
+		<h3 class="title is-3 my-title"> {{page_title}} </h3>
+	</div>
+	<br>
 	<div class="container" style="max-width: 600px;">
 		<div class="box">
 			<table class="table is-fullwidth is-centered">
@@ -56,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	page_title: 'Grade Formula',
 	    	form:{
 	    		prelim: '<?php echo $percentage->prelim ?>',
 	    		midterm: '<?php echo $percentage->midterm ?>',

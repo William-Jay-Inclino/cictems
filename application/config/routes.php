@@ -105,6 +105,7 @@ $route['users/student'] = 'users_student';
 $route['users/student/form'] = 'users_student/form';
 $route['users/student/form/(:num)'] = 'users_student/form/$1';
 $route['users/student/show/(:num)'] = 'users_student/show/$1';
+$route['users/student/credit-subjects/(:num)'] = 'users_student/credit_subjects/$1';
 $route['users/student/form-success/(:num)'] = 'users_student/success_page/$1';
 
 $route['users/faculty'] = 'users_faculty';
@@ -130,8 +131,10 @@ $route['users/registration/show/(:num)'] = 'registration/show/$1';
 // --------------REPORTS-----------------
 
 $route['reports/prospectus'] = 'reports_prospectus';
+$route['reports/prospectus/download/(:num)'] = 'reports_prospectus/download/$1';
 
 $route['reports/student'] = 'reports_student';
+$route['reports/student/download/(:any)/(:any)/(:any)/(:any)'] = 'reports_student/download/$1/$2/$3/$4';
 
 $route['reports/grade'] = 'reports_grade';
 $route['reports/grade/by-class/(:num)'] = 'reports_grade/by_class/$1';

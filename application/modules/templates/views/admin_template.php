@@ -65,9 +65,9 @@
                    <a class="navbar-item <?php if($current_module == 2.1){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>incomplete">
                      Incomplete
                    </a>
-                   <a class="navbar-item <?php if($current_module == 3){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>grade">
+                   <!-- <a class="navbar-item <?php if($current_module == 3){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>grade">
                      Grade
-                   </a>
+                   </a> -->
                    <a class="navbar-item <?php if($current_module == 4){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>payment">
                      Payment
                    </a>
@@ -166,7 +166,7 @@
              <div class="navbar-end">
               <span class="navbar-item has-text-primary" href="javascript:void(0)">
                  <!-- SY: 2017-2018 | Sem: 2nd -->
-                 <?php echo $current_term->term; ?>
+                 <a class="navbar-item has-text-primary" href="<?php echo base_url() ?>maintenance/term"><?php echo $current_term->term; ?></a>
                </span>
                <div class="navbar-item has-dropdown is-hoverable">
                   <a class="navbar-link" href="javascript:void(0)">

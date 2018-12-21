@@ -63,7 +63,7 @@
 			<div class="field">
 			  <label class="label">Prerequisites</label>
 			  <div class="columns">
-			  	<div class="column is-half">
+			  	<div class="column">
 			  		<div class="control">
 			  			<multiselect :multiple="true" v-model="form.pre" track-by="subID" label="subCode" :options="pres" placeholder="Subject"></multiselect>
 			  		</div>
@@ -80,6 +80,12 @@
 					</p>
 			  	</div>
 			  </div>
+			</div>
+			<div class="field">
+				<label class="label">Non-subject prerequisite</label>
+				<div class="control">
+					<input type="text" class="input" v-model.trim="form.nonSub_pre">
+				</div>
 			</div>
 			<div class="field">
 			  <label class="label">Corequisites</label>
@@ -151,6 +157,7 @@
 		    		subDesc: '',
 		    		lec: null,
 		    		lab: null,
+		    		nonSub_pre: '',
 		    		pre: null,
 		    		pre2: null,
 		    		coreq: null,

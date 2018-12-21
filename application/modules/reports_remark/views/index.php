@@ -4,22 +4,11 @@
     width: 80px;
   }
 </style>
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Remark 
-      </h1>
-      <h2 class="subtitle">
-        Reports
-      </h2>
-    </div>
-  </div>
-</section>
 
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
+        <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
         <button :class="{'button is-primary my-width': true, 'is-outlined': filter != 'student'}" @click="filter = 'student'">Student</button>
         <button :class="{'button is-primary my-width': true, 'is-outlined': filter != 'course'}" @click="filter = 'course'">Course</button>
         <button :class="{'button is-primary my-width': true, 'is-outlined': filter != 'class'}" @click="filter = 'class'">Class</button>
@@ -124,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+    page_title: 'Remark Reports',
     loader: true,
     filter: 'student',
     term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},

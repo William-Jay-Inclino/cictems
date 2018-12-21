@@ -6,22 +6,12 @@
 </style>
 
 
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Student 
-      </h1>
-      <h2 class="subtitle">
-        Reports
-      </h2>
-    </div>
-  </div>
-</section>
-
 <div id="app" v-cloak>
    <section class="section">
       <div class="container">
+        <h3 class="title is-3 my-title"> {{page_title}} </h3>
+        <button @click="generateReport" class="button is-primary is-pulled-right" :disabled="!allow_generate">Generate Report</button>
+        <br><br><br> 
          <div class="box">
             <div class="columns">
                <div class="column">
@@ -56,7 +46,7 @@
                </multiselect>
               </div>
               <div class="column is-half" v-if="filter == 1">
-                <multiselect @input="get_students_per_sub" v-model="subject" label="subCode" track-by="subID" placeholder="Enter subject code" :options="subjects" :loading="isLoading2" :internal-search="false" @search-change="fetchSubjects">
+                <multiselect @input="get_students_per_sub" v-model="subject" label="subCode2" track-by="subID" placeholder="Enter subject code" :options="subjects" :loading="isLoading2" :internal-search="false" @search-change="fetchSubjects">
                </multiselect>
               </div>
             </div>
@@ -101,6 +91,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+    page_title: 'Student Reports',
+      disabled_btnGen: false,
       filter: 0,
       loading: false,
       isLoading2: false,
@@ -127,11 +119,23 @@ document.addEventListener('DOMContentLoaded', function() {
       this.subject = null
       this.faculty = null
       if(val != 0){
+        this.abled_btnGen = false
         this.students = []
       }
     }
    },
    computed: {
+    allow_generate(){
+      let ok = this.disabled_btnGen
+      if(this.filter == 0){
+        ok = true
+      }else if(this.filter == 1 && this.subject){
+        ok = true
+      }else if(this.filter == 2 && this.subject && this.faculty){
+        ok = true
+      }
+      return ok
+    },
     msg(){
       let x = null
       if(!this.loading){
@@ -162,6 +166,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
    },
    methods: {
+      generateReport(){
+        swal('Info', "Report is based on your selections", 'info')
+        .then(x => {
+          if(x){
+            let action = 'all-students'
+            let course = this.course.courseID 
+            const subject = (this.subject) ? this.subject.subID : 'no-subject'
+            const instructor = (this.faculty) ? this.faculty.facID : 'no-instructor'
+
+            if(this.filter == 1) action = 'per-subject' 
+            if(this.filter == 2) action = 'per-instructor' 
+            if(this.course.courseID == 'all') course = 'all-courses'
+
+            const data = action + '/' + course + '/' + subject + '/' + instructor
+
+            window.open('<?php echo base_url() ?>reports/student/download/'+ data, '_blank')
+          }
+        })
+      },
       changeTerm(){
         this.filter = 0
         this.course = {courseID: 'all', courseCode: 'All'}
@@ -192,7 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
             this.$http.get('<?php echo base_url() ?>reports_student/fetchSubjects/'+value)
             .then(response => {
                this.isLoading2 = false
-               this.subjects = response.body
+               this.subjects = response.body.map(x => {
+                x.subCode2 = (x.type == 'lab') ? x.subCode + ' (lab)' : x.subCode
+                return x
+               })
+               console.log(this.subjects)
             })
         }
       },
@@ -253,4 +280,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

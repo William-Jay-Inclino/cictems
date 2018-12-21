@@ -55,14 +55,20 @@
 					<th>Instructor</th>
 				</thead>
 				<tbody>
-					<tr>
-						<td><?php echo $class->classCode ?></td>
-						<td><?php echo $class->subDesc ?></td>
-						<td><?php echo $class->day ?></td>
-						<td><?php echo $class->class_time ?></td>
-						<td><?php echo $class->roomName ?></td>
-						<td><?php echo $class->faculty ?></td>
-					</tr>
+					<?php 
+						foreach($classes as $class){ ?>
+							<tr>
+								<td><?php echo $class->classCode ?></td>
+								<td><?php echo $class->subDesc ?></td>
+								<td><?php echo $class->day ?></td>
+								<td><?php echo $class->class_time ?></td>
+								<td><?php echo $class->roomName ?></td>
+								<td><?php echo $class->faculty ?></td>
+							</tr>
+							<?php
+						}
+
+					?>
 				</tbody>
 			</table>
 		</div>
@@ -79,7 +85,7 @@
 				<tr>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="prelim" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" :options-limit="2" v-model="prelim" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.prelim}} </p>
 						</span>
 						<span v-else>
@@ -88,7 +94,7 @@
 					</td>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="midterm" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" :options-limit="2" v-model="midterm" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.midterm}} </p>
 						</span>
 						<span v-else>
@@ -97,7 +103,7 @@
 					</td>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="prefi" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" :options-limit="2" v-model="prefi" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.prefi}} </p>
 						</span>
 						<span v-else>
@@ -106,7 +112,7 @@
 					</td>
 					<td>
 						<span v-if="remarks == 'Incomplete'">
-							<multiselect :show-labels="false" :show-no-results="false" v-bind="override" :options-limit="2" v-model="final" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
+							<multiselect :show-labels="false" :show-no-results="false" :options-limit="2" v-model="final" track-by="grade" label="grade" :options="grades" placeholder=""></multiselect>
 							<p class="help has-text-danger"> {{error.final}} </p>
 						</span>
 						<span v-else>
@@ -159,11 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	    },
 	    computed: {
-	    	override() {
-			    return {
-			     tabIndex: 0,
-			    }
-			},
 			grades(){
 	    		const grades = []
 	    		let g 
@@ -197,7 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	               	this.show_complied = true
 	               }
 	            }, response => {
-					this.get_grades()
+	            	console.log(response.body)
+					
 				})
 	    	},
 	    	comply(){
@@ -206,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			const data = {
 	    				studID: this.studID,
 	    				classID: this.classID,
+	    				termID: this.termID,
 	    				prelim: this.prelim,
 	    				midterm: this.midterm,
 	    				prefi: this.prefi,
@@ -221,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		               this.show_complied = true
 		               swal('Success!', 'Student is successfully complied', 'success')
 		            }, response => {
-						this.comply()
+						console.log(response.body)
 					})
 	    		}
 	    	},

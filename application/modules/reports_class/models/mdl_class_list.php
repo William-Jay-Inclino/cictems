@@ -14,7 +14,7 @@ class mdl_Class_List extends CI_Model{
 		
 		foreach($sections as $section){
 			$classes = $this->db->query("
-				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+				SELECT c.classCode,s.subDesc,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
 				FROM class c 
 				INNER JOIN subject s ON c.subID = s.subID 
 				INNER JOIN room r ON c.roomID = r.roomID 

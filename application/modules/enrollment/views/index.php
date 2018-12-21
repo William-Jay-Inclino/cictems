@@ -1,20 +1,10 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
 
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Enrollment
-      </h1>
-    </div>
-  </div>
-</section>
-
 <div id="app" v-cloak>
+   <div class="container" v-if="selected_student == null" style="margin-top: 50px">
+      <h3 class="title is-3 my-title"> {{page_title}} </h3>
       <?php 
-         if($roleID == 1){ ?>
-            <div class="container" v-if="selected_student == null" style="margin-top: 50px">
-            <?php 
+         if($roleID == 1){ 
                if($status == 'active'){ ?>
                   <button class="button is-danger is-large is-outlined" v-on:click="change_enrolStatus('inactive')">Deactivate</button>
                   <button class="button is-success is-large">Activated</button>
@@ -24,10 +14,10 @@
                   <button class="button is-success is-large is-outlined" v-on:click="change_enrolStatus('active')">Activate</button>
                   <?php
                }
-            ?>
-            </div>
-            <?php
          }
+      ?>
+   </div>
+      <?php
       if($status == 'active'){ ?>
          
          <section class="section">
@@ -245,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
   new Vue({
    el: '#app',
    data: {
+      page_title: 'Enrolment',
       term: '<?php echo $current_term->term ?>',
       link: '<?php echo base_url() ?>reports/grade/',
 

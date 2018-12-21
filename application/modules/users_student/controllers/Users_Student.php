@@ -11,7 +11,7 @@ class Users_Student extends MY_Controller{
 	}
 
 	function _remap($method, $params = []){
-        if ($method != 'index' && $method != 'form' && $method != 'show' && $method != 'success_page'){
+        if ($method != 'index' && $method != 'form' && $method != 'show' && $method != 'success_page' && $method != 'credit_subjects'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -42,6 +42,12 @@ class Users_Student extends MY_Controller{
 	function success_page($id){
 		$this->_data['module_view'] = 'success';
 		$this->_data['record'] = $this->mdl_student->read_one($id[0]);
+		echo Modules::run($this->_template, $this->_data);
+	}
+
+	function credit_subjects($id){
+		$this->_data['module_view'] = 'credit_subjects';
+		$this->_data['studID'] = $id[0];
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -81,6 +87,22 @@ class Users_Student extends MY_Controller{
 		$this->mdl_student->changeStatus();		
 	}
 
+	function get_credited_subjects($studID){
+		$this->mdl_student->get_credited_subjects($studID[0]);
+	}
+
+	function searchSubjects(){
+		$this->mdl_student->searchSubjects();
+	}
+
+	function add_credit(){
+		$this->mdl_student->add_credit($this->_data['current_term']->termID);	
+	}
+
+	function remove_credit(){
+		$this->mdl_student->remove_credit();	
+	}
+	
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

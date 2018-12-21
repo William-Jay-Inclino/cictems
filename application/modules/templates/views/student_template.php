@@ -22,14 +22,7 @@
     body{
       background-image: url("<?php echo base_url() ?>assets/img/bg-tile.png");
     }
-    .my-title{
-     background-color: #666666;
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: rgba(255,255,255,0.5) 0px 3px 3px;
-    }
+    
     .table__wrapper {
       overflow-x: auto;
     }

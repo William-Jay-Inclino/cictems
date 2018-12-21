@@ -1,16 +1,8 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma_switch/bulma-switch.min.css">
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        Student
-      </h1>
-    </div>
-  </div>
-</section>
 
 <section id="app" class="section" v-cloak>
 	<div class="container">
+		<h3 class="title is-3 my-title"> {{page_title}} </h3>
 		<div class="box">
 			<div class="columns">
 				<div class="column">
@@ -125,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	page_title: 'Student',
 	    	loading: true,
 	    	pagination: true,
 	    	msg: false,

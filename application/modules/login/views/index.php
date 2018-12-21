@@ -101,7 +101,7 @@
             <br>
             <div style="text-align: center">
               <button class="button is-primary is-outlined login-btn">Login</button> <br><br>
-              <a href="<?php echo base_url() ?>register"> Don't you have an account? Register now!</a>
+              <a class="has-text-primary" href="<?php echo base_url() ?>register"> Don't you have an account? Register now!</a>
             </div>
             
           <?php echo form_close(); ?>

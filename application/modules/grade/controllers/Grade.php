@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Grade extends MY_Controller{
 
 	function __construct(){
+		show_404();
 		parent::__construct(3);
 		$this->_data['module'] = 'grade';
 		$this->load->model('mdl_grade');

@@ -122,6 +122,11 @@
 					<td></td>
 				</tr>
 				<tr>
+					<td><b>Non-subject prerequisite:</b> </td>
+					<td> {{subject.nonSub_pre}} </td>
+					<td></td>
+				</tr>
+				<tr>
 					<td><b>Corequisite:</b> </td>
 					<td>
 						<span v-if="reqs.length != 0" v-for="req in reqs">
