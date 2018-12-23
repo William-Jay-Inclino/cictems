@@ -70,6 +70,14 @@ class Schedule extends MY_Controller{
 		$this->mdl_schedule->changeSection();			
 	}
 
+	function get_classes($secID){
+		$this->mdl_schedule->get_classes($this->_data['current_term']->termID, $secID[0]);
+	}
+
+	function mergeClass($ids){
+		$this->mdl_schedule->mergeClass($ids[0],$ids[1]);	
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

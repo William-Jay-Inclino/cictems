@@ -11,20 +11,23 @@
 		  font-family: 'Raleway', sans-serif;
 		  -webkit-font-smoothing: antialiased !important;*/
 		}
-		.is-centered th {
+		/*.is-centered th {
 		    text-align: center;
 		    vertical-align: middle;
-		}
-		.is-centered td {
+		}*/
+		/*.is-centered td {
 		    text-align: center;
-		}
+		}*/
 		.my-border{
 			border: 1px solid black;
 		}
-		.table td{
+		.no-border td{
 			border: 1px solid black;
 			border-bottom: 1px;
 		}
+		.tbl-headers{
+     		 background-color: #f2f2f2 
+   		}
 	</style>
 </head>
 <body>
@@ -54,7 +57,7 @@
 		<br><br>
 
 		<table class="table is-centered my-border" style="width: 100%;">
-			<tr>
+			<tr class="tbl-headers">
 				<th>No.</th>
 				<th style="text-align: left">Student's Name</th>
 				<th>Prelim</th>
@@ -66,9 +69,10 @@
 			</tr>
 			<?php 
 				$ctr = 1;
+				$tot_studs = count($data['students']);
 				foreach($data['students'] as $student){ ?>
 					
-					<tr>
+					<tr <?php if($ctr == $tot_studs){echo 'style="border: 1px solid black"';} ?>>
 						<td> <?php echo $ctr; ?> </td>
 						<td style="text-align: left"> <?php echo $student->name; ?> </td>
 						<td> <?php echo $student->prelim; ?> </td>
@@ -103,7 +107,7 @@
 			$end = 10; 
 		?>
 		
-		<table class="table">
+		<table class="table no-border" style="font-size: 11px">
 			<tr>
 				<th colspan="3" style="text-align: left">GRADING SYSTEM</th>
 			</tr>
@@ -150,7 +154,7 @@
 				
 			</tr>
 		</table>
-		<table class="table" style="width: 100%">
+		<table class="table no-border" style="width: 100%;">
 			<tr>
 				<td style="text-align: right">Submitted by:</td>
 				<td></td>

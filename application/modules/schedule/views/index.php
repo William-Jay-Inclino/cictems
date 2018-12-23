@@ -1,4 +1,11 @@
+<!-- prepare form is change. if theres any error, try going back to the old prepareform -->
 <style>
+	.btn-height{
+    	height: 40px;
+    }
+	.btn-width{
+		width: 60px;
+	}
 	.warn-msg{
 		color: #fbac00;
 		font-weight: bold;
@@ -6,13 +13,13 @@
 	.err{
 		color: red;
 	}
-	.table{
+	/*.table{
 		table-layout: fixed;
-	}
+	}*/
 	.table td {border: none !important;}
-	.table tr:last-child{
+	/*.table tr:last-child{
 	  border-bottom: solid 1px #ccc !important;
-	} 
+	} */
 	.row-5{
 		width: 5%;
 	}
@@ -36,9 +43,6 @@
 	}
 	.is-note{
     	color: #9c9fa6
-    }
-    .my-btn{
-    	width: 70px
     }
   	
 	.loading2 {
@@ -65,193 +69,218 @@
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
 
-<section id="app" class="section" v-cloak>
-	<div class="container">
-		<h3 class="title is-3 my-title"> {{page_title}} </h3>
-		<div class="columns">
-			<div class="column">
-				<label class="label">Term</label>
-				<multiselect @input="changeTerm" v-model="current_term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
-			</div>
-			<div class="column">
-				<label class="label">Search section</label>
-				<multiselect v-model="searchSection" track-by="secID" label="secName" :options="added_sections"></multiselect>
-			</div>
-		</div>
-		<br>
-		<div class="tabs is-boxed">
-		 	<ul>
-		 		<li :class="{'is-active': ready2}">
-		      		<a @click="createForm">Create schedule</a>
-		    	</li>
-		    	<li :class="{'is-active': current_sec == sec.secID}" v-for="sec of added_sections">
-		    		<a @click="updateForm(sec.secID)"> {{sec.secName}} </a>
-		    	</li>
-		  	</ul>
-		</div>
-		<div v-show="ready2">
-			<div class="box">
-				<div class="columns">
-					<div class="column">
-						<label class="label">Prospectus</label>
-						<multiselect v-model="prospectus" track-by="prosID" label="prosCode" :options="prospectuses" :allow-empty="false" @input="fetchYear"></multiselect>
-					</div>
-					<div class="column">
-						<label class="label">Year</label>
-						<multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :allow-empty="false" @input="fetchYear"></multiselect>
-					</div>
-					<div class="column">
-						<label class="label">Section</label>
-						<multiselect v-model="section" track-by="secID" label="secName" :options="sections2" :allow-empty="false" @input="fetchYear"></multiselect>
-					</div>
+<div id="app" v-cloak>
+	<section class="section">
+		<div class="container">
+			<h3 class="title is-3 my-title"> {{page_title}} </h3>
+			<div class="columns">
+				<div class="column">
+					<label class="label">Term</label>
+					<multiselect @input="changeTerm" v-model="current_term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
+				</div>
+				<div class="column">
+					<label class="label">Search section</label>
+					<multiselect v-model="searchSection" track-by="secID" label="secName" :options="added_sections"></multiselect>
 				</div>
 			</div>
+		</div>
+	</section>
+	
+	<div class="tabs is-boxed is-centered">
+	 	<ul>
+	 		<li :class="{'is-active': ready2}">
+	      		<a @click="createForm">Create schedule</a>
+	    	</li>
+	    	<li :class="{'is-active': current_sec == sec.secID}" v-for="sec of added_sections">
+	    		<a v-if="current_sec != sec.secID" @click="updateForm(sec.secID)"> {{sec.secName}} </a>
+	    		<a v-else> {{sec.secName}} </a>
+	    	</li>
+	  	</ul>
+	</div>
 			
-			<div class="box" v-show="ready">
-				<div v-if="!add_subject" class="is-pulled-right">
-					<button class="button is-primary" @click="add_subject = true">Add subject</button>
+	<section class="section">
+		<div class="container">
+
+
+			<div v-show="ready2">
+				<div class="box">
+					<div class="columns">
+						<div class="column">
+							<label class="label">Prospectus</label>
+							<multiselect v-model="prospectus" track-by="prosID" label="prosCode" :options="prospectuses" :allow-empty="false" @input="fetchYear"></multiselect>
+						</div>
+						<div class="column">
+							<label class="label">Year</label>
+							<multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :allow-empty="false" @input="fetchYear"></multiselect>
+						</div>
+						<div class="column">
+							<label class="label">Section</label>
+							<multiselect v-model="section" track-by="secID" label="secName" :options="sections2" :allow-empty="false" @input="fetchYear"></multiselect>
+						</div>
+					</div>
 				</div>
-				<div v-if="add_subject">
-					<form @submit.prevent="insertSubject">
-						<div class="columns">
-							<div class="column">
+				
+				<div v-show="ready">
+					<div class="columns">
+						<div class="column">
+							<div v-if="add_subject">
 								<multiselect v-if="add_subject" v-model="subject" label="subject" track-by="subID" placeholder="Enter subject code / description" :options="subjects" :loading="subloader" :internal-search="false" @search-change="searchSubjects">
 		                        </multiselect>
 							</div>
-							<div class="column">
-								<div class="is-pulled-right">
-									<div v-if="add_subject">
-										<button type="button" class="button my-btn" @click="resetSubject">Cancel</button>	
-										<button type="submit" class="button is-link my-btn">Add</button>	
-									</div>
-								</div>
+						</div>
+						<div class="column">
+							<div v-if="add_subject">
+								<button @click="resetSubject" class="button btn-height btn-width">Cancel</button>	
+								<button @click="insertSubject" class="button is-link btn-height btn-width">Add</button>	
 							</div>
 						</div>
-					</form>
-				</div>
-				<br><br>
-				<hr>
-				<table class="table is-fullwidth is-centered">
-					<thead>
-						<tr>
-							<th class="row-10" style="text-align: left">Code</th>
-							<th class="row-17" style="text-align: left">Description</th>
-							<th class="row-5" style="text-align: left">Units</th>
-							<th colspan="2" class="row-24">Time</th>
-							<th class="row-10">Day</th>
-							<th class="row-13">Room</th>
-							<th class="row-19">Instructor</th>
-							<th></th>
-						</tr>
-						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th>In</th>
-							<th>Out</th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-						</tr>
-					</thead>
-				</table>
-				<table v-for="record, i in classes" class="table is-fullwidth is-centered">
-					<tbody>
-						<tr :class="{err: record.error}">
-							<td class="row-10" style="text-align: left">
-								{{record.subCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span>
-							</td>
-							<td class="row-17" style="text-align: left">{{record.subDesc}}</td>
-							<td>{{record.units}}</td>
-							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required :disabled="record.status2 == 1"> </td>
-							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required :disabled="record.status2 == 1"> </td>
-							<td class="row-10">
-								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
-							</td>
-							<td class="row-13">
-								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
-							</td>
-							<td class="row-19">
-								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false" :disabled="record.status2 == 1"></multiselect>
-							</td>
-							<td>
-								<button class="button" @click="changeStatus2(record.status2, i)">
-									<span v-if="record.status2 == 0">
-										<i class="fa fa-check has-text-primary"></i>
-									</span>
-									<span v-else>
-										<i class="fa fa-times has-text-danger"></i>
-									</span>
-								</button>
-							</td>
-						</tr>
-						<tr v-if="record.msg != null">
-							<td colspan="8" style="text-align: left">
-								<div v-show="record.loading" class="is-pulled-left">
-									<div class="loading2" data-text="checking...">checking...</div>
-								</div>
-								<div v-show="!record.loading">
-									<span v-if="record.msg == 0" class="has-text-success">
-										<b>No conflict <i class="fa fa-check"></i></b>
-									</span>
-									<span v-else class="warn-msg">
-										{{record.msg}}
-									</span>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
-				<div class="is-pulled-right">
-					<button :class="{'button is-link': true, 'is-loading': isLoading}" @click="submitForm" v-if="classes.length > 0">Create schedule</button>	
-				</div>
-				
-				<br><br>
-			</div>
-		</div>
-		<div v-show="loader" class="loader"></div>
-		<div v-if="ready3">
-			<div class="box">
-				<div class="columns">
-					<div class="column">
-						<label class="label">Prospectus</label>
-						<p style="font-size: 14px"> {{prospectus2.prosCode}} </p>
+						<div class="column">
+							<div class="is-pulled-right">
+								<button v-if="!add_subject" class="button is-primary btn-height" @click="add_subject = true">Add subject</button>
+								<button :class="{'button is-link btn-height': true, 'is-loading': isLoading}" @click="submitForm" v-if="classes.length > 0">Create schedule</button>
+							</div>
+						</div>
 					</div>
-					<div class="column">
-						<label class="label">Year</label>
-						<p style="font-size: 14px"> {{year2.yearID}} </p>
-					</div>
-					<div class="column">
-						<label class="label">Section</label>
-						<multiselect @input="changeSection" v-model="section2" track-by="secID" label="secName" :options="sections4" :allow-empty="false"></multiselect>
+					<div class="box">
+						<table class="table is-fullwidth is-centered">
+							<thead>
+								<tr>
+									<th class="row-10" style="text-align: left">Code</th>
+									<th class="row-17" style="text-align: left">Description</th>
+									<th class="row-5" style="text-align: left">Units</th>
+									<th colspan="2" class="row-24">Time</th>
+									<th class="row-10">Day</th>
+									<th class="row-13">Room</th>
+									<th class="row-19">Instructor</th>
+									<th></th>
+								</tr>
+								<tr>
+									<th></th>
+									<th></th>
+									<th></th>
+									<th>In</th>
+									<th>Out</th>
+									<th></th>
+									<th></th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+						</table>
+						<table v-for="record, i in classes" class="table is-fullwidth is-centered">
+							<tbody>
+								<tr :class="{err: record.error}">
+									<td class="row-10" style="text-align: left">
+										{{record.subCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span>
+									</td>
+									<td class="row-17" style="text-align: left">{{record.subDesc}}</td>
+									<td>{{record.units}}</td>
+									<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required :disabled="record.status2 == 1 || record.merge_to != null"> </td>
+									<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required :disabled="record.status2 == 1 || record.merge_to != null"> </td>
+									<td class="row-10">
+										<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false" :disabled="record.status2 == 1 || record.merge_to != null"></multiselect>
+									</td>
+									<td class="row-13">
+										<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false" :disabled="record.status2 == 1 || record.merge_to != null"></multiselect>
+									</td>
+									<td class="row-19">
+										<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false" :disabled="record.status2 == 1 || record.merge_to != null"></multiselect>
+									</td>
+									<td>
+										<div :class="{'dropdown is-right': true, 'is-active': record.open_action}">
+					                    	<div class="dropdown-trigger">
+					                        	<a style="color: gray" aria-haspopup="true" href="javascript:void(0)" @click="toggle_action(record.open_action, i)">
+					                        		<i style="font-size: 20px" class="fa fa-ellipsis-v"></i> 
+					                        	</a>
+					                    	</div>
+					                    	<div class="dropdown-menu" role="menu">
+					                        	<div class="dropdown-content">
+					                        		<a class="dropdown-item has-text-left" v-if="record.status2 == 0 && !record.merge_to" @click="changeStatus2(record.status2, i)">
+					                        			<span class="icon has-text-danger"> <i class="fa fa-thumbs-down"></i> </span> Unoffer subject
+					                        		</a>
+					                        		<a v-else-if="record.status2 == 1 && !record.merge_to" class="dropdown-item has-text-left" @click="changeStatus2(record.status2, i)">
+					                        			<span class="icon has-text-success"> <i class="fa fa-thumbs-up"></i> </span> Offer subject
+					                        		</a>
+					                        		<a @click="splitClass(i)" v-if="record.status2 == 0 && record.merge_to" class="dropdown-item has-text-left">
+					                        			<span class="icon has-text-primary"> <i class="fa fa-cut"></i> </span> Split class
+					                        		</a>
+					                        		<a v-else-if="record.status2 == 0 && !record.merge_to" @click="openClassModal(i)" class="dropdown-item has-text-left">
+					                        			<span class="icon has-text-primary"> <i class="fa fa-chain"></i> </span> Merge class
+					                        		</a>
+					                        	</div>
+					                    	 </div>
+					                  	</div>
+									</td>
+								</tr>
+								<tr v-if="record.msg != null || record.merge_to">
+									<td colspan="8" style="text-align: left">
+										<div v-show="record.loading" class="is-pulled-left">
+											<div class="loading2" data-text="checking...">checking...</div>
+										</div>
+										<div v-show="!record.loading">
+											<span v-if="record.msg == 0" class="has-text-success">
+												<b>No conflict <i class="fa fa-check"></i></b>
+											</span>
+											<span v-else-if="record.merge_to" class="has-text-primary">
+												Merged to <b>{{record.merge_to.class}}</b> in section <b>{{record.merge_to.section}} </b> (Pending)
+											</span>
+											<span v-else class="warn-msg">
+												{{record.msg}}
+											</span>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 
-			<div class="box">
-				<div v-if="!add_subject2" class="is-pulled-right">
-					<button class="button is-primary" @click="add_subject2 = true">Add subject</button>
+
+			<div v-show="loader" class="loader"></div>
+
+
+			<div v-if="ready3" v-show="!loader">
+				<div class="box">
+					<div class="columns">
+						<div class="column">
+							<label class="label">Prospectus</label>
+							<p style="font-size: 14px"> {{prospectus2.prosCode}} </p>
+						</div>
+						<div class="column">
+							<label class="label">Year</label>
+							<p style="font-size: 14px"> {{year2.yearID}} </p>
+						</div>
+						<div class="column">
+							<label class="label">Section</label>
+							<multiselect @input="changeSection" v-model="section2" track-by="secID" label="secName" :options="sections4" :allow-empty="false"></multiselect>
+						</div>
+					</div>
 				</div>
-				<div v-if="add_subject2">
+				
+				<div style="padding-bottom: 65px" v-if="!add_subject2">
+					<button class="button is-primary btn-height is-pulled-right" @click="add_subject2 = true">
+						Add subject
+					</button>	
+				</div>
+				
+
+				<div class="box" v-if="add_subject2">
 					<form v-on:submit.prevent="insertSubject">
 						<div class="columns">
-	                    	<div class="column">
-	                    		<multiselect v-if="add_subject2" @input="is_conflict" v-model="subject" label="subject" track-by="subID" placeholder="Enter subject code / description" :options="subjects" :loading="subloader" :internal-search="false" @search-change="searchSubjects">
-	                   			</multiselect>
-	                    	</div>
-	                    	<div class="column">
-	                    		<div class="is-pulled-right">
-	                    			<button type="button" class="button my-btn" @click="resetSubject">Cancel</button>	
-									<button type="submit" class="button is-link my-btn" :disabled="is_disable_add">Add</button>
-	                    		</div>
-	                    	</div>
-	                    </div>
-	                    <table class="table is-fullwidth is-centered">
-	                    	<tr>
+		                	<div class="column">
+		                		<multiselect v-if="add_subject2" @input="is_conflict" v-model="subject" label="subject" track-by="subID" placeholder="Enter subject code / description" :options="subjects" :loading="subloader" :internal-search="false" @search-change="searchSubjects">
+		               			</multiselect>
+		                	</div>
+		                	<div class="column">
+		            			<button type="button" class="button btn-height btn-width" @click="resetSubject">Cancel</button>	
+								<button type="submit" class="button is-link btn-height btn-width" :disabled="is_disable_add">Add</button>
+		                	</div>
+		                </div>
+		                <table class="table is-fullwidth is-centered">
+		                	<tr>
 								<th>Units</th>
-								<th colspan="2">Time</th>
+								<th colspan="2" style="width: 25%">Time</th>
 								<th>Day</th>
 								<th>Room</th>
 								<th>Instructor</th>
@@ -278,8 +307,8 @@
 									<multiselect :show-labels="false" @input="is_conflict()" v-model="class_to_be_added.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
 								</td>
 							</tr>
-	                    </table>
-	                    <div v-if="class_to_be_added.loading">
+		                </table>
+		                <div v-if="class_to_be_added.loading">
 							<div class="loading2" data-text="checking...">checking...</div>
 						</div>
 						<div v-else="class_to_be_added.loading">
@@ -292,82 +321,147 @@
 						</div>
 					</form>
 				</div>
-				<br><br>
-				<hr>
-				<table class="table is-fullwidth is-centered">
-					<thead>
-						<tr>
-							<th class="row-10" style="text-align: left">Code</th>
-							<th class="row-17" style="text-align: left">Description</th>
-							<th class="row-5" style="text-align: left">Units</th>
-							<th colspan="2" class="row-24">Time</th>
-							<th class="row-10">Day</th>
-							<th class="row-13">Room</th>
-							<th class="row-19">Instructor</th>
-							<th></th>
-						</tr>
-						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th>In</th>
-							<th>Out</th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-						</tr>
-					</thead>
-				</table>
-				<table v-for="record, i in classes2" class="table is-fullwidth is-centered">
-					<tbody>
-						<tr :class="{err: record.error}">
-							<td class="row-10" style="text-align: left">
-								{{record.subCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span>
-							</td>
-							<td class="row-17" style="text-align: left">{{record.subDesc}}</td>
-							<td>{{record.units}}</td>
-							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required> </td>
-							<td class="row-12"> <input @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required> </td>
-							<td class="row-10">
-								<multiselect  :show-labels="false" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false"></multiselect>
-							</td>
-							<td class="row-13">
-								<multiselect  :show-labels="false" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false"></multiselect>
-							</td>
-							<td class="row-19">
-								<multiselect :show-labels="false" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
-							</td>
-							<td>
-								<button class="button is-danger" @click="deleteClass(i)">
-									<i class="fa fa-trash"></i>
-								</button>
-							</td>
-						</tr>
-						<tr v-if="record.msg != null">
-							<td colspan="8" style="text-align: left">
-								<div v-show="record.loading" class="is-pulled-left">
-									<div class="loading2" data-text="checking...">checking...</div>
-								</div>
-								<div v-show="!record.loading">
-									<span v-if="record.msg == 1" class="has-text-success">
-										<b>Updated <i class="fa fa-check"></i></b>
-									</span>
-									<span v-else class="warn-msg">
-										{{record.msg}}
-									</span>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+
+				<div class="box">
+					<table class="table is-fullwidth is-centered">
+						<thead>
+							<tr>
+								<th class="row-10" style="text-align: left">Code</th>
+								<th class="row-17" style="text-align: left">Description</th>
+								<th class="row-5" style="text-align: left">Units</th>
+								<th colspan="2" class="row-24">Time</th>
+								<th class="row-10">Day</th>
+								<th class="row-13">Room</th>
+								<th class="row-19">Instructor</th>
+								<th></th>
+							</tr>
+							<tr>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th>In</th>
+								<th>Out</th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+					</table>
+					<table v-for="record, i in classes2" class="table is-fullwidth is-centered">
+						<tbody>
+							<tr>
+								<td class="row-10" style="text-align: left">
+									{{record.subCode}} <span v-if="record.type == 'lab'"><b>(lab)</b></span>
+								</td>
+								<td class="row-17" style="text-align: left">{{record.subDesc}}</td>
+								<td>{{record.units}}</td>
+								<td class="row-12"> <input :disabled="record.merge_to != null" @input="checkConflict(i)" v-model="record.timeIn" type="time" class="input" required> </td>
+								<td class="row-12"> <input :disabled="record.merge_to != null" @input="checkConflict(i)" v-model="record.timeOut" type="time" class="input" required> </td>
+								<td class="row-10">
+									<multiselect :disabled="record.merge_to != null" :show-labels="false" @input="checkConflict(i)" v-model="record.day" track-by="dayID" label="dayDesc" :options="days" placeholder="" :allow-empty="false"></multiselect>
+								</td>
+								<td class="row-13">
+									<multiselect :disabled="record.merge_to != null"  :show-labels="false" @input="checkConflict(i)" v-model="record.room" track-by="roomID" label="roomName" :options="rooms" placeholder="" :allow-empty="false"></multiselect>
+								</td>
+								<td class="row-19">
+									<multiselect :disabled="record.merge_to != null" :show-labels="false" @input="checkConflict(i)" v-model="record.faculty" track-by="facID" label="faculty" :options="faculties" placeholder="" :allow-empty="false"></multiselect>
+								</td>
+								<td>
+									<div :class="{'dropdown is-right': true, 'is-active': record.open_action}">
+				                    	<div class="dropdown-trigger">
+				                        	<a style="color: gray" aria-haspopup="true" href="javascript:void(0)" @click="toggle_action(record.open_action, i)">
+				                        		<i style="font-size: 20px" class="fa fa-ellipsis-v"></i> 
+				                        	</a>
+				                    	</div>
+				                    	<div class="dropdown-menu" role="menu">
+				                        	<div class="dropdown-content">
+				                        		<a @click="deleteClass(i)" class="dropdown-item has-text-left">
+				                        			<span class="icon has-text-danger"> <i class="fa fa-trash"></i> </span> Delete class
+				                        		</a>
+				                        		<a @click="splitClass(i)" v-if="record.merge_to" class="dropdown-item has-text-left">
+				                        			<span class="icon has-text-primary"> <i class="fa fa-cut"></i> </span> Split class
+				                        		</a>
+				                        		<a v-else @click="openClassModal(i)" class="dropdown-item has-text-left">
+				                        			<span class="icon has-text-primary"> <i class="fa fa-chain"></i> </span> Merge class
+				                        		</a>
+				                        	</div>
+				                    	 </div>
+				                  	</div>
+								</td>
+							</tr>
+							<tr v-if="record.msg != null || record.merge_to">
+								<td colspan="8" style="text-align: left">
+									<div v-show="record.loading" class="is-pulled-left">
+										<div class="loading2" data-text="checking...">checking...</div>
+									</div>
+									<div v-show="!record.loading">
+										<span v-if="record.msg == 1" class="has-text-success">
+											<b>Updated <i class="fa fa-check"></i></b>
+										</span>
+										<span v-else-if="record.merge_to" class="has-text-primary">
+											Merged to <b>{{record.merge_to.class}}</b> in section <b>{{record.merge_to.section}} </b> (Pending)
+										</span>
+										<span v-else class="warn-msg">
+											{{record.msg}}
+										</span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
 			</div>
-			
 		</div>
+	</section>
 
-	</div>
-</section>
+	
 
+	
+	<div class="modal is-active" v-if="classModal">
+	       <div class="modal-background"></div>
+	       <div class="modal-card">
+	        <header class="modal-card-head">
+	           <p class="modal-card-title">Merge Class</p>
+	           <button class="delete" aria-label="close" @click="close_classModal"></button>
+	        </header>
+	        <section class="modal-card-body">
+	        	<div class="field">
+	        		<label class="label">Code</label>
+	        		<div class="control" style="font-size: 14px">
+	        			{{class_to_merge.subCode}}<span if="class_to_merge.type == 'lab'"> (lab)</span>
+	        		</div>
+	        	</div>
+	        	<div class="field">
+	        		<label class="label">Description</label>
+	        		<div class="control">
+	        			<p style="font-size: 14px">{{class_to_merge.subDesc}}</p>
+	        		</div>
+	        	</div>
+	           <div class="field">
+	              <label class="label">Select section</label>
+	              <div class="control">
+	                 <multiselect @input="get_classes" v-model="active_section" track-by="secID" label="secName" :options="added_sections2" placeholder=""></multiselect>   
+	              </div>
+	           </div>
+	           <div class="field">
+	              <label class="label">Select class code</label>
+	              <div class="control">
+	                 <multiselect open-direction="bottom" v-model="selected_class" label="codelabel" track-by="classID" placeholder="" :options="class_suggestions" :loading="isLoading2">
+	                 </multiselect>      
+	              </div>
+	           </div>
+	        </section>
+	        <footer class="modal-card-foot pull-right">
+	           <button :disabled="!selected_class" @click="mergeClass" class="button is-primary is-fullwidth btn-height"><b>Merge {{class_to_merge.subCode}} <span v-if="selected_class"> to {{selected_class.subCode}} in section <b>{{active_section.secName}}</b></span></b> </button>
+	        </footer>
+	       </div>
+	     </div>
+
+</div>
+
+<br><br><br><br>
 
 
 
@@ -427,7 +521,16 @@ document.addEventListener('DOMContentLoaded', function() {
     			status2: 0,
     			error: false,
     			msg: null,
-	        }
+    			open_action: false
+	        },
+
+	        class_to_merge: null,
+	        selected_index: null,
+	        classModal: false,
+	        active_section: null,
+	        selected_class: null,
+	        class_suggestions: [],
+	        isLoading2: false,
 	    },
 	    created() {
 	    	this.populate()
@@ -466,28 +569,38 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	}
 	    },
 	    computed: {
+	    	added_sections2(){
+	    		if(this.current_sec){
+	    			return this.added_sections.filter(x => x.secID != this.current_sec)
+	    		}else{
+	    			return this.added_sections
+	    		}
+	    	},
 			sections2(){
-				const sections = this.sections 
-				const added_sections = this.added_sections 
-				let arr = []
-				for(s of sections){
-					if(!added_sections.find(j => j.secID == s.secID)){
-						arr.push(s)
-					}
-				}
-				return arr
+				return this.sections.filter(x => !this.added_sections.find(j => j.secID == x.secID))
+				// const sections = this.sections 
+				// const added_sections = this.added_sections 
+				// let arr = []
+				// for(s of sections){
+				// 	if(!added_sections.find(j => j.secID == s.secID)){
+				// 		arr.push(s)
+				// 	}
+				// }
+				// return arr
 			},
 			sections4(){
-				const sections = this.sections3
-				const added_sections = this.added_sections 
-				const update_sec = this.update_sec.secID
-				let arr = []
-				for(s of sections){
-					if(!added_sections.find(j => j.secID == s.secID && j.secID != update_sec)){
-						arr.push(s)
-					}
-				}
-				return arr
+				return this.sections3.filter(s => !this.added_sections.find(j => j.secID == s.secID && j.secID != this.update_sec.secID))
+
+				// const sections = this.sections3
+				// const added_sections = this.added_sections 
+				// const update_sec = this.update_sec.secID
+				// let arr = []
+				// for(s of sections){
+				// 	if(!added_sections.find(j => j.secID == s.secID && j.secID != update_sec)){
+				// 		arr.push(s)
+				// 	}
+				// }
+				// return arr
 			},
 			class_to_be_added_units(){
 				let x = ''
@@ -522,6 +635,89 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 	    },
 	    methods: {
+	    	splitClass(i){
+	    		const c = (this.current_sec) ? this.classes2[i] : this.classes[i]
+	    		c.open_action = false
+	    		c.timeIn = ''
+	    		c.timeOut = ''
+	    		c.day = null 
+	    		c.room = null 
+	    		c.faculty = null 
+	    		c.merge_to = null 
+
+	    	},
+	    	mergeClass(){
+	    		const c = (this.current_sec) ? this.classes2[this.selected_index] : this.classes[this.selected_index]
+	    		const class_merge = this.selected_class
+
+	    		if(c.units == class_merge.units){
+	    			swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName+' (Pending)', 'success')
+	    			c.error = false
+		    		c.timeIn = class_merge.timeIn
+		    		c.timeOut = class_merge.timeOut
+		    		c.day = {dayID: class_merge.dayID, dayDesc: class_merge.dayDesc, dayCount: class_merge.dayCount}
+		    		c.room = {roomID: class_merge.roomID, roomName: class_merge.roomName}
+		    		c.faculty = {facID: class_merge.facID, faculty: class_merge.faculty}
+		    		c.merge_to = {section: this.active_section.secName, class: class_merge.codelabel, classID: class_merge.classID}
+		    		c.msg = null
+		    		this.close_classModal()
+
+		    		if(this.current_sec){
+		    			this.$http.get('<?php echo base_url() ?>schedule/mergeClass/' + c.classID + '/' + class_merge.classID)
+		    			.then(res => {
+		    				// console.log(res.body)
+		    			}, e => {
+		    				console.log(e.body)
+		    			})
+		    		}
+
+	    		}else{
+	    			swal('Error', 'Both classes should have equal units!', 'error')
+	    		}
+	    	},
+	    	openClassModal(i){
+	    		const c = (this.current_sec) ? this.classes2[i] : this.classes[i]
+	    		this.class_to_merge = c
+	    		this.selected_index = i
+	    		this.classModal = true 
+	    		c.open_action = false
+	    	},
+	    	get_classes(){
+	    		this.class_suggestions = []
+		         this.selected_class = null
+		         const section = this.active_section
+		         if(section){
+		            this.isLoading2 = true
+		            this.$http.get('<?php echo base_url() ?>schedule/get_classes/'+section.secID)
+		            .then(response => {
+		               this.isLoading2 = false
+		               this.class_suggestions = response.body.map(g => {
+		                  g.codelabel = (g.type == 'lab') ? g.subCode +' (' + g.type + ')' : g.subCode
+		                  return g
+		               })
+		            }, e => {
+		               console.log(e.body)
+
+		            })   
+		         }
+	    	},
+	    	close_classModal(){
+	    		this.classModal = false
+	    		this.active_section = null
+	    		this.selected_class = null 
+	    		this.class_suggestions = []
+	    		this.selected_index = null 
+	    		this.class_to_merge = null 
+
+	    	},
+	    	toggle_action(is_open , i){
+	    		const classes = (this.current_sec == null) ? this.classes[i] : this.classes2[i]
+	    		if(is_open){
+	    			classes.open_action = false
+	    		}else{
+	    			classes.open_action = true
+	    		}
+	    	},
 	    	changeSection(){
 	    		const data = {
 	    			yearID: this.year2.yearID,
@@ -544,7 +740,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				})
 	    	},
 	    	deleteClass(i){
-	    		const classID = this.classes2[i].classID
+	    		const selClass = this.classes2[i] 
+	    		const classID = selClass.classID
+	    		selClass.open_action = false
 	    		this.$http.get('<?php echo base_url() ?>schedule/is_safe_delete/'+classID)
 	            .then(response => {
 	               const c = response.body
@@ -566,6 +764,8 @@ document.addEventListener('DOMContentLoaded', function() {
 						    this.deleteRec(classID, i)
 						  }
 						})
+	        		}else if(c == 2){
+	        			swal("Unable to delete", "Class has merged schedule!", "error")
 	        		}else{
 	        			swal("Unable to delete", "Class has record in other modules!", "error")
 	        		}
@@ -657,6 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		        			status2: 0,
 		        			error: false,
 		        			msg: null,
+		        			open_action: false,
 		        		})
 		        		swal('Subject successfully added to form!', {icon: 'success'})
 	    			}else{
@@ -677,7 +878,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		swal('Subject successfully added to form!', {icon: 'success'})
 	        		v.classID = response.body
 	        		c.push(v)
-	        		console.log(c)
 	        		this.reset_class_to_be_added()
 				}, response => {
 					this.add_class_to_section(c, v)
@@ -730,7 +930,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			faculty: null,
 	    			status2: 0,
 	    			error: false,
-	    			msg: null
+	    			msg: null,
+	    			open_action: false
 	    		}
 	    		this.class_to_be_added = c
 	    	},
@@ -865,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						if(per_week != this.unit_to_hr(cc.units)){
 	    					cc.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
 						}else{
+
 							for(let [iii, ccc] of classes.entries()){
 								if(iii != ii){
 									if(ccc.timeIn && ccc.timeOut && ccc.day != null && ccc.room != null && ccc.faculty != null && ccc.status2 == 0){
@@ -933,6 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				return hh+":"+mm+":"+ss
 	    	},
 	    	changeStatus2(val, i){
+	    		this.classes[i].open_action = false
 	        	if(val == 0){
 	        		this.classes[i].error = false
 	        		this.classes[i].status2 = 1
@@ -940,6 +1143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        	}else{
 	        		this.classes[i].status2 = 0
 	        	}
+
 	        	this.checkConflict(i)
 	        },
 	    	fetchYear(){
@@ -974,7 +1178,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	        	this.$http.get('<?php echo base_url() ?>schedule/fetchClasses/' + this.year.yearID +'/'+ this.prospectus.prosID +'/'+this.current_term.termID)
 	        	.then(response => {
 	        		const c = response.body
-	        		console.log(c)
 	        		this.sections = c.sections
 	        		this.prepareForm(c.classes)
 				 }, e => {
@@ -983,50 +1186,42 @@ document.addEventListener('DOMContentLoaded', function() {
 				 })
 	        },
 	        prepareForm(classes){
-	        	const arr = []
-	        	for(c of classes){
-	        		arr.push({
-	        			loading: false,
-	        			classID: 0,
-	        			subID: c.subID,
-	        			subCode: c.subCode,
-	        			subDesc: c.subDesc,
-	        			units: c.units,
-	        			type: c.type,
-	        			day: null,
-	        			timeIn: '',
-	        			timeOut: '',
-	        			room: null,
-	        			faculty: null,
-	        			status2: 0,
-	        			error: false,
-	        			msg: null,
-	        		})
-	        	}
-	        	this.classes = arr
+
+	        	this.classes = classes.map(x => {
+	        		x.loading = false
+        			x.classID = 0
+        			x.day = null
+        			x.timeIn = ''
+        			x.timeOut = ''
+        			x.room = null
+        			x.faculty = null
+        			x.status2 = 0
+        			x.error = false
+        			x.msg = null
+        			x.open_action = false
+	        		return x
+	        	})
+
 	        },
 	        prepareForm2(classes){
-	        	const arr = []
-	        	for(c of classes){
-	        		arr.push({
-	        			loading: false,
-	        			classID: c.classID,
-	        			subID: c.subID,
-	        			subCode: c.subCode,
-	        			subDesc: c.subDesc,
-	        			units: c.units,
-	        			type: c.type,
-	        			day: {dayID: c.dayID, dayDesc: c.dayDesc, dayCount: c.dayCount},
-	        			timeIn: c.timeIn,
-	        			timeOut: c.timeOut,
-	        			room: {roomID: c.roomID, roomName: c.roomName},
-	        			faculty: {facID: c.facID, faculty: c.faculty},
-	        			status2: 0,
-	        			error: false,
-	        			msg: null,
-	        		})
-	        	}
-	        	this.classes2 = arr
+	        	this.classes2 = classes.map(c => {
+
+	        		if(c.class_merge){
+	        			const merge = c.class_merge.split('|')
+	        			const codelabel = (merge[1].type == 'lab') ? merge[0] +' (lab)' : merge[0]	
+	        			c.merge_to = {section: merge[2], class: codelabel, classID: c.merge_with}
+	        		}
+	        		
+	        		c.loading = false
+        			c.day = {dayID: c.dayID, dayDesc: c.dayDesc, dayCount: c.dayCount}
+        			c.room = {roomID: c.roomID, roomName: c.roomName}
+        			c.faculty = {facID: c.facID, faculty: c.faculty}
+        			c.msg = null
+        			c.open_action = false
+        			c.status2 = 0
+        			return c
+	        	})
+
 	        },
 	        submitForm(){
 	        	const c = this.classes 
@@ -1038,7 +1233,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		swal('All fields are required!','Please review the form', {
 				      icon: 'warning',
 				    })
-	        	}else if(c.findIndex(g => g.msg != 0 && g.status2 == 0) != -1){
+	        	}else if(c.findIndex(g => (g.msg != 0 && !g.merge_to) && g.status2 == 0) != -1){
 	        		swal('Form has errors!','Please review the form', {
 				      icon: 'error',
 				    })
@@ -1046,14 +1241,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		this.isLoading = true
 	        		this.$http.post('<?php echo base_url() ?>schedule/create', {termID: this.current_term.termID, secID: this.section.secID, classes: c})
 			        .then(response => {
-			        	swal('Schedule successfully created!', {
-					      icon: 'success'
-					    })
-		        		this.added_sections = response.body
-		        		this.isLoading = false
-		        		this.year = null
-		        		this.section = null
-		        		this.ready = false
+			        	if(response.body == 'exist'){
+			        		swal('Error', "Section already exist!", 'error')
+			        	}else{
+			        		swal('Schedule successfully created!', {
+						      icon: 'success'
+						    })
+			        		this.added_sections = response.body
+			        		this.isLoading = false
+			        		this.year = null
+			        		this.section = null
+			        		this.ready = false	
+			        	}
+			        	
+					}, e => {
+						console.log(e.body)
+
 					})
 	        	}
 	        	this.isLoading = false
@@ -1087,5 +1290,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
-<!-- <script src="<?php echo base_url(); ?>assets/vendor/vue/flatpickr/flatpickr.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/vendor/vue/flatpickr/vue-flatpickr-component@7.js"></script> <--></-->

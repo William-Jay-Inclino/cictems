@@ -86,10 +86,10 @@
                      <table class="table is-fullwidth">
                         <thead>
                            <tr class="tbl-headers">
-                              <th width="15%">Subject Code</th>
-                              <th width="30%">Description</th>
-                              <th style="text-align: center" width="5%">Units</th>
-                              <th width="20%">Pre-requisite / Remarks</th>   
+                              <th width="28%">Subject Code</th>
+                              <th width="32%">Description</th>
+                              <th width="12%" style="text-align: center" width="5%">Units</th>
+                              <th width="28%">Pre-requisite / Remarks</th>   
                            </tr>                           
                         </thead>
                         <tbody>
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                for(let spec of specs){
                   if(spec.specID == s.subject.specID){
-                     spec.total += 1
+                     spec.total += Number(s.subject.units)
                      break
                   }
                }

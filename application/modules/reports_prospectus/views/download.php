@@ -40,10 +40,10 @@
 					<th colspan="4"><?php echo $subjects['term'] ?></th>
 				</tr>
 				<tr class="tbl-headers">
-					<th>Course Code</th>
-					<th>Descriptive Title</th>
-					<th>Units</th>
-					<th>Pre-requisites</th>
+					<th style="width: 28%">Course Code</th>
+					<th style="width: 32%">Descriptive Title</th>
+					<th style="width: 12%; text-align: center">Units</th>
+					<th style="width: 28%">Pre-requisites</th>
 				</tr>
 				<?php 
 					$total_sub = count($subjects['subjects']) - 1;
@@ -59,7 +59,7 @@
 								?>
 							</td>
 							<td><?php echo $subject['subject']->subDesc; ?></td>
-							<td><?php echo $subject['subject']->units; ?></td>
+							<td style="text-align: center"><?php echo $subject['subject']->units; ?></td>
 							<td>
 								<?php 
 									foreach($subject['sub_req'] as $sr){
@@ -100,21 +100,34 @@
 			</td>
 			<td>
 				<table class="table my-border" style="font-size: 9px;width: 100%">
-					<tr>
+					<tr class="tbl-headers">
 						<th colspan="3" style="text-align: center">SUMMARY OF COURSES</th>
 					</tr>
 					<?php 
 						$total_specs = count($data2['specializations']) - 1;
-						$g = 0;
+						$g = $total_units = 0;
 						foreach($data2['specializations'] as $spec){ ?>
-							<tr <?php if($g == $total_specs){echo 'style="border: 1px solid black"';} ?>>
+							<tr>
 								<td> <?php echo $spec['specDesc'] ?> </td>
-								<td> <?php echo $spec['total'] ?> </td>
+								<td> 
+									<?php 
+										if($spec['total']){
+											echo $spec['total']; 
+										}else{
+											echo "0";
+										}
+									?> 
+								</td>
 								<td>units</td>
 							</tr>
-							<?php ++$g;
+							<?php ++$g; $total_units += $spec['total'];
 						}
 					?>
+					<tr style="border: 1px solid black">
+						<th style="text-align: right">TOTAL:</th>
+						<th> <?php echo $total_units; ?> </th>
+						<th>UNITS</th>
+					</tr>
 				</table>
 			</td>
 		</tr>

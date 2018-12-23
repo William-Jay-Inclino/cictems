@@ -75,7 +75,7 @@ class mdl_Grade extends CI_Model{
 				INNER JOIN day d ON c.dayID=d.dayID
 				INNER JOIN faculty f ON c.facID=f.facID
 				INNER JOIN users u ON f.uID=u.uID
-				WHERE sc.studID = $studID AND c.termID = ".$term->termID."
+				WHERE sc.studID = $studID AND sc.status = 'Enrolled' AND c.termID = ".$term->termID."
 			")->result();
 			foreach($sql2 as $s){
 				if($s->prelim && $s->midterm && $s->prefi && $s->final){
