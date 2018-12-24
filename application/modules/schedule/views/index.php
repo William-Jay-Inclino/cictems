@@ -992,8 +992,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				})
 	    	},
 	    	checkConflict(i){
-	    		let msg = ''
-	    		let classes = null
+	    		// let msg = ''
+	    		// let classes = null
 	    		if(this.current_sec == null){
 	    			classes = this.classes
 	    		}else{
@@ -1001,33 +1001,40 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			this.is_conflict()
 	    		}
 	    		const c = classes[i]
-	    		if(!c.timeIn || !c.timeOut || c.day == null || c.room == null || c.faculty == null || c.status2 == 1){
-	    			c.msg = null
-	    			if(!c.timeIn || !c.timeOut && c.status2 == 0){
-	    				this.checkConflict3(i, classes)
-	    			}
-	    			if(this.current_sec != null){
-	    				c.msg = 'All fields are required'
-	    			}
-	    		}else{
-	    			this.checkConflict3(i, classes)
-	    		}
+	    		
+	    		c.loading = true 
+
+				this.debounce(function(){
+					
+		    		if(!c.timeIn || !c.timeOut || c.day == null || c.room == null || c.faculty == null || c.status2 == 1){
+		    			c.msg = null
+		    			if(!c.timeIn || !c.timeOut && c.status2 == 0){
+		    				this.checkConflict3(i, classes)
+		    			}
+		    			if(this.current_sec != null){
+		    				c.msg = 'All fields are required'
+		    				c.loading = false 
+		    			}
+		    		}else{
+		    			this.checkConflict3(i, classes)
+		    		}
+				}, 1500)
 	    	},
 	    	checkConflict2(c, i, ii){
 	    		if(this.current_sec == null){
 	    			//dli mo update sa uban row if uban row is msg is empty or msg = 0
-	    			if(!(i != ii && c.msg == null || c.msg == 0)){ 
+	    			if(!(i != ii && (c.msg == null || c.msg == 0))){ 
 	    				this.checkConflict4(c, i)
 	    			}
 	    		}else{
 	    			//dli mo update sa uban row if uban row is msg is empty or msg = 1
-	    			if(!(i != ii && c.msg == null || c.msg == 1)){ 
+	    			if(!(i != ii && (c.msg == null || c.msg == 1))){ 
 	    				this.checkConflict4(c, i)
 	    			}
 	    		}
 	    	},
 	    	checkConflict4(c, i){
-	    		c.loading = true
+	    		// c.loading = true
 	    		const data = {
 	    			termID: this.current_term.termID,
 	    			classID: c.classID,
@@ -1040,6 +1047,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				this.$http.post('<?php echo base_url() ?>schedule/checkConflict', data)
 	        	.then(response => {
 	        		const res = response.body
+	        		//console.log(res)
 	        		if(res == 'ok'){
 	        			c.msg = 0
 	        		}else if(res == 'updated'){
@@ -1065,6 +1073,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 						if(per_week != this.unit_to_hr(cc.units)){
 	    					cc.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
+	    					cc.loading = false
 						}else{
 
 							for(let [iii, ccc] of classes.entries()){
@@ -1078,6 +1087,7 @@ document.addEventListener('DOMContentLoaded', function() {
 											has_conflict = true
 											if(ii == i){
 					    						cc.msg = "Class has conflict in this section. ("+ccc.subCode+")"
+					    						cc.loading = false
 					    					}
 											break
 				    					}
@@ -1170,7 +1180,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		this.prospectuses = c.prospectus
 	        		this.days = c.days 
 	        		this.rooms = c.rooms 
-	        		this.faculties = c.faculties
+	        		this.faculties = c.faculties.map(x => {
+	        			const f = x.faculty.split(' ')
+	        			if(f[2]) f[2] = f[2] + '.'
+	        			x.faculty = f[0] + ' ' + f[1] + ' ' + f[2]
+	        			
+	        			return x
+	        		})
 	        		this.added_sections = c.added_sections
 				 })
 	        },
@@ -1212,6 +1228,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	        			c.merge_to = {section: merge[2], class: codelabel, classID: c.merge_with}
 	        		}
 	        		
+	        		const f = c.faculty.split(' ')
+        			if(f[2]) f[2] = f[2] + '.'
+        			c.faculty = f[0] + ' ' + f[1] + ' ' + f[2]
+
+
 	        		c.loading = false
         			c.day = {dayID: c.dayID, dayDesc: c.dayDesc, dayCount: c.dayCount}
         			c.room = {roomID: c.roomID, roomName: c.roomName}
@@ -1272,6 +1293,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		}
 	        	}
 	        	return ok
+	        },
+	        debounce(func, delay){
+	        	let inDebounce
+		    	const context = this
+		    	const args = arguments
+		    	clearTimeout(inDebounce)
+		    	inDebounce = setTimeout(() => func.apply(context, args), delay)
 	        }
 
 	    },

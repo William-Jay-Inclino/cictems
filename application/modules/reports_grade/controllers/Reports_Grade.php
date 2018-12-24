@@ -11,7 +11,7 @@ class Reports_Grade extends MY_Controller{
 		
 
 	function _remap($method, $params = []){
-        if ($method != 'index' && $method != 'by_class'){
+        if ($method != 'index' && $method != 'by_class' && $method != 'download'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -27,6 +27,24 @@ class Reports_Grade extends MY_Controller{
 		$this->_data['module_view'] = 'by_class';
 		$this->_data['studID'] = $this->mdl_grade->check_id($id[0]);
 		echo Modules::run($this->_template, $this->_data);
+	}
+
+	function download($data){
+		$mpdf = new \Mpdf\Mpdf();
+		$this->_data['data'] = $this->mdl_grade->download($data[0],$data[1]);
+		$this->_data['student'] = $this->mdl_grade->get_student($data[1], 'dl');
+
+		if($data[0] == 'download-by-prospectus'){
+			$this->_data['data2'] = $this->mdl_grade->populate($data[1]);
+			$view = 'download';
+		}else{
+			$view = 'download2';
+		}
+
+		$html = $this->load->view($this->_data['module'].'/'.$view,$this->_data, true);
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
 	}
 
 	function get_grade_by_pros($data){

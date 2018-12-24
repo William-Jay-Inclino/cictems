@@ -3,51 +3,78 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Grade extends CI_Model{
 
-	function get_student($studID){
-		$query = $this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1);
-		echo json_encode($query->row());
+	function download($type, $studID){
+		if($type == 'download-by-prospectus'){
+			$this->report_by_pros($studID, $data);
+		}else if($type == 'download-by-class'){
+			$this->report_by_class($studID, $data);
+		}else{
+			show_404();
+		}
+		return $data;
 	}
 
-	function get_grade_by_pros($studID){
+	function report_by_pros($studID, &$data){
 		$holder2 = [];
-		$query = $this->db->select('prosID')->get_where('studprospectus','studID='.$studID,1);
-		$row = $query->row_array();
+		$prosID = $this->db->select('prosID')->get_where('studprospectus', "studID = $studID", 1)->row()->prosID;
 
-		$query2 = $this->db->select('CONCAT(c.courseDesc," (",c.courseCode,")") AS description,p.effectivity')->get_where('course c,prospectus p', 'p.courseID = c.courseID AND p.prosID = '.$row['prosID'], 1);
-		$prospectus = $query2->row_array();
+		$data['prospectus'] = $this->db->query("
+			SELECT CONCAT(c.courseDesc,' (',c.courseCode,')') AS description,p.effectivity 
+			FROM prospectus p  
+			INNER JOIN course c ON p.courseID=c.courseID 
+			WHERE p.prosID = $prosID LIMIT 1
+		")->row();
 
-		$query3 = $this->db->select('y.yearID')->group_by('y.duration')->order_by('y.duration','ASC')->get_where('subject s, year y', 's.yearID=y.yearID AND s.prosID='.$row['prosID']);
+		$data['specializations'] = $this->db->get('specialization')->result();
 
-		foreach($query3->result_array() as $row3){
-			$query4 = $this->db->select('sem.semID,sem.semDesc,y.yearDesc')->group_by('sem.semID')->order_by('sem.semOrder','ASC')->get_where('subject s, semester sem, year y','s.yearID=y.yearID AND s.semID=sem.semID AND s.prosID = '.$row['prosID'].' AND s.yearID = '.$row3['yearID']);
-			foreach($query4->result_array() as $row4){
+		$years = $this->db->query("SELECT y.yearID, y.yearDesc FROM subject s INNER JOIN year y ON s.yearID = y.yearID WHERE s.prosID = $prosID GROUP BY y.yearID ORDER BY y.duration ASC")->result();
 
-				$term =  $row4['yearDesc'].' - '.$row4['semDesc'];
+		foreach($years as $y){
+			$sems = $this->db->query("
+				SELECT sem.semID, sem.semDesc FROM subject s 
+				INNER JOIN semester sem ON s.semID=sem.semID 
+				WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID."
+				GROUP BY sem.semID
+				ORDER BY sem.semOrder ASC
+			")->result();
 
-				$query5 = $this->db->select('s.subID,s.subCode,s.subDesc,s.type,s.units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req,(SELECT sg.sgGrade FROM studgrade sg,student stud,subject sub WHERE sg.studID=stud.studID AND sg.subID=sub.subID AND sg.studID = '.$studID.' AND sg.subID = s.subID ORDER BY sg.sgGrade ASC LIMIT 1) grade,(SELECT CONCAT(sg.grade_type,"|",t.schoolYear,"|",sem.semDesc) FROM term t,semester sem,studgrade sg WHERE sg.termID = t.termID AND t.semID=sem.semID AND sg.subID = s.subID AND sg.studID = '.$studID.') term')->get_where('subject s','s.prosID = '.$row['prosID'].' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
-				$row5 = $query5->result_array();
+			foreach($sems as $sem){
+				$term = $y->yearDesc.' - '.$sem->semDesc;
+				$holder = [];
 
-				foreach($row5 as $val){
+				$subjects = $this->db->query("
+					SELECT s.subID,s.id,s.subCode,s.subDesc,s.type,s.units,s.nonSub_pre,
+					(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req,
+					(SELECT sg.sgGrade FROM studgrade sg,student stud,subject sub WHERE sg.studID=stud.studID AND sg.subID=sub.subID AND sg.studID = $studID AND sg.subID = s.subID ORDER BY sg.sgGrade ASC LIMIT 1) grade,
+					(SELECT CONCAT(sg.grade_type,'|',t.schoolYear,'|',sem.semDesc) FROM term t,semester sem,studgrade sg WHERE sg.termID = t.termID AND t.semID=sem.semID AND sg.subID = s.subID AND sg.studID = $studID) term
 
-					$query6 = $this->db->select('sr.req_subID,req_type, (SELECT subCode FROM subject WHERE subID = sr.req_subID) req_code')->get_where('subject s, subject_req sr','sr.subID=s.subID AND s.subID = '.$val['subID']);
-					$row6 = $query6->result_array();
+					FROM subject s
+					WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID." AND s.semID = ".$sem->semID."
+				")->result();
 
-					$holder[] = ['subject'=>$val,'sub_req'=>$row6];
+				foreach($subjects as $subject){
+
+					$sub_req = $this->db->query("
+						SELECT sr.req_subID,req_type, (SELECT subCode FROM subject WHERE subID = sr.req_subID) req_code
+						FROM subject s 
+						INNER JOIN subject_req sr ON s.subID = sr.subID AND s.subID = ".$subject->subID."
+					")->result();
+
+					$holder[] = ['subject'=>$subject,'sub_req'=>$sub_req];
+
 				}
 
-				$holder2[] = array(
-									'term' => $term,
-									'subjects' => $holder
-								);
-				$holder = [];
+				$holder2[] = ['term' => $term, 'subjects' => $holder];
+
 			}
+
 		}
 
-		$output = ['prospectus'=>$prospectus, 'subjects'=>$holder2];
-		echo json_encode($output);
+		$data['subjects'] = $holder2;
+
 	}
 
-	function get_grade_by_class($studID){
+	function report_by_class($studID, &$data){
 		$arr = [];
 		$arr2 = [];
 		$metric = '';
@@ -95,7 +122,39 @@ class mdl_Grade extends CI_Model{
 			$arr = [];
 		}
 
-		echo json_encode($arr2);
+		$data = $arr2;
+	}
+
+	function populate($studID = NULL){
+		$sql = $this->db->query("SELECT name, description FROM reports WHERE module = 'reports_prospectus'")->row();
+		$specs = $this->db->get('specialization')->result();
+		$prosID = $this->db->select('prosID')->get_where('studprospectus', "studID = $studID", 1)->row()->prosID;
+
+		foreach($specs as $s){
+			$total = $this->db->query("SELECT SUM(units) total FROM subject WHERE prosID = $prosID AND specID = ".$s->specID)->row()->total;
+			$holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'total'=>$total];
+		}
+		return ['populate'=>$sql, 'specializations'=>$holder];
+	}
+
+	function get_student($studID, $val = NULL){
+		$query = $this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1);
+		
+		if($val == NULL){
+			echo json_encode($this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row());	
+		}else{
+			return $this->db->select('CONCAT(u.fn," ",u.mn," ",u.ln) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row();
+		}
+	}
+
+	function get_grade_by_pros($studID){
+		$this->report_by_pros($studID, $data);
+		echo json_encode($data);
+	}
+
+	function get_grade_by_class($studID){
+		$this->report_by_class($studID, $data);
+		echo json_encode($data);
 	}
 
 	function check_id($id){

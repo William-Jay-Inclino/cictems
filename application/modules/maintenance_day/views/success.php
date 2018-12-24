@@ -11,7 +11,7 @@
 					<td> <?php echo $record->dayDesc ?> </td>
 				</tr>
 				<tr>
-					<td><b>Day:</b> </td>
+					<td><b>No. of days:</b> </td>
 					<td> <?php echo $record->dayCount ?> </td>
 				</tr>
 			</table>

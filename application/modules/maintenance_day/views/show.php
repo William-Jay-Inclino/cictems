@@ -23,7 +23,7 @@
 					<td> {{dayDesc}} </td>
 				</tr>
 				<tr>
-					<td><b>Day:</b> </td>
+					<td><b>No. of days:</b> </td>
 					<td> {{dayCount}} </td>
 				</tr>
 			</table>

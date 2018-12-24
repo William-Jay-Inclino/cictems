@@ -9,26 +9,31 @@
    <section class="section">
       <div class="container">
          <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
-         <div class="box columns bg-white">
-            <div class="column is-half">
-               <div class="field">
-                  <label class="label">Search student:</label>
-                  <div class="control">
-                     <multiselect v-model="selected_student" label="student" track-by="studID" placeholder="Enter name / control no" :options="suggestions" :loading="isLoading" :internal-search="false" @search-change="search">
-                     </multiselect>
+         
+         <div v-if="selected_student">
+            <a :href="'<?php echo base_url() ?>reports/grade/download-by-prospectus/' + selected_student.studID" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+            <br><br>
+         </div>
+         
+         <div class="box">
+            <div class="columns">
+               <div class="column is-half">
+                  <div class="field">
+                     <label class="label">Search student:</label>
+                     <div class="control">
+                        <multiselect v-model="selected_student" label="student" track-by="studID" placeholder="Enter name / control no" :options="suggestions" :loading="isLoading" :internal-search="false" @search-change="search">
+                        </multiselect>
+                     </div>
+                     <br>
                   </div>
-                  <br>
                </div>
-            </div>
-            <div class="column" v-if="ready">
-               <div class="is-pulled-right">
-                  <label class="label">Filter by:</label>
-                  <button class="button is-info btn-width">Prospectus</button>
-                  <a :href="'<?php echo base_url() ?>reports/grade/by-class' + '/' + selected_student.studID" class="button is-info is-outlined btn-width">Class</a>
+               <div class="column" v-if="ready">
+                  <div class="is-pulled-right">
+                     <label class="label">Filter by:</label>
+                     <button class="button is-info btn-width">Prospectus</button>
+                     <a :href="'<?php echo base_url() ?>reports/grade/by-class' + '/' + selected_student.studID" class="button is-info is-outlined btn-width">Class</a>
+                  </div>
                </div>
-               <br>
-               <br>
-               <br>
             </div>
          </div>
          

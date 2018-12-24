@@ -77,7 +77,7 @@ class mdl_Schedule extends CI_Model{
 		$data['prospectus'] = $this->db->query('SELECT prosID,prosCode FROM prospectus ORDER BY prosID DESC, prosCode ASC')->result();
 		$data['rooms'] = $this->db->query("SELECT roomID,roomName FROM room")->result();
 		$data['days'] = $this->db->get('day')->result();
-		$data['faculties'] = $this->db->query("SELECT f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) as faculty FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active'")->result();
+		$data['faculties'] = $this->db->query("SELECT f.facID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active'")->result();
 		$data['added_sections'] = $this->db->query("SELECT DISTINCT s.secID,s.secName FROM class c INNER JOIN section s ON c.secID = s.secID AND c.termID = $termID ORDER BY s.secName ASC")->result();
 
 		echo json_encode($data);
@@ -123,7 +123,7 @@ class mdl_Schedule extends CI_Model{
 
 	function get_sec_info($secID, $termID){
 		$data['classes'] = $this->db->query("
-				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge FROM class c 
+				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge FROM class c 
 				INNER JOIN room r ON c.roomID = r.roomID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 

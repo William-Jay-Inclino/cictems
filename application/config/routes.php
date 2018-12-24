@@ -138,6 +138,7 @@ $route['reports/student/download/(:any)/(:any)/(:any)/(:any)'] = 'reports_studen
 
 $route['reports/grade'] = 'reports_grade';
 $route['reports/grade/by-class/(:num)'] = 'reports_grade/by_class/$1';
+$route['reports/grade/(:any)/(:num)'] = 'reports_grade/download/$1/$2';
 $route['reports/grade/(:num)'] = 'reports_grade/index/$1';
 
 $route['reports/remark'] = 'reports_remark';
