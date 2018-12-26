@@ -19,7 +19,10 @@
 	</style>
 </head>
 <body>
-
+	<?php 
+		echo "Name: ".$student->ln.', '.$student->fn.' '; if($student->mn){ echo $student->mn.'.';} 
+	?>
+	<br><br>
 	<div class="has-text-centered">
 		<?php 
 			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";

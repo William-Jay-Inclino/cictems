@@ -4,6 +4,10 @@
    <section class="section">
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
+
+        <a :href="'<?php echo base_url() ?>reports/class/download/' + term.termID" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+        <br><br>
+
         <div class="box">
           <div class="columns">
             <div class="column">

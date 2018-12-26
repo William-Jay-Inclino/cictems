@@ -3,6 +3,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Class_List extends CI_Model{
 
+	function download($termID){
+		$arr = [];
+
+		$sections = $this->db->query("
+			SELECT DISTINCT s.secID,s.secName FROM section s 
+			INNER JOIN class c ON s.secID = c.secID 
+			WHERE c.termID = $termID ORDER BY s.secName ASC
+			")->result();
+
+		foreach($sections as $section){
+			$classes = $this->db->query("
+				SELECT c.classCode,s.subDesc,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+				FROM class c 
+				INNER JOIN subject s ON c.subID = s.subID 
+				INNER JOIN room r ON c.roomID = r.roomID 
+				INNER JOIN day d ON c.dayID = d.dayID 
+				INNER JOIN faculty f ON c.facID = f.facID 
+				INNER JOIN users u ON f.uID = u.uID 
+				WHERE c.secID = ".$section->secID." AND c.termID = $termID
+			")->result();
+			$arr[] = ['secName' => $section->secName, 'classes' => $classes];
+		}
+		return $arr;
+	}
+
+	function get_term($termID){
+		return $this->db->query("SELECT t.schoolYear, s.semDesc FROM term t INNER JOIN semester s ON t.semID=s.semID WHERE t.termID = $termID LIMIT 1")->row();
+	}
+
 	function get_class_list($termID, $courseID, $val = NULL){
 		$arr = [];
 

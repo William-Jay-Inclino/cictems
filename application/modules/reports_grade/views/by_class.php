@@ -16,17 +16,6 @@
    .row-10{
       width: 5%;
    }
-   .row-15{
-      width: 15%;
-   }
-   .row-20{
-      width: 20%;
-   }
-   td .cCode-style{
-      background-color: white;
-      text-align: center; 
-      vertical-align: middle;
-   }
    .table__wrapper {
   overflow-x: auto;
 }
@@ -73,36 +62,37 @@
                </h6>
                <hr>
                <div class="table__wrapper">
-                  <table class="table is-fullwidth is-bordered">
+                  <table class="table is-fullwidth is-bordered is-centered">
                      <tr class="tbl-headers">
-                        <th>Code</th>
-                        <th>Description</th>
-                        <th>Day</th>
-                        <th>Time</th>
-                        <th>Room</th>
-                        <th>Instructor</th>
-                        <th class="row-5">PR</th>
-                        <th class="row-5">MD</th>
-                        <th class="row-5">SF</th>
-                        <th class="row-5">F</th>
-                        <th class="row-5">FG</th>
-                        <th class="row-5">Equiv</th>
-                        <th class="row-10">Remarks</th>
+                        <th class="row-10" style="text-align: left">Code</th>
+                          <th class="row-10" style="text-align: left">Description</th>
+                          <th class="row-10" style="text-align: left">Instructor</th>
+                          <th class="row-5">PR</th>
+                          <th class="row-5">MD</th>
+                          <th class="row-5">SF</th>
+                          <th class="row-5">F</th>
+                          <th class="row-5">FG</th>
+                          <th class="row-5">Equiv</th>
+                          <th class="row-10">Remarks</th>
                      </tr>
                      <tr v-for="cc of c.class2">
-                        <td>{{cc.class.classCode}} <span v-if="cc.class.type == 'lab'"><b>(lab)</b></span> </td>
-                        <td> {{cc.class.subDesc}} </td>
-                        <td> {{cc.class.day}} </td>
-                        <td> {{cc.class.class_time}} </td>
-                        <td> {{cc.class.roomName}} </td>
-                        <td> {{cc.class.faculty}} </td>
+                        <td style="text-align: left">{{cc.class.classCode}} <span v-if="cc.class.type == 'lab'"><b>(lab)</b></span> </td>
+                        <td style="text-align: left"> {{cc.class.subDesc}} </td>
+                        <td style="text-align: left"> {{cc.class.faculty}} </td>
                         <td> {{cc.class.prelim}} </td>
                         <td> {{cc.class.midterm}} </td>
                         <td> {{cc.class.prefi}} </td>
                         <td> {{cc.class.final}} </td>
                         <td> {{cc.class.finalgrade}} </td>
                         <td> {{cc.equiv}} </td>
-                        <td> {{cc.class.remarks}} </td>
+                        <td>
+                           <span v-if="cc.class.remarks == 'Incomplete'">
+                              INC
+                           </span>
+                           <span v-else>
+                              {{cc.class.remarks}}
+                           </span>
+                        </td>
                      </tr>
                   </table>
                </div>

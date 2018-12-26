@@ -94,12 +94,10 @@ class mdl_Grade extends CI_Model{
 
 		foreach ($terms as $term) {
 			$sql2 = $this->db->query("
-				SELECT c.classID,s.type,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
+				SELECT c.classID,s.type,c.classCode,s.subDesc,CONCAT(u.ln,', ',u.fn) faculty,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
 				FROM studclass sc  
 				INNER JOIN class c ON sc.classID = c.classID 
 				INNER JOIN subject s ON c.subID = s.subID  
-				INNER JOIN room r ON c.roomID=r.roomID
-				INNER JOIN day d ON c.dayID=d.dayID
 				INNER JOIN faculty f ON c.facID=f.facID
 				INNER JOIN users u ON f.uID=u.uID
 				WHERE sc.studID = $studID AND sc.status = 'Enrolled' AND c.termID = ".$term->termID."
@@ -143,7 +141,7 @@ class mdl_Grade extends CI_Model{
 		if($val == NULL){
 			echo json_encode($this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row());	
 		}else{
-			return $this->db->select('CONCAT(u.fn," ",u.mn," ",u.ln) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row();
+			return $this->db->select('LEFT(u.mn,1) mn,u.fn,u.ln')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row();
 		}
 	}
 
