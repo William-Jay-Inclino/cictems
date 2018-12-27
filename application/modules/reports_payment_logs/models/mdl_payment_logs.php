@@ -3,6 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Payment_Logs extends CI_Model{
 
+	function download($dateFrom, $dateTo, $studID){
+
+	}
+
 	private function count_all(){
 		$query = $this->db->query("SELECT total FROM counter2 WHERE module = 'payment_logs' LIMIT 1");
 		$rs = $query->row();

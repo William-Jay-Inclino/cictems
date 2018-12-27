@@ -17,23 +17,23 @@
 					<td> <?php echo $record->term ?> </td>
 				</tr>
 				<tr>
-					<td><b>Fee:</b> </td>
+					<td><b>Academic activity:</b> </td>
 					<td> <?php echo $record->feeName ?> </td>
 				</tr>
 				<tr>
-					<td><b>Description:</b> </td>
+					<td><b>Year level & courses involved:</b> </td>
 					<td> <?php echo $record->feeDesc ?> </td>
 				</tr>
 				<tr>
-					<td><b>Amount:</b> </td>
+					<td><b>Contribution each student:</b> </td>
 					<td> <?php echo $record->amount ?> </td>
 				</tr>
 				<tr>
-					<td><b>Due date:</b> </td>
+					<td><b>Deadline of payment:</b> </td>
 					<td> <?php echo $record->dueDate ?> </td>
 				</tr>
 				<tr>
-					<td><b>Term:</b> </td>
+					<td><b>Status:</b> </td>
 					<td> 
 						<?php 
 							if($record->feeStatus == 'ongoing'){
@@ -68,7 +68,7 @@
 		    el: '#app',
 		    data: {
 		    	page:{
-		    		title: 'Fee successfully added!',
+		    		title: 'Contribution successfully added!',
 		    		add: '<?php echo base_url() ?>maintenance/fees/form',
 		    		edit: '<?php echo base_url()."maintenance/fees/form/".$record->feeID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/fees',

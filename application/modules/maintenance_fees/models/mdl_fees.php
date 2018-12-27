@@ -38,7 +38,7 @@ class mdl_Fees extends CI_Model{
 		echo json_encode($output);
 	}
 
-	function read($option = 'feeName',$search_val = NULL, $page = '1', $per_page = '10',$termID = 24){
+	function read($search_val = NULL, $page = '1', $per_page = '10',$termID = 24){
 		$start = ($page - 1) * $per_page;
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
@@ -51,7 +51,7 @@ class mdl_Fees extends CI_Model{
 		}else{
 			$query = $this->db->query("
 				SELECT feeID,termID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
-				WHERE $option LIKE '%".$search_val."%' AND termID = $termID
+				WHERE feeName LIKE '%".$search_val."%' AND termID = $termID
 				LIMIT $start, $per_page"
 			);
 			$num_records = $query->num_rows();
@@ -341,17 +341,108 @@ class mdl_Fees extends CI_Model{
 	function cancelPayment($feeID){
 		$this->db->trans_start();
 		$amount = $this->db->select('amount')->get_where('fees', "feeID = $feeID", 1)->row()->amount;
-		$payers = $this->db->select('sfID,payable')->get_where('stud_fee', "feeID = $feeID AND payable < '$amount'")->result();
+		$payers = $this->db->select('sfID,payable,receivable')->get_where('stud_fee', "feeID = $feeID AND payable < '$amount'")->result();
 
 		$this->db->update('fees', ['feeStatus'=>'cancelled'], "feeID = $feeID");
-		//$this->db->update('stud_fee', ['is_refunded'=>'no', 'receivable'=>"$amount - payable"], "feeID = $feeID AND payable < '$amount'");
 		foreach($payers as $p){
-			$this->db->update('stud_fee', ['receivable'=>$amount - $p->payable], "sfID = ".$p->sfID);
+			if($p->receivable > 0){
+				$this->db->update('stud_fee', ['receivable'=>$amount + $p->receivable], "sfID = ".$p->sfID);
+			}else{
+				$this->db->update('stud_fee', ['receivable'=>$amount - $p->payable], "sfID = ".$p->sfID);	
+			}
 		}
-		//echo $this->db->last_query(); die();
 		$this->db->update('stud_fee', ['payable'=>0.00], "feeID = $feeID");
 		
 		$this->db->trans_complete();
+	}
+
+	function populate_transfer_fee($termID, $feeID){
+		echo json_encode(
+			$this->db->query("SELECT feeID, feeName FROM fees WHERE termID = $termID AND feeID <> $feeID AND feeStatus <> 'cancelled'")->result()
+		);
+	}
+
+	function transferFee(){
+		$affected_students = [];
+		$current_fee = $this->input->post("current_fee");
+		$transferred_feeID = $this->input->post("transferred_fee");
+		$transferred_feeName = $this->db->select('feeName')->get_where('fees', "feeID = $transferred_feeID", 1)->row()->feeName;
+
+		$this->db->trans_start();
+
+		$feeAmount = $this->db->select('amount')->get_where('fees', "feeID = $current_fee", 1)->row()->amount;
+
+		$students = $this->db->query("
+			SELECT sf.studID,sf.payable,sf.receivable,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,c.courseCode,y.yearDesc
+			FROM stud_fee sf 
+			INNER JOIN student s ON sf.studID = s.studID 
+			INNER JOIN studprospectus sp ON s.studID = sp.studID 
+			INNER JOIN prospectus p ON sp.prosID = p.prosID  
+			INNER JOIN course c ON p.courseID = c.courseID 
+			INNER JOIN year y ON s.yearID = y.yearID 
+			INNER JOIN users u ON s.uID = u.uID   
+			WHERE sf.feeID = $current_fee AND sf.payable < $feeAmount
+		")->result();
+		
+		foreach($students as $student){
+			if($student->receivable > 0){
+				$amount_refundable = $feeAmount + $student->receivable;
+			}else{
+				$amount_refundable = $feeAmount - $student->payable;
+			}
+
+			$transferred_fee = $this->db->query("SELECT payable,receivable FROM stud_fee WHERE feeID = $transferred_feeID AND studID = ".$student->studID." LIMIT 1")->row();
+
+			if($transferred_fee){
+				if($transferred_fee->payable > 0){
+					$diff = $transferred_fee->payable - $amount_refundable; // if negative naay sukli. ma refundable na
+					if($diff < 0){
+						$refundable = abs($diff);
+					}else{
+						$payable = $diff;
+					}
+				}else if($transferred_fee->receivable >= 0){
+					$refundable = $transferred_fee->receivable + $amount_refundable;
+				}
+
+				if($refundable){
+					$this->db->update('stud_fee', ['payable'=>0.00, 'receivable'=>$refundable], "studID = ".$student->studID." AND feeID = $transferred_feeID");
+				}else{
+					$this->db->update('stud_fee', ['payable'=>$payable], "studID = ".$student->studID." AND feeID = $transferred_feeID");
+				}
+				$this->db->update('stud_fee', ['payable'=>0.00, 'receivable'=>0.00], "studID = ".$student->studID." AND feeID = $current_fee");
+
+				$logs['studID'] = $student->studID;
+				$logs['uID'] = $this->session->userdata('uID');
+				$logs['feeID'] = $current_fee;
+				if($refundable){
+					$logs['amount'] = $refundable;
+				}else{
+					$logs['amount'] = $payable;
+				}
+				$logs['action'] = 'transfer debit to '.$transferred_feeName;
+
+				$this->db->insert('payments', $logs);
+
+				$affected_students[] = ['student' => $student, 'amount_transferred' => $amount_refundable];
+
+			}else{
+				if($student->receivable > 0){
+					$this->db->update('stud_fee', ['receivable'=>$feeAmount + $student->receivable],  "studID = ".$student->studID." AND feeID = $current_fee");
+				}else{
+					$this->db->update('stud_fee', ['receivable'=>$feeAmount - $student->payable],  "studID = ".$student->studID." AND feeID = $current_fee");	
+				}
+			}
+
+		}
+		$this->db->update('fees', ['feeStatus'=>'cancelled'], "feeID = $current_fee");
+		$this->db->update('stud_fee', ['payable'=>0.00], "feeID = $current_fee");
+		//$this->cancelPayment($current_fee);
+
+		$this->db->trans_complete();
+
+		echo json_encode($affected_students);
+
 	}
 
 }

@@ -20,14 +20,14 @@
 	</section>
 	<div class="container" style="max-width: 1000px;">
 		<div class="box">
-			<h5 class="title is-5">Fee Info</h5>
+			<h5 class="title is-5">Contribution Info</h5>
 			<hr>	
 			<table class="table is-fullwidth">
 				<thead>
-					<th>Name of fee</th>
-					<th>Description</th>
-					<th>Amount</th>
-					<th>Due date</th>
+					<th>Academic activity</th>
+					<th>Year level & courses involved</th>
+					<th>Contribution each student</th>
+					<th>Deadline of payment</th>
 					<th>Status</th>
 				</thead>
 				<tbody>
@@ -92,6 +92,7 @@
 			<hr>
 			<table class="table is-fullwidth">
 				<thead>
+					<th>#</th>
 					<th>Control no.</th>
 					<th>Name</th>
 					<th>Course</th>
@@ -100,12 +101,13 @@
 				</thead>
 				<tbody>
 					<tr v-for="student, i of involved_students">
+						<td> {{++i}} </td>
 						<td> {{student.controlNo}} </td>
 						<td> {{student.name}} </td>
 						<td> {{student.courseCode}} </td>
 						<td> {{student.yearDesc}} </td>
 						<td style="text-align: center">
-							<button class="button is-danger is-small is-outlined" @click="removeStud(i)">
+							<button class="button is-danger is-small is-outlined" @click="removeStud(--i)">
 								<i class="fa fa-times"></i>
 							</button>
 						</td>

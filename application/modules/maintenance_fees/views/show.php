@@ -18,7 +18,7 @@
 					<i class="fa fa-trash"></i>
 				</button>
 				<div class="is-pulled-right">
-					<button class="button is-danger" @click="cancelPayment">Cancel Payment</button>
+					<button class="button is-danger" @click="cancelPayment">Cancel Contribution</button>
 					<a :href="page.involved" class="button is-primary">Involved Students</a>
 				</div>
 				<hr>
@@ -29,19 +29,19 @@
 					<td> {{term.term}} </td>
 				</tr>
 				<tr>
-					<td><b>Name of fee:</b> </td>
+					<td><b>Academic activity:</b> </td>
 					<td> {{feeName}} </td>
 				</tr>
 				<tr>
-					<td><b>Description:</b> </td>
+					<td><b>Year level & courses involved:</b> </td>
 					<td> {{feeDesc}} </td>
 				</tr>
 				<tr>
-					<td><b>Amount:</b> </td>
+					<td><b>Contribution each student:</b> </td>
 					<td> {{amount}} </td>
 				</tr>
 				<tr>
-					<td><b>Due Date:</b> </td>
+					<td><b>Deadline of payment:</b> </td>
 					<td> {{dueDate}} </td>
 				</tr>
 				<tr>
@@ -134,31 +134,54 @@
 					 })
 		    	},
 		    	cancelPayment(){
+
 		    		swal({
-					  title: "Are you sure?",
-					  text: "Once cancelled, you will not be able to edit this fee and students who paid can be refunded",
-					  icon: "warning",
-					  buttons: {
-					  	cancel: true,
-					  	confirm: {
-					  		closeModal: false
-					  	}
-					  },
-					  dangerMode: true
-					})
-					.then((cancel) => {
-					  if (cancel) {
-					  	this.$http.get('<?php echo base_url() ?>maintenance_fees/cancelPayment/'+this.id)
-		        		.then(response => {
-		        			console.log(response.body);
-		        		this.feeStatus = 'cancelled'
-					    swal('Success!', 'Students who paid can now claim their refund!', 'success')
-						 }, e => {
-						 	console.log(e.body)
-						 })
-					    
-					  }
-					})
+		    			title: "Select option",
+		    			text: "(Cancel & Refund) will refund paid students while (Cancel & Transfer) will transfer the debit to another contribution",
+		    			icon: "info",
+		    			buttons: {
+		    				Cancel: {
+		    					text: "Cancel & Refund",
+		    					value: "Cancel"
+		    				},
+		    				Cancel2: {
+		    					text: "Cancel & Transfer",
+		    					value: "Cancel2"
+		    				}
+		    			}
+		    		})
+		    		.then(action => {
+		    			if(action == "Cancel"){
+		    				swal({
+							  title: "Are you sure?",
+							  text: "Once cancelled, you will not be able to edit this fee and students who paid can be refunded",
+							  icon: "warning",
+							  buttons: {
+							  	cancel: true,
+							  	confirm: {
+							  		closeModal: false
+							  	}
+							  },
+							  dangerMode: true
+							})
+							.then((cancel) => {
+							  if (cancel) {
+							  	this.$http.get('<?php echo base_url() ?>maintenance_fees/cancelPayment/'+this.id)
+				        		.then(response => {
+				        			console.log(response.body);
+				        		this.feeStatus = 'cancelled'
+							    swal('Success!', 'Students who paid can now claim their refund!', 'success')
+								 }, e => {
+								 	console.log(e.body)
+								 })
+							    
+							  }
+							})
+		    			}else{
+		    				window.location.href = "<?php echo base_url() ?>maintenance/fees/transfer-fee/" + this.id
+		    			}
+		    		})
+		    		
 		    	}
 		    },
 

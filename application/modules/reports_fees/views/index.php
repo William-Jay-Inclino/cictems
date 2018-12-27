@@ -20,21 +20,21 @@
         </div>
         
         <div class="box">
-          <label class="label">Select Fee</label>
+          <label class="label">Select academic activity</label>
           <multiselect @input="getStudents" v-model="fee" track-by="feeID" label="feeName" :options="fees" :allow-empty="false"></multiselect>
         </div>
           
         <div v-if="fee">
 
           <div class="box">
-            <h5 class="title is-5">Fee Info</h5>
+            <h5 class="title is-5"> <span class="icon has-text-primary"> <i class="fa fa-info-circle"></i> </span> Contribution Info</h5>
             <hr>
             <table class="table is-fullwidth">
               <thead>
-                <th>Name of fee</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Due date</th>
+                <th>Academic activity</th>
+                <th>Year level & courses involved</th>
+                <th>Contribution each student</th>
+                <th>Deadline of payment</th>
                 <th>Status</th>
               </thead>
               <tbody>
@@ -60,7 +60,7 @@
           <div class="box">
             <div class="columns">
               <div class="column">
-                <h5 class="title is-5">Involved Students</h5>
+                <h5 class="title is-5"> <span class="icon has-text-primary"> <i class="fa fa-group"></i> </span> Involved Students</h5>
               </div>
               <div class="column">
                 <multiselect v-model="filter" track-by="filterID" label="filterDesc" :options="filters" @input="filterStudents" placeholder="Filter students"></multiselect>
@@ -199,27 +199,26 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     getStudents(){
       this.filter = null
-      const fee = this.fee
       this.$http.get('<?php echo base_url() ?>reports_fees/getStudents/'+this.fee.feeID)
         .then(response => {
           const res = response.body
           const students = res.students 
           this.fee.amount = res.amount
           const students2 = []
-          let status = ''
+
           for(let s of students){
-            if(fee.feeStatus == 'cancelled' && s.payable == 0 & s.receivable == 0){
+            if(this.fee.feeStatus == 'cancelled' && s.payable == 0 && s.receivable == 0){
               status = ''
-            }else if(s.payable > 0 && s.receivable == 0){
-              if(s.payable == fee.amount){
-                status = 'Unpaid'
-              }else if(s.payable == 0){
-                status = 'Paid'
-              }else{
+            }else if(s.payable > 0){
+              if(s.payable < this.fee.amount){
                 status = 'Partial'
+              }else{
+                status = 'Unpaid'
               }
-            }else if(s.receivable > 0 && s.payable == 0){
+            }else if(s.receivable > 0){
               status = 'Refundable'
+            }else{
+              status = 'Paid'
             }
 
             students2.push({
@@ -232,8 +231,10 @@ document.addEventListener('DOMContentLoaded', function() {
               status: status,
             })
           }
+
           this.students = students2
           this.students2 = students2
+          console.log(students2);
       }, e => {
         console.log(e.body)
       })
@@ -246,7 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
           Refundable: true,
         }
       }).then(val => {
-        window.open('<?php echo base_url() ?>reports/fees/download/'+this.term.termID+'/'+val.toLowerCase(), '_blank')
+        if(val){
+          window.open('<?php echo base_url() ?>reports/fees/download/'+this.term.termID+'/'+val.toLowerCase(), '_blank')  
+        }
+        
       })
     }
    },

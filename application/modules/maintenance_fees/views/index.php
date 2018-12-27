@@ -44,15 +44,6 @@
 				<div class="column is-6 is-offset-4">
 					<div class="is-pulled-right">
 						<div class="field has-addons">
-							<div class="control">
-								<span class="select">
-									<select v-model="option">
-										<option v-for="option in search_options" :value="option.value">
-											{{ option.text }}
-										</option>
-									</select>
-								</span>
-							</div>
 						  <div class="control">
 						    <input class="input" type="text" v-model="search_value" placeholder="Search" v-on:keyup.enter="search">
 						  </div>
@@ -70,10 +61,10 @@
 			<br>
 			<table class="table is-fullwidth">
 				<thead>
-					<th>Name of fee</th>
-					<th>Description</th>
-					<th>Amount</th>
-					<th>Due date</th>
+					<th>Academic Activity</th>
+					<th>Year level & courses involved</th>
+					<th>Contribution each student</th>
+					<th>Deadline of payment</th>
 					<th>Status</th>
 					<th>View</th>
 				</thead>
@@ -143,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	termID: '<?php echo $current_term->termID; ?>',
 	    	page:{
 		    	data_list: 'List of Fees',
-		    	add: 'Add Fees',
+		    	add: 'Add Contribution',
 		    	add_link: '<?php echo base_url() ?>maintenance/fees/form',
 		    	show: '<?php echo base_url() ?>maintenance/fees/show'
 	    	},
@@ -155,11 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
     		current_page: 1,
 
     		search_value: '',
-    		option: 'feeName',
-    		search_options: [
-    			{value: 'feeName', text: 'Fee'},
-    			{value: 'feeDesc', text: 'Description'}
-    		],
 
 	        records: [],
 	        terms: []
@@ -207,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        	this.current_page = page
 	        	this.loading = true
 	        	this.msg = false
-	        	this.$http.get('<?php echo base_url() ?>maintenance_fees/read/'+this.option+'/'+this.value + '/' + page + '/' + this.per_page + '/' + this.current_term.termID)
+	        	this.$http.get('<?php echo base_url() ?>maintenance_fees/read/'+this.value + '/' + page + '/' + this.per_page + '/' + this.current_term.termID)
 	        	.then(response => {
 	        		const c = response.body
 	        		console.log(c)

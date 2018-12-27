@@ -26,11 +26,8 @@
       <div class="container">
          <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
 
-         <div v-if="selected_student">
-            <a :href="'<?php echo base_url() ?>reports/grade/download-by-class/' + selected_student.studID" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
-            <br><br>
-         </div>
-
+         <a :disabled="!selected_student" :href="btnGenerate_link" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+         <br><br>
          <div class="box">
             <div class="columns">
                <div class="column is-half">
@@ -115,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+      btnGenerate_link: '<?php echo base_url() ?>reports/grade/download-by-class/',
       page_title: 'Grade Reports',
       loader: false,
       studID: '<?php echo $studID ?>',
@@ -135,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
          if(val === null){
             this.ready = false
          }else{
+            this.btnGenerate_link += this.selected_student.studID
             this.get_class_grade()
          }
       }

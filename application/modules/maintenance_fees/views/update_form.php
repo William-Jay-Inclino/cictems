@@ -22,7 +22,7 @@
 			  </div>
 			</div>
 			<div class="field">
-			  <label class="label">Name of fee</label>
+			  <label class="label">Academic activity</label>
 			  <div class="control">
 				  	<input class="input" type="text" v-model="form.feeName">
 			  </div>
@@ -31,7 +31,7 @@
 				</p>
 			</div>
 			<div class="field">
-			  <label class="label">Description</label>
+			  <label class="label">Year level & courses involved</label>
 			  <div class="control">
 				  	<textarea class="textarea" v-model.trim="form.feeDesc"></textarea>
 			  </div>
@@ -40,7 +40,7 @@
 				</p>
 			</div>
 			<div class="field">
-			  <label class="label">Amount</label>
+			  <label class="label">Contribution each student</label>
 			  <div class="control">
 				  	<input type="text" v-model.number="form.amount" class="input">
 			  </div>
@@ -49,9 +49,9 @@
 				</p>
 			</div>
 			<div class="field">
-			  <label class="label">Due date</label>
+			  <label class="label">Deadline of payment</label>
 			  <div class="control">
-				  	<input class="input" type="date" v-model="form.dueDate">
+				  	<input class="input" type="text" v-model="form.dueDate">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.dueDate}}
@@ -77,7 +77,7 @@
 		    el: '#app',
 		    data: {
 		    	page:{
-		    		title: 'Edit Fee',
+		    		title: 'Edit Contribution',
 		    		list: '<?php echo base_url() ?>maintenance/fees',
 		    		show: '<?php echo base_url()."maintenance/fees/show/".$record->feeID ?>'
 		    	},

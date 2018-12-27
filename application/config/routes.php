@@ -94,6 +94,7 @@ $route['maintenance/fees/form'] = 'maintenance_fees/form';
 $route['maintenance/fees/form/(:num)'] = 'maintenance_fees/form/$1';
 $route['maintenance/fees/show/(:num)'] = 'maintenance_fees/show/$1';
 $route['maintenance/fees/form-success/(:num)'] = 'maintenance_fees/success_page/$1';
+$route['maintenance/fees/transfer-fee/(:num)'] = 'maintenance_fees/transfer_fee/$1';
 $route['maintenance/fees/involved-students/(:num)'] = 'maintenance_fees/involved_page/$1';
 
 // --------------END MAINTENANCE-----------------
@@ -147,6 +148,7 @@ $route['reports/fees'] = 'reports_fees';
 $route['reports/fees/download/(:num)/(:any)'] = 'reports_fees/download/$1/$2';
 
 $route['reports/payment-logs'] = 'reports_payment_logs';
+$route['reports/payment-logs/download/(:any)/(:any)/(:any)'] = 'reports_payment_logs/download/$1/$2/$3';
 
 $route['reports/class'] = 'reports_class';
 $route['reports/class/download/(:num)'] = 'reports_class/download/$1';

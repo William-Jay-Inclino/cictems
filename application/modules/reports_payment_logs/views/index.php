@@ -15,6 +15,8 @@
   <section class="section">
     <div class="container">
       <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
+      <a :href="report_link" target="_blank" class="button is-primary is-pulled-right" class="button is-primary" :disabled="!filteredDate">Generate Report</a>
+      <br><br>
       <div class="box">
         <h5 class="title is-5">Filter</h5>
         <hr>
@@ -51,14 +53,15 @@
         <div class="table__wrapper">
           <table class="table is-fullwidth">
             <thead>
-              <th>Control no</th>
-              <th>Student</th>
-              <th>Payee</th>
-              <th>Fee</th>
               <th>Date</th>
+              <th>OR#</th>
+              <th>StudID</th>
+              <th>Student</th>
+              <th>User</th>
+              <th>Fee</th>
               <th>Amount</th>
               <th>Action</th>
-              <th>OR #</th>
+              
             </thead>
 
             <td colspan="7" class="has-text-centered" v-show="loading">Loading please wait ...</td>
@@ -66,14 +69,15 @@
 
             <tbody>
               <tr v-for="record, i in records">
+                <td> {{record.paidDate}} </td>
+                <td> {{record.or_number}} </td>
                 <td> {{record.controlNo}} </td>
                 <td> {{record.student}} </td>
                 <td> {{record.faculty}} </td>
                 <td> {{record.feeName}} </td>
-                <td> {{record.paidDate}} </td>
                 <td> {{record.amount}} </td>
                 <td> {{record.action}} </td>
-                <td> {{record.or_number}} </td>
+                
               </tr>
             </tbody>
           </table>
@@ -115,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+      btnGenerate_link: '<?php echo base_url() ?>reports/payment-logs/download/',
       page_title: 'Payment Log Reports',
       loading: true,
       msg: false,
@@ -152,6 +157,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
    },
    computed: {
+    report_link(){
+      const fd = this.filteredDate2
+      const studID = (this.student) ? this.student.studID : 0
+      const date_filtered = (fd) ? fd.dateFrom + '/' + fd.dateTo : 'no-date'
+
+      return this.btnGenerate_link + date_filtered + '/' +studID
+    },
     pages(){
       return Math.ceil(this.total_records / this.per_page)
     },
@@ -188,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       this.$http.post('<?php echo base_url() ?>reports_payment_logs/populate', data)
       .then(response => {
-        console.log(response.body)
         this.loading = false
         const r = response.body
         this.records = r.records

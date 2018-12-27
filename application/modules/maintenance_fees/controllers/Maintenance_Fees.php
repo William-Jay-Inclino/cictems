@@ -11,7 +11,7 @@ class Maintenance_Fees extends MY_Controller{
 	}
 
 	function _remap($method, $params = []){
-        if ($method != 'index' && $method != 'form' && $method != 'show' && $method != 'success_page' && $method != 'involved_page'){
+        if ($method != 'index' && $method != 'form' && $method != 'show' && $method != 'success_page' && $method != 'involved_page' && $method != 'transfer_fee'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -51,12 +51,18 @@ class Maintenance_Fees extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
+	function transfer_fee($id){
+		$this->_data['module_view'] = 'transfer_fee';
+		$this->_data['record'] = $this->mdl_fees->read_one($id[0]);
+		echo Modules::run($this->_template, $this->_data);
+	}
+
 	function create(){
 		$this->mdl_fees->create();
 	}
 
 	function read($data){ 
-		$this->mdl_fees->read($data[0], $data[1], $data[2], $data[3], $data[4]);
+		$this->mdl_fees->read($data[0], $data[1], $data[2], $data[3]);
 	}
 
 	function update(){ //parameter is an array since _remap method is used
@@ -97,6 +103,14 @@ class Maintenance_Fees extends MY_Controller{
 
 	function cancelPayment($id){
 		$this->mdl_fees->cancelPayment($id[0]);			
+	}
+
+	function populate_transfer_fee($id){
+		$this->mdl_fees->populate_transfer_fee($id[0],$id[1]);				
+	}
+
+	function transferFee(){
+		$this->mdl_fees->transferFee();					
 	}
 
 	private function prevent_url_access(){

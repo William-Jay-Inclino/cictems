@@ -10,7 +10,7 @@
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
         <br>
-        <a v-if="selected_pros" :href="'<?php echo base_url() ?>reports/prospectus/download/' + selected_pros.prosID" target="_blank" class="button is-primary is-pulled-right">Generate Report</a> <br><br><br>
+        <a :disabled="!selected_pros" :href="btnGenerate_link" target="_blank" class="button is-primary is-pulled-right">Generate Report</a> <br><br><br>
          <div class="box columns bg-white">
             <div class="column">
                <div class="field">
@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
    el: '#app',
    data: {
+      btnGenerate_link: '<?php echo base_url() ?>reports/prospectus/download/',
      page_title: 'Prospectus Reports',
      name : '<?php echo $data->name ?>',
      description : '<?php echo $data->description ?>',
@@ -195,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.ready = false
          }else{
             this.get_subjects(value.prosID)
+            this.btnGenerate_link += this.selected_pros.prosID
          }
       }
    },
