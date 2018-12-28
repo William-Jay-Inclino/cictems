@@ -3,10 +3,24 @@
 <head>
 	<meta charset="utf-8">
 	<title>Report</title>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
 	<style>
 		body {
-		  font-size:12px;
+		  font-size:10px;
+		}
+		.tbl-headers{
+     		 background-color: #f2f2f2 
+   		}
+   		table, td, th {  
+		  	text-align: left;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		th, td {
+		  padding: 3px;
 		}
 	</style>
 </head>
@@ -14,7 +28,7 @@
 	
 	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 
-	<div class="has-text-centered">
+	<div style="text-align: center">
 			<b>LIST OF <?php echo strtoupper($type) ?> ACCOUNTS<br>
 			S.Y <?php echo $data['term'] ?> <br>
 			as of <?php echo date("F j, Y"); ?><br><br>
@@ -24,7 +38,7 @@
 	<?php 
 
 		if($type == 'paid'){ ?>
-			<table class="table" style="width: 50%">
+			<table>
 				<tr>
 					<th>No.</th>
 					<th>Name</th>
@@ -33,7 +47,7 @@
 					$ctr = 1;
 					foreach($data['students'] as $student){
 						echo "<tr>";
-							echo "<td>".$ctr."</td>";
+							echo "<td style='width: 10%'>".$ctr."</td>";
 							echo "<td>".$student->name."</td>";
 						echo "</tr>";
 						++$ctr;
@@ -42,7 +56,7 @@
 			</table>
 			<?php
 		}else{ ?>
-			<table class="table" style="width: 70%">
+			<table style="width: 70%">
 				<tr>
 					<th>No.</th>
 					<th>Name</th>
@@ -55,7 +69,7 @@
 					$tot_amount = 0;
 					foreach($data['students'] as $student){ ?>
 						<tr>
-							<td> <?php echo $ctr ?> </td>
+							<td style="width: 10%"> <?php echo $ctr ?> </td>
 							<td> <?php echo $student->name ?> </td>
 							<td> <?php echo $student->amount ?> </td>
 						</tr>

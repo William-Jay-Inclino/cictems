@@ -3,44 +3,38 @@
 <head>
 	<meta charset="utf-8">
 	<title>Grade Sheet</title>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
 	<style>
 		body {
-		  font-size:12px;
-		  /*padding: 0;
-		  font-family: 'Raleway', sans-serif;
-		  -webkit-font-smoothing: antialiased !important;*/
-		}
-		/*.is-centered th {
-		    text-align: center;
-		    vertical-align: middle;
-		}*/
-		/*.is-centered td {
-		    text-align: center;
-		}*/
-		.my-border{
-			border: 1px solid black;
-		}
-		.no-border td{
-			border: 1px solid black;
-			border-bottom: 1px;
+		  font-size:10px;
 		}
 		.tbl-headers{
      		 background-color: #f2f2f2 
    		}
+   		table, td, th {  
+		  	text-align: left;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		th, td {
+		  padding: 3px;
+		}
 	</style>
 </head>
 <body>
 
 	<!-- <section class="section"> -->
-		<div class="has-text-centered">
+		<div style="text-align: center">
 				<b>WESTERN LEYTE COLLEGE<br>
 				A. Bonifacio St., Ormoc City <br>
 				Tel. Nos (053) 255-8549; 561-5310<br><br>
 				GRADE SHEET</b>
 		</div>
 		<br>
-		<table style="width: 100%;">
+		<table>
 			<tr>
 				<th><?php echo $data['class']->subCode ?></th>
 				<th><?php echo $data['class']->subDesc ?></th>
@@ -56,7 +50,7 @@
 		</table>
 		<br><br>
 
-		<table class="table is-centered my-border" style="width: 100%;">
+		<table border="1">
 			<tr class="tbl-headers">
 				<th>No.</th>
 				<th style="text-align: left">Student's Name</th>
@@ -82,7 +76,7 @@
 						<td> <?php echo $student->finalgrade; ?> </td>
 						<td> 
 							<?php 
-								if(($student->equiv == NULL || $student->equiv == '') && $student->remarks != 'INCOMPLETE'){
+								if($student->equiv == NULL && $student->remarks != 'INCOMPLETE' && $data['class']->status == 'locked'){
 									echo "5.0";
 								}else{
 									echo $student->equiv;
@@ -106,8 +100,8 @@
 			$start = 0;
 			$end = 10; 
 		?>
-		
-		<table class="table no-border" style="font-size: 11px">
+		<br>
+		<table style="width: 50%">
 			<tr>
 				<th colspan="3" style="text-align: left">GRADING SYSTEM</th>
 			</tr>
@@ -154,7 +148,8 @@
 				
 			</tr>
 		</table>
-		<table class="table no-border" style="width: 100%;">
+		<br>
+		<table>
 			<tr>
 				<td style="text-align: right">Submitted by:</td>
 				<td></td>

@@ -25,6 +25,7 @@ class Reports_Payment_Logs extends MY_Controller{
 	function download($data){
 		$mpdf = new \Mpdf\Mpdf();
 		$this->_data['data'] = $this->mdl_payment_logs->download($data[0],$data[1],$data[2]);
+		$this->_data['date_log'] = ['from'=> $data[0], 'to'=>$data[1]];
 
 		$html = $this->load->view($this->_data['module'].'/download',$this->_data, true);
 

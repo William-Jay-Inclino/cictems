@@ -4,7 +4,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class mdl_Payment_Logs extends CI_Model{
 
 	function download($dateFrom, $dateTo, $studID){
-
+		if($studID == 0){
+			return $this->db->query("
+				SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+				f.feeName,p.paidDate,p.amount,p.action,p.or_number
+				FROM payments p
+				INNER JOIN student s ON p.studID = s.studID 
+				INNER JOIN users u ON s.uID = u.uID 
+				INNER JOIN users uu ON p.uID = uu.uID  
+				INNER JOIN fees f ON p.feeID = f.feeID 
+				WHERE p.paidDate BETWEEN '$dateFrom' AND DATE_ADD('$dateTo', INTERVAL 1 DAY)
+				ORDER BY p.paidDate DESC
+			")->result();
+		}else{
+			return $this->db->query("
+				SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+				f.feeName,p.paidDate,p.amount,p.action,p.or_number
+				FROM payments p
+				INNER JOIN student s ON p.studID = s.studID 
+				INNER JOIN users u ON s.uID = u.uID 
+				INNER JOIN users uu ON p.uID = uu.uID  
+				INNER JOIN fees f ON p.feeID = f.feeID 
+				WHERE (p.paidDate BETWEEN '$dateFrom' AND DATE_ADD('$dateTo', INTERVAL 1 DAY)) AND (p.studID = $studID)
+				ORDER BY p.paidDate DESC
+			")->result();
+		}
 	}
 
 	private function count_all(){
@@ -32,7 +56,7 @@ class mdl_Payment_Logs extends CI_Model{
 				$dateTo = $this->input->post("filteredDate")['dateTo'];
 
 				$records = $this->db->query("
-					SELECT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+					SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
 					f.feeName,p.paidDate,p.amount,p.action,p.or_number
 					FROM payments p
 					INNER JOIN student s ON p.studID = s.studID 
@@ -46,7 +70,7 @@ class mdl_Payment_Logs extends CI_Model{
 				$data['total_rows'] = $this->db->query("SELECT COUNT(1) total_rows FROM payments WHERE paidDate BETWEEN '$dateFrom' AND DATE_ADD('$dateTo', INTERVAL 1 DAY)")->row()->total_rows;
 			}else if(!$filteredDate && $studID){
 				$records = $this->db->query("
-					SELECT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+					SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
 					f.feeName,p.paidDate,p.amount,p.action,p.or_number
 					FROM payments p
 					INNER JOIN student s ON p.studID = s.studID 
@@ -63,7 +87,7 @@ class mdl_Payment_Logs extends CI_Model{
 				$dateTo = $this->input->post("filteredDate")['dateTo'];
 
 				$records = $this->db->query("
-					SELECT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+					SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
 					f.feeName,p.paidDate,p.amount,p.action,p.or_number
 					FROM payments p
 					INNER JOIN student s ON p.studID = s.studID 
@@ -78,7 +102,7 @@ class mdl_Payment_Logs extends CI_Model{
 			}
 		}else{
 			$records = $this->db->query("
-				SELECT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
+				SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
 				f.feeName,p.paidDate,p.amount,p.action,p.or_number
 				FROM payments  p
 				INNER JOIN student s ON p.studID = s.studID 

@@ -9,7 +9,7 @@ class mdl_Classes extends CI_Model{
 		$data['sy'] = $term->schoolYear;
 
 		$data['class'] = $this->db->query("
-			SELECT c.classID,CONCAT(u.ln,', ',u.fn) as faculty,s.subCode,s.subDesc
+			SELECT c.classID,CONCAT(u.ln,', ',u.fn) as faculty,s.subCode,s.subDesc,c.status
 			FROM class c 
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID

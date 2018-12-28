@@ -3,26 +3,30 @@
 <head>
 	<meta charset="utf-8">
 	<title>Report</title>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
 	<style>
 		body {
 		  font-size:10px;
 		}
-		.my-border{
-			border: 1px solid black;
-		}
-		/*.table td:last-child{
-			border: 1px solid black;
-			border-bottom: 1px;
-		}*/
 		.tbl-headers{
      		 background-color: #f2f2f2 
    		}
+   		table, td, th {  
+		  	text-align: left;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		th, td {
+		  padding: 3px;
+		}
 	</style>
 </head>
 <body>
 
-	<div class="has-text-centered">
+	<div style="text-align: center;">
 		<?php 
 			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
 			echo "<b>COLLEGE OF ICT & ENGINEERING</b><br><br>";
@@ -35,15 +39,15 @@
 	
 	<?php 
 		foreach($data['subjects'] as $subjects){ ?>
-			<table class="table my-border" style="width: 100%">
+			<table border="1">
 				<tr>
 					<th colspan="4"><?php echo $subjects['term'] ?></th>
 				</tr>
 				<tr class="tbl-headers">
-					<th style="width: 28%">Course Code</th>
-					<th style="width: 32%">Descriptive Title</th>
-					<th style="width: 12%; text-align: center">Units</th>
-					<th style="width: 28%">Pre-requisites</th>
+					<th style="width: 25%">Course Code</th>
+					<th style="width: 40%">Descriptive Title</th>
+					<th style="width: 10%; text-align: center">Units</th>
+					<th style="width: 25%">Pre-requisites</th>
 				</tr>
 				<?php 
 					$total_sub = count($subjects['subjects']) - 1;
@@ -85,21 +89,39 @@
 		}
 	?>
 	
-	<table style="font-size: 8px; width: 100%">
+	<table style="font-size: 8px;">
 		<tr>
-			<td>
+			<td width="40%">
 				<table>
 					<tr>
 						<td>Prepared by: </td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
 						<td>
-							<br>
 							<?php echo $data2['populate']->name.'<br>'.$data2['populate']->description; ?>
 						</td>
 					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
 				</table>
 			</td>
-			<td>
-				<table class="table my-border" style="font-size: 9px;width: 100%">
+			<td style="text-align: right">
+				<table style="font-size: 9px; width: 70%;" border="1">
 					<tr class="tbl-headers">
 						<th colspan="3" style="text-align: center">SUMMARY OF COURSES</th>
 					</tr>

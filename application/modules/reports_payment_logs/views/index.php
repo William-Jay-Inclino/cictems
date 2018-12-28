@@ -55,7 +55,6 @@
             <thead>
               <th>Date</th>
               <th>OR#</th>
-              <th>StudID</th>
               <th>Student</th>
               <th>User</th>
               <th>Fee</th>
@@ -71,7 +70,6 @@
               <tr v-for="record, i in records">
                 <td> {{record.paidDate}} </td>
                 <td> {{record.or_number}} </td>
-                <td> {{record.controlNo}} </td>
                 <td> {{record.student}} </td>
                 <td> {{record.faculty}} </td>
                 <td> {{record.feeName}} </td>

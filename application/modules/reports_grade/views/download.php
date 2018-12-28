@@ -3,19 +3,26 @@
 <head>
 	<meta charset="utf-8">
 	<title>Report</title>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
 	
 	<style>
 		body {
 		  font-size:10px;
 		}
-		.my-border{
-			border: 1px solid black;
-		}
 		.tbl-headers{
      		 background-color: #f2f2f2 
    		}
+   		table, td, th {  
+		  	text-align: left;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		th, td {
+		  padding: 3px;
+		}
 	</style>
 </head>
 <body>
@@ -23,7 +30,7 @@
 		echo "Name: ".$student->ln.', '.$student->fn.' '; if($student->mn){ echo $student->mn.'.';} 
 	?>
 	<br><br>
-	<div class="has-text-centered">
+	<div style="text-align: center;">
 		<?php 
 			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
 			echo "<b>COLLEGE OF ICT & ENGINEERING</b><br><br>";
@@ -36,18 +43,18 @@
 	
 	<?php 
 		foreach($data['subjects'] as $subjects){ ?>
-			<table class="table my-border" style="width: 100%">
+			<table border="1">
 				<tr>
-					<th colspan="4"><?php echo $subjects['term'] ?></th>
+					<th colspan="7"><?php echo $subjects['term'] ?></th>
 				</tr>
 				<tr class="tbl-headers">
-					<th style="text-align: center">Grade</th>
-					<th>Course Code</th>
-					<th>Descriptive Title</th>
-					<th style="text-align: center">Units</th>
-					<th>Pre-requisites</th>
-					<th>School Year</th>
-					<th>Semester</th>
+					<th style="text-align: center; width: 5%">Grade</th>
+					<th style="width: 15%">Course Code</th>
+					<th style="width: 30%">Descriptive Title</th>
+					<th style="text-align: center; width: 5%">Units</th>
+					<th style="width: 15%">Pre-requisites</th>
+					<th style="width: 15%">School Year</th>
+					<th style="width: 15%">Semester</th>
 				</tr>
 				<?php 
 					$total_sub = count($subjects['subjects']) - 1;
@@ -110,21 +117,39 @@
 		}
 	?>
 	
-	<table style="font-size: 8px; width: 100%">
+	<table style="font-size: 8px;">
 		<tr>
-			<td>
+			<td width="40%">
 				<table>
 					<tr>
 						<td>Prepared by: </td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
 						<td>
-							<br>
 							<?php echo $data2['populate']->name.'<br>'.$data2['populate']->description; ?>
 						</td>
 					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
 				</table>
 			</td>
-			<td>
-				<table class="table my-border" style="font-size: 9px;width: 100%">
+			<td style="text-align: right">
+				<table style="font-size: 9px; width: 70%;" border="1">
 					<tr class="tbl-headers">
 						<th colspan="3" style="text-align: center">SUMMARY OF COURSES</th>
 					</tr>

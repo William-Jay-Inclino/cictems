@@ -14,7 +14,7 @@ class mdl_Fees extends CI_Model{
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE f.termID = $termID AND f.feeStatus <> 'cancelled'
 					GROUP BY sf.sfID
-					HAVING SUM(sf.payable) = 0 AND SUM(sf.receivable) = 0
+					HAVING SUM(sf.payable) = 0
 					ORDER BY name ASC
 				")->result();
 				break;
@@ -34,7 +34,7 @@ class mdl_Fees extends CI_Model{
 				")->result();
 				break;
 
-			default:
+			case 'refundable':
 				$students = $this->db->query("
 					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name, 
 					SUM(sf.receivable) AS amount
@@ -48,6 +48,8 @@ class mdl_Fees extends CI_Model{
 					ORDER BY name ASC
 				")->result();
 				break;
+				default:
+				show_404();
 		}
 		$data['students'] = $students;
 		$data['term'] = $this->db->query("SELECT CONCAT(t.schoolYear,' ',s.semDesc) term FROM term t INNER JOIN semester s ON t.semID = s.semID WHERE t.termID = $termID LIMIT 1")->row()->term;

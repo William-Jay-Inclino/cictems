@@ -3,17 +3,31 @@
 <head>
 	<meta charset="utf-8">
 	<title>Report</title>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
 	<style>
 		body {
 		  font-size:12px;
+		}
+		.tbl-headers{
+     		 background-color: #f2f2f2 
+   		}
+   		table, td, th {  
+		  	text-align: left;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		th, td {
+		  padding: 3px;
 		}
 	</style>
 </head>
 <body>
 	
 	<img src="<?php echo base_url(); ?>assets/img/banner.png">
-	<div class="has-text-centered">
+	<div style="text-align: center">
 			<b>LIST OF ENROLLED STUDENTS <?php if($data['courseCode']){echo "(".$data['courseCode'].")";} ?> <br>
 			<?php 
 				if($data['faculty']){
