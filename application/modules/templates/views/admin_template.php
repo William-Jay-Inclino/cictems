@@ -42,16 +42,16 @@
                  Class Grades
                </a>
                <div class="navbar-item has-dropdown is-hoverable">
-                 <a class="navbar-link <?php if($current_module == 26){echo 'nav-active';} ?>" href="#">
+                 <a class="navbar-link <?php if($current_module == 26 || $current_module == 27){echo 'nav-active';} ?>" href="#">
                    Schedule
                  </a>
                  <div class="navbar-dropdown is-boxed">
                   <a class="navbar-item <?php if($current_module == 26){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>schedule">
                    Manual
                  </a>
-                   <a class="navbar-item" href="#">
-                     Automatic &nbsp; <span class="tag is-primary is-rounded">soon</span>
-                   </a>
+                  <a class="navbar-item <?php if($current_module == 27){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>auto-schedule">
+                   Automatic
+                  </a>
                  </div>
                </div>
                <div class="navbar-item has-dropdown is-hoverable">

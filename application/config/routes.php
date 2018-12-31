@@ -27,6 +27,7 @@ $route['grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$
 
 $route['incomplete'] = 'incomplete';
 
+$route['auto-schedule'] = 'auto_schedule';
 
 // -------------------------MAINTENANCE---------------------------------
 

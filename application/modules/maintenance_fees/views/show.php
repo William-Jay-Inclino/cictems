@@ -177,7 +177,7 @@
 							    
 							  }
 							})
-		    			}else{
+		    			}else if(action == 'Cancel2'){
 		    				window.location.href = "<?php echo base_url() ?>maintenance/fees/transfer-fee/" + this.id
 		    			}
 		    		})
