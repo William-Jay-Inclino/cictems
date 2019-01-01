@@ -171,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	populate(){
 	    		this.$http.get('<?php echo base_url() ?>auto_schedule/populate/' + this.current_termID)
 	    		.then(res => {
-	    			console.log(res.body)
 	    			this.prospectuses = res.body.prospectuses
 	    			this.sections = res.body.sections
 	    			this.terms = res.body.terms
@@ -199,6 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	createSchedule(){
 	    		if(this.form.section.length == 0){
 	    			swal('Error', 'Unable to create schedule. Empty sections! ', 'error')
+	    		}else if(this.form.is_dt_auto == 'yes' && !this.form.day){
+	    			swal('Error', 'Unable to create schedule. Empty days! ', 'error')
 	    		}else{
 	    			this.isLoading = true
 	    			this.$http.post('<?php echo base_url() ?>auto_schedule/createSchedule', this.form)

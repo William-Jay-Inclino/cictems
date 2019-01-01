@@ -23,6 +23,7 @@ class mdl_auto_sched extends CI_Model{
 		$is_room_auto = $this->input->post('is_room_auto');
 		$is_faculty_auto = $this->input->post('is_faculty_auto');
 		$min_time = $this->input->post('min_time');
+		$min_time2 = $min_time;
 		$max_time = $this->input->post('max_time');
 		$break_min_time = $this->input->post('break_min_time');
 		$break_max_time = $this->input->post('break_max_time');
@@ -55,10 +56,56 @@ class mdl_auto_sched extends CI_Model{
 			$class = [];
 
 			$subjects = $this->db->query("
-				SELECT subID,specID,subCode FROM subject WHERE prosID = ".$section['prosID']." AND yearID = ".$section['yearID']." AND semID = ".$term['semID']."
+				SELECT subID,specID,subCode,units FROM subject WHERE prosID = ".$section['prosID']." AND yearID = ".$section['yearID']." AND semID = ".$term['semID']."
 			")->result();
 
 			if($is_dt_auto == 'yes'){
+				$noon_class = false;
+				foreach($subjects as $s){
+					$rand_day = $days[array_rand($days, 1)];
+					$dayID = $rand_day['dayID'];
+					$dayCount = $rand_day['dayCount'];
+					
+					$timeOut = $this->get_timeOut($min_time, $s->units, $dayCount);
+
+					//lunch break
+					if(strtotime($timeOut) > strtotime($break_min_time) && !$noon_class){
+						$min_time = $break_max_time;
+						$timeOut = $this->get_timeOut($min_time, $s->units, $dayCount);
+						$noon_class = true;
+					}
+
+					//time out should not exceed max time
+					if(strtotime($timeOut) > strtotime($max_time)){
+						$min_time = $min_time2;
+						$noon_class = false;
+						continue;
+					}
+					
+					$data['timeIn'] = $min_time;
+					$data['timeOut'] = $timeOut;
+					$data['dayID'] = $dayID;
+					$data['termID'] = $term['termID'];
+					$data['subID'] = $s->subID;
+					$data['secID'] = $section['secID'];
+					$data['classCode'] = $s->subCode;
+					$data['merge_with'] = 0;
+					$roomID = $facID = 0;
+
+					if($is_room_auto == 'yes'){
+						$roomID = $this->random_room($rooms, $s->specID, $term['termID'], $dayID, $min_time, $timeOut);
+					}
+					if($is_faculty_auto == 'yes'){
+						$facID = $this->random_faculty($faculties, $s->specID, $term['termID'], $dayID, $min_time, $timeOut);
+					}
+					$data['roomID'] = $roomID;
+					$data['facID'] = $facID;
+					$min_time = $timeOut;
+					print_r($data);
+
+					//die(print_r($data));
+					//$this->db->insert('class', $data);
+				}
 
 			}else{
 				foreach($subjects as $s){
@@ -89,7 +136,30 @@ class mdl_auto_sched extends CI_Model{
 
 	}
 
-	function random_room($rooms, $sub_specID){
+	function get_timeOut($timeIn, $units, $dayCount){
+
+		$range = ((60 * $units) / $dayCount); //minutes
+		// $hours = floor($range / 60);
+		// $minutes = $range % 60;
+
+		// $timeRange = '0'.$hours.':'.$minutes.':00';
+
+		$parts = explode(':', $timeIn);
+		$timeIn_mins = ($parts[0] * 60) + $parts[1];
+
+		$timeOut_mins = $range + $timeIn_mins;
+		$hours = floor($timeOut_mins / 60);
+		$minutes = $timeOut_mins % 60;
+
+		if(strlen($hours) == 1){$hours = '0'.$hours;}
+		if(strlen($minutes) == 1){$minutes = '0'.$minutes;}
+
+		return $hours.':'.$minutes.':00';
+
+		//return date("h:i", strtotime($timeOut_mins));
+	}
+
+	function random_room($rooms, $sub_specID, $termID = NULL, $dayID = NULL, $timeIn = NULL, $timeOut = NULL){
 		$rand_history = [];
 		$roomID = 0;
 		$total_rooms = count($rooms);
@@ -104,8 +174,19 @@ class mdl_auto_sched extends CI_Model{
 			}
 			if($rooms[$rand_index]->specID == $sub_specID){
 				$roomID = $rooms[$rand_index]->roomID;
-				break;
+				if(!$termID){
+					break;
+				}else{
+					$is_conflict = $this->db->query("
+						SELECT 1 FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = $roomID AND 
+						'$timeOut' > timeIn AND timeOut > '$timeIn'
+					")->row();
+					if(!$is_conflict){
+						break;
+					}
+				}
 			}
+
 			$rand_history[] = $rand_index;
 			++$ctr;
 		}
@@ -113,7 +194,7 @@ class mdl_auto_sched extends CI_Model{
 		return $roomID;
 	}
 
-	function random_faculty($faculties, $sub_specID){
+	function random_faculty($faculties, $sub_specID, $termID = NULL, $dayID = NULL, $timeIn = NULL, $timeOut = NULL){
 		$rand_history = [];
 		$facID = 0;
 		$total_faculties = count($faculties);
@@ -131,7 +212,18 @@ class mdl_auto_sched extends CI_Model{
 			foreach($faculties[$rand_index]['specIDs'] as $fspIDs){
 				if($fspIDs->specID == $sub_specID){
 					$facID = $faculties[$rand_index]['facID'];
-					break;
+					if(!$termID){
+						break;
+					}else{
+						$is_conflict = $this->db->query("
+							SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND facID = $facID AND 
+							'$timeOut' > timeIn AND timeOut > '$timeIn'
+						")->row();
+						if(!$is_conflict){
+							break;
+						}
+					}
+					
 				}
 			}
 			$rand_history[] = $rand_index;
