@@ -22,6 +22,7 @@ class mdl_Class_List extends CI_Model{
 				INNER JOIN faculty f ON c.facID = f.facID 
 				INNER JOIN users u ON f.uID = u.uID 
 				WHERE c.secID = ".$section->secID." AND c.termID = $termID
+				ORDER BY c.classID ASC
 			")->result();
 			$arr[] = ['secName' => $section->secName, 'classes' => $classes];
 		}
@@ -51,6 +52,7 @@ class mdl_Class_List extends CI_Model{
 				INNER JOIN faculty f ON c.facID = f.facID 
 				INNER JOIN users u ON f.uID = u.uID 
 				WHERE c.secID = ".$section->secID." AND c.termID = $termID
+				ORDER BY c.classID ASC
 			")->result();
 			$arr[] = ['secName' => $section->secName, 'classes' => $classes];
 		}

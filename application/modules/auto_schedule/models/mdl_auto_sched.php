@@ -53,30 +53,41 @@ class mdl_auto_sched extends CI_Model{
 				continue;
 			}
 
-			$class = [];
-
 			$subjects = $this->db->query("
-				SELECT subID,specID,subCode,units FROM subject WHERE prosID = ".$section['prosID']." AND yearID = ".$section['yearID']." AND semID = ".$term['semID']."
+				SELECT subID,specID,subCode,units,id FROM subject WHERE prosID = ".$section['prosID']." AND yearID = ".$section['yearID']." AND semID = ".$term['semID']."
 			")->result();
 
 			if($is_dt_auto == 'yes'){
 				$noon_class = false;
+				$last_added = null;
 				foreach($subjects as $s){
-					$rand_day = $days[array_rand($days, 1)];
-					$dayID = $rand_day['dayID'];
-					$dayCount = $rand_day['dayCount'];
 					
-					$timeOut = $this->get_timeOut($min_time, $s->units, $dayCount);
+					if($last_added){
+						if($last_added['id'] != $s->id){
+							$rand_day = $this->random_day($days, $s->units);
+						}else{
+							//same subject but diff. unit and separated by lunch break
+							//move last_added after lunch break
+							if($this->is_break_separated($min_time, $last_added['timeOut'], $break_min_time, $break_max_time)){
+								echo "aaa";
+								$min_time = $this->move_last_added($min_time, $last_added); //mintime is time out of last added
+							}
+						}
+					}else{
+						$rand_day = $this->random_day($days, $s->units);
+					}
 
+					$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+					
 					//lunch break
-					if(strtotime($timeOut) > strtotime($break_min_time) && !$noon_class){
+					if($this->is_time_out_greater($timeOut,$break_min_time) && !$noon_class){
 						$min_time = $break_max_time;
-						$timeOut = $this->get_timeOut($min_time, $s->units, $dayCount);
+						$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
 						$noon_class = true;
 					}
 
 					//time out should not exceed max time
-					if(strtotime($timeOut) > strtotime($max_time)){
+					if($this->is_time_out_greater($timeOut, $max_time)){
 						$min_time = $min_time2;
 						$noon_class = false;
 						continue;
@@ -84,27 +95,27 @@ class mdl_auto_sched extends CI_Model{
 					
 					$data['timeIn'] = $min_time;
 					$data['timeOut'] = $timeOut;
-					$data['dayID'] = $dayID;
+					$data['dayID'] = $rand_day['dayID'];
 					$data['termID'] = $term['termID'];
 					$data['subID'] = $s->subID;
 					$data['secID'] = $section['secID'];
 					$data['classCode'] = $s->subCode;
 					$data['merge_with'] = 0;
-					$roomID = $facID = 0;
+					$data['roomID'] = $data['facID'] = 0;
 
 					if($is_room_auto == 'yes'){
-						$roomID = $this->random_room($rooms, $s->specID, $term['termID'], $dayID, $min_time, $timeOut);
+						$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $min_time, $timeOut);
 					}
 					if($is_faculty_auto == 'yes'){
-						$facID = $this->random_faculty($faculties, $s->specID, $term['termID'], $dayID, $min_time, $timeOut);
+						$data['facID'] = $this->random_faculty($faculties, $s->specID, $term['termID'], $rand_day['dayID'], $min_time, $timeOut);
 					}
-					$data['roomID'] = $roomID;
-					$data['facID'] = $facID;
 					$min_time = $timeOut;
 					print_r($data);
-
-					//die(print_r($data));
-					//$this->db->insert('class', $data);
+					$this->db->insert('class', $data);
+					$data['classID'] = $this->db->insert_id();
+					$data['id'] = $s->id;
+					$last_added = $data;
+					array_splice($data, 10, 2);
 				}
 
 			}else{
@@ -115,18 +126,15 @@ class mdl_auto_sched extends CI_Model{
 					$data['dayID'] = 0;
 					$data['classCode'] = $s->subCode;
 					$data['merge_with'] = 0;
-					$roomID = $facID = 0;
+					$data['roomID'] = $data['facID'] = 0;
 
 					if($is_room_auto == 'yes'){
-						$roomID = $this->random_room($rooms, $s->specID);
+						$data['roomID'] = $this->random_room($rooms, $s->specID);
 					}
 
 					if($is_faculty_auto == 'yes'){
-						$facID = $this->random_faculty($faculties, $s->specID);
+						$data['facID'] = $this->random_faculty($faculties, $s->specID);
 					}
-
-					$data['roomID'] = $roomID;
-					$data['facID'] = $facID;
 					$this->db->insert('class', $data);
 				}
 			}
@@ -136,13 +144,64 @@ class mdl_auto_sched extends CI_Model{
 
 	}
 
+	function is_break_separated($min_time, $last_timeOut, $break_min_time, $break_max_time){
+		$x = explode(':', $min_time);
+		$min_time = ($x[0] * 60) + $x[1];
+
+		$y = explode(':', $last_timeOut);
+		$last_timeOut = ($y[0] * 60) + $y[1];
+
+		$z = explode(':', $break_min_time);
+		$break_min_time = ($z[0] * 60) + $z[1];
+
+		$a = explode(':', $break_max_time);
+		$break_max_time = ($a[0] * 60) + $a[1];
+
+		if($last_timeOut <= $break_min_time && $min_time >= $break_max_time){
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+
+	function is_time_out_greater($timeOut,$break_min_time){
+		$x = explode(':', $timeOut);
+		$x2 = ($x[0] * 60) + $x[1];
+
+		$y = explode(':', $break_min_time);
+		$y2 = ($y[0] * 60) + $y[1];
+		
+		return ($x2 > $y2) ? true : false;
+
+	}
+
+	function move_last_added($min_time,$last_added){
+		$x = explode(':', $last_added['timeOut']);
+		$x2 = ($x[0] * 60) + $x[1];
+		$y = explode(':', $last_added['timeIn']);
+		$y2 = ($y[0] * 60) + $y[1];
+		$timeRange = $x2 - $y2; //minutes
+
+		$parts = explode(':', $min_time);
+		$timeIn_mins = ($parts[0] * 60) + $parts[1];
+		$timeOut_mins = $timeIn_mins + $timeRange; //in minutes
+		$hours = floor($timeOut_mins / 60);
+		$minutes = $timeOut_mins % 60;
+		if(strlen($hours) == 1){$hours = '0'.$hours;}
+		if(strlen($minutes) == 1){$minutes = '0'.$minutes;}
+
+		$data['timeIn'] = $min_time;
+		$data['timeOut'] = $hours.':'.$minutes.':00';
+		
+		$this->db->update('class', $data, "classID = ".$last_added['classID']);
+
+		return $data['timeOut'];
+	}
+
 	function get_timeOut($timeIn, $units, $dayCount){
 
 		$range = ((60 * $units) / $dayCount); //minutes
-		// $hours = floor($range / 60);
-		// $minutes = $range % 60;
-
-		// $timeRange = '0'.$hours.':'.$minutes.':00';
 
 		$parts = explode(':', $timeIn);
 		$timeIn_mins = ($parts[0] * 60) + $parts[1];
@@ -155,8 +214,24 @@ class mdl_auto_sched extends CI_Model{
 		if(strlen($minutes) == 1){$minutes = '0'.$minutes;}
 
 		return $hours.':'.$minutes.':00';
+	}
 
-		//return date("h:i", strtotime($timeOut_mins));
+	function random_day($days, $units){
+		$selected_day = null;
+		foreach($days as $day){
+
+			if($day['dayCount'] % $units == 0){
+				$selected_day = $day;
+				break;
+			}	
+		}
+		
+		if(!$selected_day){
+			$selected_day = $days[array_rand($days, 1)];
+		}
+
+		return $selected_day;
+
 	}
 
 	function random_room($rooms, $sub_specID, $termID = NULL, $dayID = NULL, $timeIn = NULL, $timeOut = NULL){
