@@ -19,7 +19,7 @@ class mdl_Schedule extends CI_Model{
 		if($classID == 0){
 			$sql2 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = $roomID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn'
+				'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
 			")->row();
 
 			if($sql2){
@@ -29,7 +29,7 @@ class mdl_Schedule extends CI_Model{
 
 			$sql3 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND facID = $facID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn'
+				'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
 			")->row();
 
 			if($sql3){
@@ -40,7 +40,7 @@ class mdl_Schedule extends CI_Model{
 		}else{
 			$sql2 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = $roomID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID LIMIT 1
 			")->row();
 
 			if($sql2){
@@ -50,7 +50,7 @@ class mdl_Schedule extends CI_Model{
 
 			$sql3 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND facID = $facID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID LIMIT 1
 			")->row();
 
 			if($sql3){

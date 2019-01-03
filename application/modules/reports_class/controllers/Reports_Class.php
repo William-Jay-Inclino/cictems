@@ -38,7 +38,7 @@ class Reports_Class extends MY_Controller{
 	}
 
 	function get_class_list($data){
-		$this->mdl_class_list->get_class_list($data[0],$data[1]);
+		$this->mdl_class_list->get_class_list($data[0]);
 	}
 
 
