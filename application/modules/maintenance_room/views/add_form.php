@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
+
 <div id="app" v-cloak>
 
 <section class="section">
@@ -40,6 +42,21 @@
 					{{error.cap}}
 				</p>
 			</div>
+			<div class="field">
+			  <label class="label">Status</label>
+			  <div class="control">
+				  	<multiselect :allow-empty="false" v-model="form.status" track-by="statID" label="statDesc" :options="statuses"></multiselect>
+			  </div>
+			</div>
+			<div class="field">
+			  <label class="label">Room usage</label>
+			  <div class="control">
+				  	<multiselect :multiple="true" v-model="form.specs" track-by="specID" label="specDesc" :options="specs"></multiselect>
+			  </div>
+			  	<p class="help has-text-danger">
+					{{error.spec}}
+				</p>
+			</div>
 			<br>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
@@ -54,7 +71,7 @@
 <script>
 	
 	document.addEventListener('DOMContentLoaded', function() {
-
+		Vue.component('multiselect', window.VueMultiselect.default)
 		new Vue({
 		    el: '#app',
 		    data: {
@@ -63,18 +80,27 @@
 		    		list: '<?php echo base_url() ?>maintenance/room',
 		    		success: '<?php echo base_url() ?>maintenance/room/form-success/'
 		    	},
-
+		    	statuses: [
+		    		{statID: 'active', statDesc: 'Active'},
+		    		{statID: 'inactive', statDesc: 'Inactive'}
+		    	],
 		    	form: {
 		    		rn: '',
 		    		loc: '',
-		    		cap: ''
+		    		cap: '',
+		    		status: {statID: 'active', statDesc: 'Active'},
+		    		specs: []
 		    	},
 		    	error: {
 		    		rn: '',
 		    		loc: '',
-		    		cap: ''
+		    		cap: '',
+		    		spec: ''
 		    	},
-
+		    	specs: []
+		    },
+		    created(){
+		    	this.fetchSpec()
 		    },
 		    computed: {
 
@@ -84,6 +110,12 @@
 
 		    },
 		    methods: {
+		    	fetchSpec(){
+		    		this.$http.get('<?php echo base_url() ?>maintenance_room/fetchSpec')
+		        	.then(response => {
+		        		this.specs = response.body
+					 })
+		    	},
 		        submitForm() {
 		        	const f = this.form
 		        	if(this.checkForm(f)){
@@ -126,6 +158,12 @@
 		        	}else{
 		        		this.error.cap = ''
 		        	}
+	        		if(f.specs.length == 0){
+	        			this.error.spec = errMsg
+	        			ok = false	
+	        		}else{
+	        			this.error.spec = ''
+	        		}
 		        	return ok
 		        }
 		   },
@@ -144,4 +182,4 @@
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>

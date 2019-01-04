@@ -17,7 +17,8 @@ class mdl_auto_sched extends CI_Model{
 	}
 
 	function createSchedule(){
-		$faculties = $facSpecs = [];
+		$is_conflict = ['room'=> false, 'faculty'=> false];
+		$faculties = $facSpecs = $rooms = $roomSpecs = [];
 		$term = $this->input->post('term');
 		$is_dt_auto = $this->input->post('is_dt_auto');
 		$is_room_auto = $this->input->post('is_room_auto');
@@ -32,15 +33,14 @@ class mdl_auto_sched extends CI_Model{
 
 		$this->db->trans_start();
 
-		$rooms = $this->db->query("SELECT roomID, specID FROM room WHERE status = 'active' AND roomID <> 0")->result();
-		if(!$rooms && $is_room_auto){
-			die('No room');
-		}
-		$facIDs = $this->db->query("SELECT facID FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active' AND facID <> 0")->result();
+		$roomIDs = $this->db->query("SELECT roomID FROM room WHERE status = 'active' AND roomID <> 0")->result();
 
-		if(!$facIDs && $is_faculty_auto){
-			die('No Faculty');
+		foreach($roomIDs as $r){
+			$roomSpecs = $this->db->select('specID')->get_where('room_spec', "roomID = ".$r->roomID)->result();
+			$rooms[] = ['roomID'=>$r->roomID, 'specIDs'=>$roomSpecs];
 		}
+
+		$facIDs = $this->db->query("SELECT facID FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active' AND facID <> 0")->result();
 
 		foreach($facIDs as $f){
 			$facSpecs = $this->db->select('specID')->get_where('fac_spec', "facID = ".$f->facID)->result();
@@ -104,34 +104,60 @@ class mdl_auto_sched extends CI_Model{
 					$data['classCode'] = $s->subCode;
 					$data['merge_with'] = 0;
 
+					if($last_added){
+						$is_conflict = $this->checkConflicts($last_added, $data['timeOut']);	
+					}
+					
+
+					if($is_conflict['room'] || $is_room_auto == 'yes'){
+						$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);
+					}else{
+						$data['roomID'] = 0;
+					}
+					if($is_conflict['faculty'] || $is_faculty_auto == 'yes'){
+						$data['facID'] = $this->random_faculty($faculties, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);
+					}else{
+						$data['facID'] = 0;
+					}
+
 					if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
-						$is_conflict = $this->checkConflicts($last_added, $data['timeOut'], $rooms, $faculties, $s->specID);
-						if($is_conflict['room']){
-							$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);
-							$last_added['roomID'] = $data['roomID'];
-						}
-						if($is_conflict['faculty']){
-							$data['facID'] = $this->random_faculty($faculties, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);
-							$last_added['facID'] = $data['facID'];
-						}
+						$last_added['roomID'] = $data['roomID'];
+						$last_added['facID'] = $data['facID'];
 						$update['timeIn'] = $last_added['timeIn'];
 						$update['timeOut'] = $last_added['timeOut'];
 						$update['roomID'] = $last_added['roomID'];
 						$update['facID'] = $last_added['facID'];
 						$this->db->update('class', $update, "classID = ".$last_added['classID']);
-
-					}else{
-						if($is_room_auto == 'yes'){
-							$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $min_time, $timeOut);
-						}else{
-							$data['roomID'] = 0;
-						}
-						if($is_faculty_auto == 'yes'){
-							$data['facID'] = $this->random_faculty($faculties, $s->specID, $term['termID'], $rand_day['dayID'], $min_time, $timeOut);
-						}else{
-							$data['facID'] = 0;
-						}
 					}
+
+					// if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
+					// 	$is_conflict = $this->checkConflicts($last_added, $data['timeOut']);
+					// 	if($is_conflict['room']){
+					// 		$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);
+					// 		$last_added['roomID'] = $data['roomID'];
+					// 	}
+					// 	if($is_conflict['faculty']){
+					// 		$data['facID'] = $this->random_faculty($faculties, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);
+					// 		$last_added['facID'] = $data['facID'];
+					// 	}
+					// 	$update['timeIn'] = $last_added['timeIn'];
+					// 	$update['timeOut'] = $last_added['timeOut'];
+					// 	$update['roomID'] = $last_added['roomID'];
+					// 	$update['facID'] = $last_added['facID'];
+					// 	$this->db->update('class', $update, "classID = ".$last_added['classID']);
+
+					// }else{
+					// 	if($is_room_auto == 'yes'){
+					// 		$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $min_time, $timeOut);
+					// 	}else{
+					// 		$data['roomID'] = 0;
+					// 	}
+					// 	if($is_faculty_auto == 'yes'){
+					// 		$data['facID'] = $this->random_faculty($faculties, $s->specID, $term['termID'], $rand_day['dayID'], $min_time, $timeOut);
+					// 	}else{
+					// 		$data['facID'] = 0;
+					// 	}
+					// }
 					
 					$min_time = $timeOut;
 					print_r($data);
@@ -214,20 +240,9 @@ class mdl_auto_sched extends CI_Model{
 
 		$last_added['timeIn'] = $min_time;
 		$last_added['timeOut'] = $timeOut;
-
-
-
-		//$this->checkConflict($last_added, $rooms, $faculties, $specID);
-		
-		// $data['timeIn'] = $min_time;
-		// $data['timeOut'] = $hours.':'.$minutes.':00';
-		
-		// $this->db->update('class', $data, "classID = ".$last_added['classID']);
-
-		// return $last_added;
 	}
 
-	function checkConflicts($last_added, $timeOut, $rooms, $faculties, $specID){
+	function checkConflicts($last_added, $timeOut){
 
 		$is_conflict_room = $this->db->query("
 			SELECT classID FROM class WHERE termID = ".$last_added['termID']." AND dayID = ".$last_added['dayID']." AND roomID = ".$last_added['roomID']." AND '".$timeOut."' > timeIn AND timeOut > '".$last_added['timeIn']."'
@@ -297,41 +312,87 @@ class mdl_auto_sched extends CI_Model{
 
 	}
 
+	// function random_room($rooms, $sub_specID, $termID = NULL, $dayID = NULL, $timeIn = NULL, $timeOut = NULL){
+	// 	$rand_history = [];
+	// 	$roomID = $ctr = 0;
+	// 	$total_rooms = count($rooms);
+	// 	$ok = false;
+	// 	while(true){
+	// 		if($ctr == $total_rooms){
+	// 			break; //no room has specialization in the specified subject
+	// 		}
+	// 		$rand_index = array_rand($rooms, 1);
+	// 		if(in_array($rand_index, $rand_history)){
+	// 			continue;
+	// 		}
+	// 		if($rooms[$rand_index]->specID == $sub_specID){
+	// 			if(!$termID){
+	// 				$ok = true;
+	// 			}else{
+	// 				$is_conflict = $this->db->query("
+	// 					SELECT 1 FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = ".$rooms[$rand_index]->roomID." AND 
+	// 					'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
+	// 				")->row();
+	// 				if(!$is_conflict){
+	// 					$ok = true;
+	// 				}
+	// 			}
+	// 			if($ok){
+	// 				$roomID = $rooms[$rand_index]->roomID;
+	// 				break;
+	// 			}
+	// 		}
+
+	// 		$rand_history[] = $rand_index;
+	// 		++$ctr;
+	// 	}
+
+	// 	return $roomID;
+	// }
+
 	function random_room($rooms, $sub_specID, $termID = NULL, $dayID = NULL, $timeIn = NULL, $timeOut = NULL){
 		$rand_history = [];
 		$roomID = $ctr = 0;
 		$total_rooms = count($rooms);
 		$ok = false;
+
 		while(true){
 			if($ctr == $total_rooms){
-				break; //no room has specialization in the specified subject
+				break; //no faculty has specialization in the specified subject
 			}
 			$rand_index = array_rand($rooms, 1);
+
 			if(in_array($rand_index, $rand_history)){
 				continue;
 			}
-			if($rooms[$rand_index]->specID == $sub_specID){
-				if(!$termID){
-					$ok = true;
-				}else{
-					$is_conflict = $this->db->query("
-						SELECT 1 FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = ".$rooms[$rand_index]->roomID." AND 
-						'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
-					")->row();
-					if(!$is_conflict){
+
+			foreach($rooms[$rand_index]['specIDs'] as $fspIDs){
+				if($fspIDs->specID == $sub_specID){
+					
+					if(!$termID){
 						$ok = true;
+					}else{
+						$is_conflict = $this->db->query("
+							SELECT 1 FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = ".$rooms[$rand_index]['roomID']." AND 
+							'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
+						")->row();
+						if(!$is_conflict){
+							$ok = true;
+						}
 					}
-				}
-				if($ok){
-					$roomID = $rooms[$rand_index]->roomID;
-					break;
+					if($ok){
+						$roomID = $rooms[$rand_index]['roomID'];
+						break;
+					}
+					
 				}
 			}
-
+			if($ok){
+				break;
+			}
 			$rand_history[] = $rand_index;
 			++$ctr;
 		}
-
 		return $roomID;
 	}
 
@@ -371,6 +432,9 @@ class mdl_auto_sched extends CI_Model{
 					}
 					
 				}
+			}
+			if($ok){
+				break;
 			}
 			$rand_history[] = $rand_index;
 			++$ctr;

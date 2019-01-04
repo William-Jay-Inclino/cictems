@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
 <div id="app" v-cloak>
 
 <section class="section">
@@ -40,6 +41,21 @@
 					{{error.cap}}
 				</p>
 			</div>
+			<div class="field">
+			  <label class="label">Status</label>
+			  <div class="control">
+				  	<multiselect :allow-empty="false" v-model="form.status" track-by="statID" label="statDesc" :options="statuses"></multiselect>
+			  </div>
+			</div>
+			<div class="field">
+			  <label class="label">Room usage</label>
+			  <div class="control">
+				  	<multiselect :multiple="true" v-model="form.specs" track-by="specID" label="specDesc" :options="specs"></multiselect>
+			  </div>
+			  	<p class="help has-text-danger">
+					{{error.spec}}
+				</p>
+			</div>
 			<br>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Save changes</button>
 			<br><br>
@@ -54,29 +70,53 @@
 <script>
 	
 	document.addEventListener('DOMContentLoaded', function() {
-
+		Vue.component('multiselect', window.VueMultiselect.default)	
 		new Vue({
 		    el: '#app',
 		    data: {
 		    	page:{
 		    		title: 'Edit Room',
 		    		list: '<?php echo base_url() ?>maintenance/room',
-		    		show: '<?php echo base_url()."maintenance/room/show/".$record->roomID ?>'
+		    		show: '<?php echo base_url()."maintenance/room/show/".$record['room']->roomID ?>'
 		    	},
 
 		    	form: {
-		    		id: '<?php echo $record->roomID ?>',
-		    		rn: '<?php echo $record->roomName ?>',
-		    		loc: '<?php echo $record->roomLoc ?>',
-		    		cap: '<?php echo $record->capacity ?>'
+		    		id: '<?php echo $record['room']->roomID ?>',
+		    		rn: '<?php echo $record['room']->roomName ?>',
+		    		loc: '<?php echo $record['room']->roomLoc ?>',
+		    		cap: '<?php echo $record['room']->capacity ?>',
+		    		status: {statID: '<?php echo $record['room']->status ?>', statDesc: '<?php echo $record['room']->status ?>'},
+		    		specs: []
 		    	},
+		    	statuses: [
+		    		{statID: 'active', statDesc: 'Active'},
+		    		{statID: 'inactive', statDesc: 'Inactive'}
+		    	],
+		    	specs: [],
 		    	error: {
 		    		rn: '',
 		    		loc: '',
-		    		cap: ''
+		    		cap: '',
+		    		spec: ''
 		    	}
 		    },
+		    created(){
+		    	this.fetchSpec()
+		    	this.populateSpec()
+		    },
 		    methods: {
+		    	populateSpec(){
+		    		this.$http.get('<?php echo base_url() ?>maintenance_room/populateSpec/'+this.form.id)
+		        	.then(response => {
+		        		this.form.specs = response.body
+					 })
+		    	},
+		    	fetchSpec(){
+		    		this.$http.get('<?php echo base_url() ?>maintenance_room/fetchSpec')
+		        	.then(response => {
+		        		this.specs = response.body
+					 })
+		    	},
 		        submitForm() {
 		        	const f = this.form
 		        	if(this.checkForm(f)){
@@ -125,6 +165,12 @@
 		        	}else{
 		        		this.error.cap = ''
 		        	}
+		        	if(f.specs.length == 0){
+		        		this.error.spec = errMsg
+		        		ok = false
+		        	}else{
+		        		this.error.spec = ''
+		        	}
 		        	return ok
 		        }
 		   },
@@ -144,4 +190,4 @@
 
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>

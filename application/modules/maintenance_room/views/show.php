@@ -28,8 +28,29 @@
 					<td> {{loc}} </td>
 				</tr>
 				<tr>
-					<td><b>capacity:</b> </td>
+					<td><b>Capacity:</b> </td>
 					<td> {{cap}} </td>
+				</tr>
+				<tr>
+					<th>Status: </th>
+					<td>
+						<span v-if="stat == 'active'">
+							<span class="tag is-success">Active</span>
+						</span>
+						<span v-else>
+							<span class="tag is-danger">Inactive</span>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th>Room usage: </th>
+					<td>
+						<?php foreach($record['specs'] as $spec): 
+								
+								echo $spec->specDesc.'<br>';
+							
+						 	  endforeach; ?>
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -46,12 +67,13 @@
 		new Vue({
 		    el: '#app',
 		    data: {
-		    	id: '<?php echo $record->roomID ?>',
-		    	rn: '<?php echo $record->roomName ?>',
-		    	loc: '<?php echo $record->roomLoc ?>',
-		    	cap: '<?php echo $record->capacity ?>',
+		    	id: '<?php echo $record['room']->roomID ?>',
+		    	rn: '<?php echo $record['room']->roomName ?>',
+		    	loc: '<?php echo $record['room']->roomLoc ?>',
+		    	cap: '<?php echo $record['room']->capacity ?>',
+		    	stat: '<?php echo $record['room']->status ?>',
 		    	page:{
-		    		edit: '<?php echo base_url()."maintenance/room/form/".$record->roomID ?>',
+		    		edit: '<?php echo base_url()."maintenance/room/form/".$record['room']->roomID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/room'
 		    	},
 		    },

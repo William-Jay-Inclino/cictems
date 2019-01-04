@@ -19,6 +19,8 @@ class mdl_Room extends CI_Model{
 		$data['roomName'] = $this->input->post('rn');
 		$data['roomLoc'] = $this->input->post('loc');
 		$data['capacity'] = $this->input->post('cap');
+		$data['status'] = $this->input->post('status')['statID'];
+		$specs = $this->input->post('specs');
 
 		$this->check_exist($data,$exist);
 
@@ -26,7 +28,13 @@ class mdl_Room extends CI_Model{
 			$output = ['status' => 0];
 		}else{
 			$this->db->insert('room', $data);
-			$output = ['status'=> 1,'id'=>$this->db->insert_id()];
+			$insID = $this->db->insert_id();
+
+			foreach($specs as $spec){
+				$this->db->insert('room_spec', ['roomID'=>$insID,'specID'=>$spec['specID']]);
+			}
+
+			$output = ['status'=> 1,'id'=>$insID];
 
 			$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'room' LIMIT 1");
 			$row =  $query->row();
@@ -69,11 +77,13 @@ class mdl_Room extends CI_Model{
 	function read_one($id){
 		$this->check_form_id($id);
 
-		$query = $this->db->query("
+		$data['room'] = $this->db->query("
 			SELECT * FROM room
 			WHERE roomID = $id LIMIT 1
-		");
-		return $query->row();
+		")->row();
+		$data['specs'] = $this->db->query("SELECT s.specDesc FROM room_spec rs INNER JOIN specialization s ON rs.specID = s.specID WHERE rs.roomID = ".$data['room']->roomID)->result();
+		
+		return $data;
 	}
 
 	function update(){
@@ -82,6 +92,7 @@ class mdl_Room extends CI_Model{
 		$data['roomName'] = $this->input->post('rn');
 		$data['roomLoc'] = $this->input->post('loc');
 		$data['capacity'] = $this->input->post('cap');
+		$data['status'] = $this->input->post('status')['statID'];
 
 		$this->check_exist($data,$exist,$id);
 
@@ -89,6 +100,13 @@ class mdl_Room extends CI_Model{
 			$output = ['status' => 0];
 		}else{
 			$this->db->update('room', $data, "roomID = $id");
+			$specs = $this->input->post('specs');
+			$this->db->delete('room_spec', "roomID = $id");
+			if($specs){
+				foreach($specs as $s){
+					$this->db->insert('room_spec', ['specID' => $s['specID'], 'roomID' => $id]);
+				}	
+			}
 			$output = ['status' => 1];
 		}
 
@@ -96,8 +114,11 @@ class mdl_Room extends CI_Model{
 	}
 
 	function delete($id){
+		$this->db->trans_start();
+		$this->db->delete('room_spec', 'roomID = '.$id);
 		$this->db->delete('room', 'roomID = '.$id);
 		$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'room'");
+		$this->db->trans_complete();
 	}
 
 	function check_exist($data,&$exist,$id = NULL){
@@ -135,6 +156,17 @@ class mdl_Room extends CI_Model{
 
 	}
 
+	function fetchSpec(){
+		echo json_encode(
+			$this->db->order_by('specDesc ASC')->get('specialization')->result()
+		);
+	}
+
+	function populateSpec($id){
+		echo json_encode(
+			$this->db->query("SELECT s.specID,s.specDesc FROM room_spec rs INNER JOIN specialization s ON rs.specID = s.specID WHERE rs.roomID = $id")->result()
+		);
+	}
 
 }
 

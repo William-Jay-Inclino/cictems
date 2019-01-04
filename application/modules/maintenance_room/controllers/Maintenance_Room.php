@@ -61,6 +61,14 @@ class Maintenance_Room extends MY_Controller{
 		$this->mdl_room->delete($id[0]);
 	}
 
+	function fetchSpec(){
+		$this->mdl_room->fetchSpec();	
+	}
+
+	function populateSpec($id){
+		$this->mdl_room->populateSpec($id[0]);		
+	}
+	
 	function is_safe_delete($id){
 		$this->mdl_room->is_safe_delete($id[0]);
 	}

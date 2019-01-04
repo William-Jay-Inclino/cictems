@@ -55,12 +55,13 @@
 				</div>
 			</div>
 			<br>
-			<table class="table is-fullwidth is-centered">
+			<table class="table is-fullwidth">
 				<thead>
 					<th width="30%">Room</th>
 					<th width="30%">Location</th>
-					<th width="20%">Capacity</th>
-					<th width="20%">View</th>
+					<th width="15%">Capacity</th>
+					<th width="15%">Status</th>
+					<th width="10%">View</th>
 				</thead>
 
 				<td colspan="9" class="has-text-centered" v-show="loading">Loading please wait ...</td>
@@ -71,6 +72,14 @@
 						<td>{{record.roomName}}</td>
 						<td>{{record.roomLoc}}</td>
 						<td>{{record.capacity}}</td>
+						<td>
+							<span v-if="record.status == 'active'">
+								<span class="tag is-success">Active</span>
+							</span>
+							<span v-else>
+								<span class="tag is-danger">Inactive</span>
+							</span>
+						</td>
 						<td>
 							<a :href="page.show + '/' + record.roomID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 						</td>

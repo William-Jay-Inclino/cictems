@@ -8,15 +8,34 @@
 			<table class="table is-fullwidth">
 				<tr>
 					<td><b>Room:</b> </td>
-					<td> <?php echo $record->roomName ?> </td>
+					<td> <?php echo $record['room']->roomName ?> </td>
 				</tr>
 				<tr>
 					<td><b>Location:</b> </td>
-					<td> <?php echo $record->roomLoc ?> </td>
+					<td> <?php echo $record['room']->roomLoc ?> </td>
 				</tr>
 				<tr>
 					<td><b>Capacity:</b> </td>
-					<td> <?php echo $record->capacity ?> </td>
+					<td> <?php echo $record['room']->capacity ?> </td>
+				</tr>
+				<tr>
+					<th>Status: </th>
+					<td>
+						<?php if($record['room']->status == 'active'): ?>
+								<span class="tag is-success">Active</span>
+						<?php else: ?>
+								<span class="tag is-danger">Inactive</span>
+						<?php endif ?>
+				</tr>
+				<tr>
+					<th>Room usage: </th>
+					<td>
+						<?php foreach($record['specs'] as $spec): 
+								
+								echo $spec->specDesc.'<br>';
+							
+						 	  endforeach; ?>
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -41,7 +60,7 @@
 		    	page:{
 		    		title: 'Room successfully added!',
 		    		add: '<?php echo base_url() ?>maintenance/room/form',
-		    		edit: '<?php echo base_url()."maintenance/room/form/".$record->roomID ?>',
+		    		edit: '<?php echo base_url()."maintenance/room/form/".$record['room']->roomID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/room'
 		    	},
 
