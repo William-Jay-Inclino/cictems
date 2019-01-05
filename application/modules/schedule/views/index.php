@@ -400,7 +400,7 @@
 											<b>Updated <i class="fa fa-check"></i></b>
 										</span>
 										<span v-else-if="record.merge_to" class="has-text-primary">
-											Merged to <b>{{record.merge_to.class}}</b> in section <b>{{record.merge_to.section}} </b> (Pending)
+											Merged to <b>{{record.merge_to.class}}</b> in section <b>{{record.merge_to.section}} </b>
 										</span>
 										<span v-else class="warn-msg">
 											{{record.msg}}
@@ -1181,12 +1181,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		this.days = c.days 
 	        		this.rooms = c.rooms 
 	        		this.faculties = c.faculties.map(x => {
-	        			const f = x.faculty.split(' ')
-	        			if(f[2]) f[2] = f[2] + '.'
-	        			x.faculty = f[0] + ' ' + f[1] + ' ' + f[2]
+	        			if(x.facID != 0){
+	        				x.faculty = x.ln + ', ' + x.fn
+	        			}else{
+	        				x.faculty = ''
+	        			}
 	        			
 	        			return x
 	        		})
+	        		const a = this.faculties.splice(this.faculties.findIndex(i => i.facID == 0), 1)
+	    			this.faculties.unshift(a)
+	    			
 	        		this.added_sections = c.added_sections
 				 })
 	        },
@@ -1228,9 +1233,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	        			c.merge_to = {section: merge[2], class: codelabel, classID: c.merge_with}
 	        		}
 	        		
-	        		const f = c.faculty.split(' ')
-        			if(f[2]) f[2] = f[2] + '.'
-        			c.faculty = f[0] + ' ' + f[1] + ' ' + f[2]
+	        		if(c.facID != 0){
+        				c.faculty = c.ln + ', ' + c.fn
+        			}else{
+        				c.faculty = ''
+        			}
 
 
 	        		c.loading = false

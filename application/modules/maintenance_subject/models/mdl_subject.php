@@ -30,7 +30,7 @@ class mdl_Subject extends CI_Model{
 	private function get_random_id($prosID){
 		while(true){
 			$id = substr(str_shuffle("123456789"), 0, 3);
-			$sql = $this->db->query("SELECT 1 FROM subject WHERE id = $id AND prosID <> $prosID LIMIT 1")->row();
+			$sql = $this->db->query("SELECT 1 FROM subject WHERE id = $id AND prosID = $prosID LIMIT 1")->row();
 			if(!$sql){
 				break;
 			}

@@ -19,7 +19,7 @@ class mdl_Schedule extends CI_Model{
 		if($classID == 0){
 			$sql2 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = $roomID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND roomID <> 0 LIMIT 1
 			")->row();
 
 			if($sql2){
@@ -29,7 +29,7 @@ class mdl_Schedule extends CI_Model{
 
 			$sql3 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND facID = $facID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' LIMIT 1
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND facID <> 0 LIMIT 1
 			")->row();
 
 			if($sql3){
@@ -40,7 +40,7 @@ class mdl_Schedule extends CI_Model{
 		}else{
 			$sql2 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = $roomID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID LIMIT 1
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID AND roomID <> 0 LIMIT 1
 			")->row();
 
 			if($sql2){
@@ -50,7 +50,7 @@ class mdl_Schedule extends CI_Model{
 
 			$sql3 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND facID = $facID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID LIMIT 1
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID AND facID <> 0 LIMIT 1
 			")->row();
 
 			if($sql3){
@@ -63,8 +63,13 @@ class mdl_Schedule extends CI_Model{
 			$data['dayID'] = $dayID;
 			$data['roomID'] = $roomID;
 			$data['facID'] = $facID;
-			$data['merge_with'] = 0;
 			$this->db->update('class', $data, "classID = $classID");
+			$dependent_classes = $this->db->select('classID')->get_where('class',"merge_with = $classID")->result();
+			if($dependent_classes){
+				foreach($dependent_classes as $c){
+					$this->db->update('class', $data, "classID = ".$c->classID);
+				}
+			}
 			die('updated');
 		}
 		
@@ -76,8 +81,8 @@ class mdl_Schedule extends CI_Model{
 		$data['term'] = $term;
 		$data['prospectus'] = $this->db->query('SELECT prosID,prosCode FROM prospectus ORDER BY prosID DESC, prosCode ASC')->result();
 		$data['rooms'] = $this->db->query("SELECT roomID,roomName FROM room")->result();
-		$data['days'] = $this->db->get('day')->result();
-		$data['faculties'] = $this->db->query("SELECT f.facID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active'")->result();
+		$data['days'] = $this->db->get_where('day', "dayID <> 0")->result();
+		$data['faculties'] = $this->db->query("SELECT f.facID,u.ln, u.fn FROM faculty f INNER JOIN users u ON f.uID=u.uID WHERE u.status = 'active'")->result();
 		$data['added_sections'] = $this->db->query("SELECT DISTINCT s.secID,s.secName FROM class c INNER JOIN section s ON c.secID = s.secID AND c.termID = $termID ORDER BY s.secName ASC")->result();
 
 		echo json_encode($data);
@@ -123,7 +128,7 @@ class mdl_Schedule extends CI_Model{
 
 	function get_sec_info($secID, $termID){
 		$data['classes'] = $this->db->query("
-				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge FROM class c 
+				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge FROM class c 
 				INNER JOIN room r ON c.roomID = r.roomID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 
@@ -250,7 +255,7 @@ class mdl_Schedule extends CI_Model{
 
 	function get_classes($termID, $secID){
 		$sql = $this->db->query("
-			SELECT c.classID,s.subCode,s.subDesc,s.units,s.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,CONCAT(u.ln,', ',u.fn) faculty
+			SELECT c.classID,s.subCode,s.subDesc,s.units,s.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn
 			FROM class c 
 			INNER JOIN subject s ON c.subID = s.subID
 			INNER JOIN room r ON c.roomID = r.roomID

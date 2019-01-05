@@ -111,6 +111,11 @@
                                  {{row.subject.nonSub_pre}}
                               </td>
                            </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <th style="text-align: center">{{subject.tot_units}}</th>
+                              <td></td>
+                           </tr>
                         </tbody>
                      </table>
                   </div>
@@ -262,9 +267,12 @@ document.addEventListener('DOMContentLoaded', function() {
          this.$http.get('<?php echo base_url() ?>reports_prospectus/get_subjects/' + prosID)
          .then(response => {
             const c = response.body
-            console.log(c)
             this.titlePros = c.prospectus
-            this.subjects = c.subjects
+            this.subjects = c.subjects.map(s => {
+               s.tot_units = s.subjects.reduce((x, sub) => x + Number(sub.subject.units), 0)
+               return s
+            })
+            console.log(this.subjects)
             this.loader = false
             this.ready = true
             this.specializations = c.specializations.map(x => {

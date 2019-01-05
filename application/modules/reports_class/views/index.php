@@ -63,7 +63,14 @@
                        <td> {{x.subDesc}} </td>
                        <td> {{x.day}} </td>
                        <td> {{x.class_time}} </td>
-                       <td> {{x.roomName}} </td>
+                       <td>
+                         <span v-if="x.roomName == ''" class="has-text-danger">
+                           Unassigned
+                         </span>
+                         <span v-else>
+                           {{x.roomName}}
+                         </span>
+                       </td>
                     </tr>
                   </tbody>
                 </table>
@@ -87,7 +94,14 @@
                        <td> {{x.subDesc}} </td>
                        <td> {{x.day}} </td>
                        <td> {{x.class_time}} </td>
-                       <td> {{x.faculty}} </td>
+                       <td>
+                         <span v-if="x.ln == ''" class="has-text-danger">
+                           Unassigned
+                         </span>
+                         <span v-else>
+                           {{x.ln + ',' + x.fn}}
+                         </span>
+                        </td>
                     </tr>
                   </tbody>
                 </table>
@@ -113,8 +127,22 @@
                            <td> {{x.subDesc}} </td>
                            <td> {{x.day}} </td>
                            <td> {{x.class_time}} </td>
-                           <td> {{x.roomName}} </td>
-                           <td> {{x.faculty}} </td>
+                           <td>
+                             <span v-if="x.roomName == ''" class="has-text-danger">
+                               Unassigned
+                             </span>
+                             <span v-else>
+                               {{x.roomName}}
+                             </span>
+                           </td>
+                           <td>
+                             <span v-if="x.ln == ''" class="has-text-danger">
+                               Unassigned
+                             </span>
+                             <span v-else>
+                               {{x.ln + ',' + x.fn}}
+                             </span>
+                           </td>
                         </tr>
                      </tbody>
                   </table>
@@ -216,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
           if(!arr.find(r => r.facID == c.facID)){
             arr.push({
               facID: c.facID,
-              faculty: (c.facID == 0) ? 'Unassigned' : c.faculty
+              faculty: (c.facID == 0) ? 'Unassigned' : c.ln + ', ' + c.fn
             })  
           }
         }

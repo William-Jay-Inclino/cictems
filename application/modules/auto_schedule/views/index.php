@@ -16,13 +16,7 @@
 		<div class="box">
 			<table class="table is-fullwidth">
 				<tr>
-					<th style="border: none; padding: 12px" width="20%">Term</th>
-					<td style="border: none; padding: 12px" colspan="2">
-						<multiselect v-model="form.term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
-					</td>
-				</tr>
-				<tr>
-					<th width="25%" style="border: none; padding: 12px">Prospectus</th>
+					<th width="20%" style="border: none; padding: 12px">Prospectus</th>
 					<td style="border: none; padding: 12px" colspan="2">
 						<multiselect @input="displaySections" v-model="prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
 					</td>
@@ -40,6 +34,12 @@
 		</div>
 		<div class="box">
 			<table class="table is-fullwidth">
+				<tr>
+					<th style="border: none; padding: 12px" width="20%">Term</th>
+					<td style="border: none; padding: 12px" colspan="2">
+						<multiselect v-model="form.term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
+					</td>
+				</tr>
 				<tr>
 					<th style="border: none; padding: 12px" width="20%">Section</th>
 					<td style="border: none; padding: 12px" colspan="2">
