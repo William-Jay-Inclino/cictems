@@ -25,10 +25,6 @@ class Auto_Schedule extends MY_Controller{
 		$this->mdl_auto_sched->populate($termID[0]);
 	}
 
-	function get_sections($ids){
-		$this->mdl_auto_sched->get_sections($ids[0],$ids[1]);
-	}
-
 	function createSchedule(){
 		$this->mdl_auto_sched->createSchedule();	
 	}

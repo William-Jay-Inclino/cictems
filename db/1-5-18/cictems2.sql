@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2019 at 06:58 AM
+-- Generation Time: Jan 05, 2019 at 02:16 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -1544,7 +1544,7 @@ ALTER TABLE `access_rights`
 -- AUTO_INCREMENT for table `class`
 --
 ALTER TABLE `class`
-  MODIFY `classID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=305;
+  MODIFY `classID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1231;
 
 --
 -- AUTO_INCREMENT for table `counter`
@@ -1652,7 +1652,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `roomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `roomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `room_spec`
