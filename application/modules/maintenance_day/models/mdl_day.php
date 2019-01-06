@@ -17,7 +17,7 @@ class mdl_Day extends CI_Model{
 		//print_r($_POST);
 		$exist = false;
 		$data['dayDesc'] = $this->input->post('dayDesc');
-		$data['dayCount'] = $this->input->post('dayCount');
+		$data['dayCount'] = $this->input->post('dayCount')['day'];
 
 		$this->check_exist($data,$exist);
 
@@ -44,14 +44,14 @@ class mdl_Day extends CI_Model{
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT * FROM day
+				SELECT * FROM day WHERE dayID <> 0
 				ORDER BY dayDesc ASC
 				LIMIT $start, $per_page
 			");
 			$num_records = $this->count_all();
 		}else{
 			$query = $this->db->query("
-				SELECT * FROM day
+				SELECT * FROM day dayID <> 0
 				WHERE dayDesc LIKE '%".$search_val."%' 
 				ORDER BY dayDesc ASC
 				LIMIT $start, $per_page"
@@ -79,7 +79,7 @@ class mdl_Day extends CI_Model{
 		$exist = false;
 		$id = $this->input->post('id');
 		$data['dayDesc'] = $this->input->post('dayDesc');
-		$data['dayCount'] = $this->input->post('dayCount');
+		$data['dayCount'] = $this->input->post('dayCount')['day'];
 		
 		$this->check_exist($data,$exist,$id);
 

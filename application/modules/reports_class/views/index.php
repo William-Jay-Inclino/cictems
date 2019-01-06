@@ -263,6 +263,14 @@ document.addEventListener('DOMContentLoaded', function() {
             courseID: 'all',
             courseCode: 'All'
           })
+
+          for(let cc of c.class_list){
+            for(let x of cc.classes){
+              if(x.class_time == '12:00AM-12:00AM'){
+                x.class_time = ''
+              }
+            }
+          }
           this.class_list = c.class_list
           this.loader = false
         })

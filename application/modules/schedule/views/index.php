@@ -648,16 +648,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	},
 	    	mergeClass(){
 	    		const c = (this.current_sec) ? this.classes2[this.selected_index] : this.classes[this.selected_index]
+	    		const pendMsg = (this.current_sec) ? '' : ' (Pending)'
 	    		const class_merge = this.selected_class
 
-	    		if(c.units == class_merge.units){
-	    			swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName+' (Pending)', 'success')
+	    		if(c.units != class_merge.units){
+	    			swal('Error', 'Both classes should have equal units!', 'error')
+	    		}else if(class_merge.merge_with != 0){
+	    			swal('Error', 'Unable to merge. Selected class is merged with another class!', 'error')
+	    		}else{
+	    			swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName+pendMsg, 'success')
 	    			c.error = false
 		    		c.timeIn = class_merge.timeIn
 		    		c.timeOut = class_merge.timeOut
 		    		c.day = {dayID: class_merge.dayID, dayDesc: class_merge.dayDesc, dayCount: class_merge.dayCount}
 		    		c.room = {roomID: class_merge.roomID, roomName: class_merge.roomName}
-		    		c.faculty = {facID: class_merge.facID, faculty: class_merge.faculty}
+		    		c.faculty = {facID: class_merge.facID, faculty: class_merge.ln + ', ' + class_merge.fn}
 		    		c.merge_to = {section: this.active_section.secName, class: class_merge.codelabel, classID: class_merge.classID}
 		    		c.msg = null
 		    		this.close_classModal()
@@ -670,9 +675,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		    				console.log(e.body)
 		    			})
 		    		}
-
-	    		}else{
-	    			swal('Error', 'Both classes should have equal units!', 'error')
 	    		}
 	    	},
 	    	openClassModal(i){
@@ -878,6 +880,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		swal('Subject successfully added to form!', {icon: 'success'})
 	        		v.classID = response.body
 	        		c.push(v)
+	        		
 	        		this.reset_class_to_be_added()
 				}, response => {
 					this.add_class_to_section(c, v)
@@ -1001,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			this.is_conflict()
 	    		}
 	    		const c = classes[i]
-	    		
+
 	    		c.loading = true 
 
 				this.debounce(function(){
@@ -1072,8 +1075,10 @@ document.addEventListener('DOMContentLoaded', function() {
     					per_week = this.time_per_week(cc.timeIn,cc.timeOut,cc.day.dayCount)
 
 						if(per_week != this.unit_to_hr(cc.units)){
-	    					cc.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
-	    					cc.loading = false
+							//cc.msg old code
+							//cc.loading old code
+	    					c.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
+	    					c.loading = false
 						}else{
 
 							for(let [iii, ccc] of classes.entries()){
@@ -1086,8 +1091,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			    						if(ccc.day.dayID == cc.day.dayID && cc.timeOut > ccc.timeIn && ccc.timeOut > cc.timeIn){
 											has_conflict = true
 											if(ii == i){
-					    						cc.msg = "Class has conflict in this section. ("+ccc.subCode+")"
-					    						cc.loading = false
+												//cc.msg old code
+												//cc.loading old code
+					    						c.msg = "Class has conflict in this section. ("+ccc.subCode+")"
+					    						c.loading = false
 					    					}
 											break
 				    					}
@@ -1190,7 +1197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        			return x
 	        		})
 	        		const a = this.faculties.splice(this.faculties.findIndex(i => i.facID == 0), 1)
-	    			this.faculties.unshift(a)
+	    			this.faculties.unshift(a[0])
 	    			
 	        		this.added_sections = c.added_sections
 				 })
@@ -1238,7 +1245,10 @@ document.addEventListener('DOMContentLoaded', function() {
         			}else{
         				c.faculty = ''
         			}
-
+        			if(c.timeIn == '00:00:00'){
+        				c.timeIn = ''
+        				c.timeOut = ''	
+        			} 
 
 	        		c.loading = false
         			c.day = {dayID: c.dayID, dayDesc: c.dayDesc, dayCount: c.dayCount}
@@ -1249,7 +1259,6 @@ document.addEventListener('DOMContentLoaded', function() {
         			c.status2 = 0
         			return c
 	        	})
-
 	        },
 	        submitForm(){
 	        	const c = this.classes 

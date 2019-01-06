@@ -26,10 +26,10 @@
 			<div class="field">
 			  <label class="label">No of days</label>
 			  <div class="control">
-				  	<input class="input" type="number" v-model.trim="form.dayCount" required>
+				  	<multiselect v-model="form.dayCount" track-by="day" label="day" :options="days" placeholder=""></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
-					{{error.dayDesc}}
+					{{error.dayCount}}
 				</p>
 			</div>
 			<br>
@@ -60,12 +60,21 @@
 
 		    	form: {
 		    		dayDesc: '',
-		    		dayCount: ''
+		    		dayCount: null
 		    	},
 		    	error: {
 		    		dayDesc: '',
 		    		dayCount: ''
-		    	}
+		    	},
+		    	days: [
+		    		{day: 1},
+		    		{day: 2},
+		    		{day: 3},
+		    		{day: 4},
+		    		{day: 5},
+		    		{day: 6},
+		    		{day: 7}
+		    	]
 		    },
 		    methods: {
 		        submitForm() {

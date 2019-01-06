@@ -109,7 +109,7 @@ class mdl_auto_sched extends CI_Model{
 					$data['classCode'] = $s->subCode;
 					$data['merge_with'] = 0;
 
-					if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
+					if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){ //same subj w/ diff unit type
 						$is_conflict = $this->checkConflicts($last_added, $data['timeOut'], $is_room_auto, $is_faculty_auto);
 						if($is_conflict['room']){
 							$last_added['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $last_added['timeIn'], $data['timeOut']);

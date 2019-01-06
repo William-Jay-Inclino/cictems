@@ -255,14 +255,14 @@ class mdl_Schedule extends CI_Model{
 
 	function get_classes($termID, $secID){
 		$sql = $this->db->query("
-			SELECT c.classID,s.subCode,s.subDesc,s.units,s.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn
+			SELECT c.classID,c.merge_with,s.subCode,s.subDesc,s.units,s.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn
 			FROM class c 
 			INNER JOIN subject s ON c.subID = s.subID
 			INNER JOIN room r ON c.roomID = r.roomID
 			INNER JOIN day d ON c.dayID = d.dayID
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID 
-			WHERE c.termID = $termID AND c.secID = $secID LIMIT 10 
+			WHERE c.termID = $termID AND c.secID = $secID
 		")->result();
 		echo json_encode($sql);
 	}

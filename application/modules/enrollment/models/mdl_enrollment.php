@@ -268,7 +268,7 @@ class mdl_Enrollment extends CI_Model{
 			INNER JOIN day d ON c.dayID = d.dayID
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID 
-			WHERE c.termID = $termID AND c.secID = $secID LIMIT 10 
+			WHERE c.termID = $termID AND c.secID = $secID
 		")->result();
 		echo json_encode($sql);
 	}
