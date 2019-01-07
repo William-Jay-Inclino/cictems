@@ -74,8 +74,12 @@ class Schedule extends MY_Controller{
 		$this->mdl_schedule->get_classes($this->_data['current_term']->termID, $secID[0]);
 	}
 
-	function mergeClass($ids){
-		$this->mdl_schedule->mergeClass($ids[0],$ids[1]);	
+	function mergeClass(){
+		$this->mdl_schedule->mergeClass();	
+	}
+
+	function splitClass($classID){
+		$this->mdl_schedule->splitClass($classID[0]);	
 	}
 
 	private function prevent_url_access(){

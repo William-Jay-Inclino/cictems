@@ -645,6 +645,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		c.faculty = null 
 	    		c.merge_to = null 
 
+	    		this.$http.get('<?php echo base_url() ?>schedule/splitClass/' + c.classID)
+    			.then(res => {
+    				console.log(res.body)
+    			}, e => {
+    				console.log(e.body)
+    			})
+
 	    	},
 	    	mergeClass(){
 	    		const c = (this.current_sec) ? this.classes2[this.selected_index] : this.classes[this.selected_index]
@@ -668,9 +675,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		    		this.close_classModal()
 
 		    		if(this.current_sec){
-		    			this.$http.get('<?php echo base_url() ?>schedule/mergeClass/' + c.classID + '/' + class_merge.classID)
+		    			k = {
+		    				roomID: c.room.roomID,
+		    				facID: c.faculty.facID,
+		    				dayID: c.day.dayID,
+		    				timeIn: c.timeIn,
+		    				timeOut: c.timeOut,
+		    				merge_with: class_merge.classID
+		    			}
+		    			this.$http.post('<?php echo base_url() ?>schedule/mergeClass/', {data: k, classID: c.classID})
 		    			.then(res => {
-		    				// console.log(res.body)
+		    				console.log(res.body)
 		    			}, e => {
 		    				console.log(e.body)
 		    			})

@@ -40,7 +40,7 @@ class mdl_Schedule extends CI_Model{
 		}else{
 			$sql2 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND roomID = $roomID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID AND roomID <> 0 LIMIT 1
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID AND roomID <> 0 AND merge_with <> $classID LIMIT 1
 			")->row();
 
 			if($sql2){
@@ -50,7 +50,7 @@ class mdl_Schedule extends CI_Model{
 
 			$sql3 = $this->db->query("
 				SELECT classCode,secID FROM class WHERE termID = $termID AND dayID = $dayID AND facID = $facID AND 
-				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID AND facID <> 0 LIMIT 1
+				'$timeOut' > timeIn AND timeOut > '$timeIn' AND classID <> $classID AND facID <> 0 AND merge_with <> $classID LIMIT 1
 			")->row();
 
 			if($sql3){
@@ -267,9 +267,24 @@ class mdl_Schedule extends CI_Model{
 		echo json_encode($sql);
 	}
 
-	function mergeClass($classID, $merge_with){
-		$this->db->update('class', ['merge_with' => $merge_with], "classID = $classID");
+	function mergeClass(){
+		$data = $this->input->post("data");
+		$classID = $this->input->post("classID");
+
+		$this->db->update('class', $data, "classID = $classID");
 	}
+
+	function splitClass($classID){
+		$data['roomID'] = 0;
+		$data['dayID'] = 0;
+		$data['facID'] = 0;
+		$data['timeIn'] = '00:00:00';
+		$data['timeOut'] = '00:00:00';
+		$data['merge_with'] = 0;
+
+		$this->db->update('class', $data, "classID = $classID");
+	}
+
 
 }
 
