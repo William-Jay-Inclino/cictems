@@ -152,7 +152,7 @@ $route['reports/payment-logs'] = 'reports_payment_logs';
 $route['reports/payment-logs/download/(:any)/(:any)/(:any)'] = 'reports_payment_logs/download/$1/$2/$3';
 
 $route['reports/class'] = 'reports_class';
-$route['reports/class/download/(:num)'] = 'reports_class/download/$1';
+$route['reports/class/download/(:any)/(:num)'] = 'reports_class/download/$1/$2';
 
 // --------------END REPORTS-----------------
 

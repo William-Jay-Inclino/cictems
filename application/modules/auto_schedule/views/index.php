@@ -18,18 +18,18 @@
 				<tr>
 					<th width="20%" style="border: none; padding: 12px">Prospectus</th>
 					<td style="border: none; padding: 12px" colspan="2">
-						<multiselect @input="displaySections" v-model="prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+						<multiselect :disabled="isDisabled" @input="displaySections" v-model="prospectus" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
 					</td>
 				</tr>
 				<tr>
 					<th style="border: none; padding: 12px" width="20%">Select Sections</th>
 					<td style="border: none; padding: 12px" colspan="2">
-						<multiselect :multiple="true" v-model="sections_tba" track-by="secID" label="secName" :options="sections2"></multiselect>
+						<multiselect :disabled="isDisabled" :multiple="true" v-model="sections_tba" track-by="secID" label="secName" :options="sections2"></multiselect>
 					</td>
 				</tr>
 			</table>
 			<hr>
-			<button @click="addSections" class="button is-primary is-pulled-right" :disabled="sections_tba.length == 0">Add Sections</button>
+			<button @click="addSections" class="button is-primary is-pulled-right" :disabled="sections_tba.length == 0 || isDisabled">Add Sections</button>
 			<br><br>
 		</div>
 		<div class="box">
@@ -37,61 +37,61 @@
 				<tr>
 					<th style="border: none; padding: 12px" width="20%">Term</th>
 					<td style="border: none; padding: 12px" colspan="2">
-						<multiselect v-model="form.term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
+						<multiselect :disabled="isDisabled" v-model="form.term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
 					</td>
 				</tr>
 				<tr>
 					<th style="border: none; padding: 12px" width="20%">Section</th>
 					<td style="border: none; padding: 12px" colspan="2">
-						<multiselect :multiple="true" v-model="form.section" track-by="secID" label="secLabel" :options="[]"></multiselect>
+						<multiselect :disabled="isDisabled" :multiple="true" v-model="form.section" track-by="secID" label="secLabel" :options="[]"></multiselect>
 					</td>
 				</tr>
 				<tr>
 					<th style="border: none; padding: 12px">Day and Time</th>
 					<td style="border: none; padding: 12px">
-						<input id="switchSection" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="form.is_dt_auto == 'yes'" @change="toggle_switches('dt')">
+						<input :disabled="isDisabled" id="switchSection" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="form.is_dt_auto == 'yes'" @change="toggle_switches('dt')">
 						<label for="switchSection"></label>
 					</td>
 				</tr>
 				<tr v-if="form.is_dt_auto == 'yes'">
 					<th style="border: none; padding: 12px">Day</th>
 					<td style="border: none; padding: 12px" colspan="2">
-						<multiselect :multiple="true" v-model="form.day" track-by="dayID" label="dayDesc" :options="days"></multiselect>
+						<multiselect :disabled="isDisabled" :multiple="true" v-model="form.day" track-by="dayID" label="dayDesc" :options="days"></multiselect>
 					</td>
 				</tr>
 				<tr v-if="form.is_dt_auto == 'yes'">
 					<th style="border: none; padding: 12px">Time range</th>
 					<td style="border: none; padding: 12px">
 						<label class="label">Min</label>
-						<input type="time" class="input" v-model="form.min_time">
+						<input :disabled="isDisabled" type="time" class="input" v-model="form.min_time">
 					</td>
 					<td style="border: none; padding: 12px">
 						<label class="label">Max</label>
-						<input type="time" class="input" v-model="form.max_time">
+						<input :disabled="isDisabled" type="time" class="input" v-model="form.max_time">
 					</td>
 				</tr>
 				<tr v-if="form.is_dt_auto == 'yes'">
 					<th style="border: none; padding: 12px">Lunch Break</th>
 					<td style="border: none; padding: 12px">
 						<label class="label">Min</label>
-						<input type="time" class="input" v-model="form.break_min_time">
+						<input :disabled="isDisabled" type="time" class="input" v-model="form.break_min_time">
 					</td>
 					<td style="border: none; padding: 12px">
 						<label class="label">Max</label>
-						<input type="time" class="input" v-model="form.break_max_time">
+						<input :disabled="isDisabled" type="time" class="input" v-model="form.break_max_time">
 					</td>
 				</tr>
 				<tr>
 					<th style="border: none; padding: 12px">Room</th>
 					<td style="border: none; padding: 12px">
-						<input id="switchRoom" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="form.is_room_auto == 'yes'" @change="toggle_switches('r')">
+						<input :disabled="isDisabled" id="switchRoom" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="form.is_room_auto == 'yes'" @change="toggle_switches('r')">
 						<label for="switchRoom"></label>
 					</td>
 				</tr>
 				<tr>
 					<th style="border: none; padding: 12px">Faculty</th>
 					<td style="border: none; padding: 12px">
-						<input id="switchFaculty" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="form.is_faculty_auto == 'yes'" @change="toggle_switches('f')">
+						<input :disabled="isDisabled" id="switchFaculty" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="form.is_faculty_auto == 'yes'" @change="toggle_switches('f')">
 						<label for="switchFaculty"></label>
 					</td>
 				</tr>
@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	isDisabled: false,
 	    	isLoading: false,
 	    	current_termID: '<?php echo $current_term->termID ?>',
 	    	page_title: 'Auto-Schedule',
@@ -202,16 +203,32 @@ document.addEventListener('DOMContentLoaded', function() {
 	    			swal('Error', 'Unable to create schedule. Empty days! ', 'error')
 	    		}else{
 	    			this.isLoading = true
+	    			this.isDisabled = true
 	    			this.$http.post('<?php echo base_url() ?>auto_schedule/createSchedule', this.form)
 		    		.then(res => {
 		    			this.isLoading = false
-		    			console.log(res.body)
+		    			this.isDisabled = false
+		    			swal('Success', "Scedule successfully created!", 'success')
+		    			this.resetForm()
 		    		}, e => {
 		    			console.log(e.body)
-
+		    			this.createSchedule()
 		    		})	
 	    		}
-	    		
+	    	},
+	    	resetForm(){
+	    		this.form = {
+		    		term: null,
+		    		section: [],
+		    		is_dt_auto: 'yes',
+		    		is_room_auto: 'yes',
+		    		is_faculty_auto: 'yes',
+		    		day: null,
+		    		min_time: '07:30',
+			    	max_time: '19:30',
+			    	break_min_time: '12:00',
+			    	break_max_time: '13:00',
+		    	}
 	    	}
 	    },
 

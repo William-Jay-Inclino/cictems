@@ -15,7 +15,7 @@
   <section class="section">
     <div class="container">
       <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
-      <a :href="report_link" target="_blank" class="button is-primary is-pulled-right" class="button is-primary" :disabled="!filteredDate">Generate Report</a>
+      <button @click="generateReport" class="button is-primary is-pulled-right" class="button is-primary" :disabled="!filteredDate">Generate Report</button>
       <br><br>
       <div class="box">
         <h5 class="title is-5">Filter</h5>
@@ -223,7 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
              this.students = response.body
           })
        }
-    }
+    },
+      generateReport(){
+         window.open(this.report_link, '_blank')
+      }
    },
 
 

@@ -26,7 +26,7 @@
       <div class="container">
          <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
 
-         <a :disabled="!selected_student" :href="btnGenerate_link" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+        <button :disabled="!selected_student" @click="generateReport" class="button is-primary is-pulled-right">Generate Report</button>
          <br><br>
          <div class="box">
             <div class="columns">
@@ -184,6 +184,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.selected_student = response.body
          })
       },
+      generateReport(){
+         window.open(this.btnGenerate_link, '_blank')
+      }
    },
 
 

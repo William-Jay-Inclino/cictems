@@ -179,6 +179,7 @@ class mdl_Classes extends CI_Model{
 			SELECT f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) as name 
 			FROM faculty f 
 			INNER JOIN users u ON f.uID = u.uID
+			WHERE f.facID <> 0
 			ORDER BY name ASC"
 		);
 		echo json_encode($query->result());

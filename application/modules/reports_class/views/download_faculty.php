@@ -33,7 +33,7 @@
 	<div style="font-size: 16px; text-align: center; color: #3273dc">
 		<b>
 		<?php 
-			echo "CLASS SCHEDULE - College of ICT & Engineering<br>";
+			echo "FACULTY SCHEDULES - College of ICT & Engineering<br>";
 			echo "SY: ".$term->schoolYear." - ".$term->semDesc.'<br>';
 			echo "As of ".date("F j, Y");
 		?>
@@ -44,17 +44,24 @@
 		foreach($data as $d){ ?>
 			<table>
 				<tr>
-					<th style="color: #3273dc; text-align: left">SECTION: </th>
-					<th style="color: #3273dc; background-color: #ffdd57; text-align: left "> <?php echo $d['secName'] ?> </th>
-					<th colspan="4"></th>
+					<th style="color: #3273dc; text-align: left">FACULTY: </th>
+					<th style="color: #3273dc; background-color: #ffdd57; text-align: left "> 
+						<?php 
+							if($d['ln'] == ''){
+								echo "Unassigned";
+							}else{
+								echo $d['ln'].', '.$d['fn']; 	
+							}
+						?> 
+					</th>
+					<th colspan="3"></th>
 				</tr>
 				<tr class="tbl-headers">
-					<th style="color: #ff3860; width: 15%">Course Code</th>
-					<th style="color: #ff3860; width: 20%">Course Description</th>
+					<th style="color: #ff3860; width: 20%">Course Code</th>
+					<th style="color: #ff3860; width: 30%">Course Description</th>
 					<th style="color: #ff3860; width: 10%;">Days</th>
 					<th style="color: #ff3860; width: 20%;">Time</th>
-					<th style="color: #ff3860; width: 15%;">Room</th>
-					<th style="color: #ff3860; width: 20%;">Instructor</th>
+					<th style="color: #ff3860; width: 20%;">Room</th>
 				</tr>
 				<?php 
 					foreach($d['classes'] as $class){ ?>
@@ -69,16 +76,7 @@
 									if($class->roomName == ''){
 										echo "<span style='color: #ff3860;'>Unassigned<span>";
 									}else{
-										echo $class->roomName;	
-									}
-								?> 
-							</td>
-							<td style="color: #3273dc;"> 
-								<?php 
-									if($class->ln == ''){
-										echo "<span style='color: #ff3860;'>Unassigned<span>";
-									}else{
-										echo $class->ln.', '.$class->fn; 	
+										echo $class->roomName; 	
 									}
 								?> 
 							</td>

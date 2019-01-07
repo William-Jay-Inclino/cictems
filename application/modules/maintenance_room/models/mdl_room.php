@@ -54,6 +54,7 @@ class mdl_Room extends CI_Model{
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
 				SELECT * FROM room 
+				WHERE roomID <> 0
 				ORDER BY roomName ASC
 				LIMIT $start, $per_page
 			");
@@ -61,7 +62,7 @@ class mdl_Room extends CI_Model{
 		}else{
 			$query = $this->db->query("
 				SELECT * FROM room 
-				WHERE $option LIKE '%".$search_val."%' 
+				WHERE roomID <> 0 AND $option LIKE '%".$search_val."%' 
 				ORDER BY roomName ASC
 				LIMIT $start, $per_page"
 			);

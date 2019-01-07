@@ -10,7 +10,7 @@
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
         <br>
-        <a :disabled="!selected_pros" :href="btnGenerate_link" target="_blank" class="button is-primary is-pulled-right">Generate Report</a> <br><br><br>
+        <button :disabled="!selected_pros" @click="generateReport" class="button is-primary is-pulled-right">Generate Report</button> <br><br><br>
          <div class="box columns bg-white">
             <div class="column">
                <div class="field">
@@ -303,6 +303,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
          }
+      },
+      generateReport(){
+         window.open(this.btnGenerate_link, '_blank')
       }
    },
 

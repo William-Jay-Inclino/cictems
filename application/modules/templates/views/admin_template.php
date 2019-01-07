@@ -157,7 +157,7 @@
                      Payment Logs
                    </a>
                    <a class="navbar-item <?php if($current_module == 22){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/class">
-                     Class Schedules
+                     Schedules
                    </a>
                  </div>
                </div>

@@ -138,6 +138,7 @@ class mdl_Faculty extends CI_Model{
 				(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
 				FROM faculty f 
 				INNER JOIN users u ON f.uID = u.uID
+				WHERE f.facID <> 0
 				LIMIT $start, $per_page
 			"); 
 			$num_records = $this->count_all();
@@ -149,7 +150,7 @@ class mdl_Faculty extends CI_Model{
 				(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
 				FROM faculty f 
 				INNER JOIN users u ON f.uID = u.uID
-				WHERE $option LIKE '%".$search_val."%' 
+				WHERE f.facID <> 0 AND $option LIKE '%".$search_val."%' 
 				ORDER BY $option ASC
 				LIMIT $start, $per_page"
 			);
@@ -161,7 +162,7 @@ class mdl_Faculty extends CI_Model{
 					INNER JOIN users u ON f.uID = u.uID
 					INNER JOIN fac_spec fs ON f.facID = fs.facID 
 					INNER JOIN specialization s ON fs.specID = s.specID 
-					WHERE $option LIKE '%".$search_val."%' 
+					WHERE f.facID <> 0 AND $option LIKE '%".$search_val."%' 
 					ORDER BY $option ASC
 					LIMIT $start, $per_page"
 				);

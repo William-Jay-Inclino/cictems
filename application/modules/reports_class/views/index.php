@@ -9,7 +9,7 @@
    <section class="section">
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
-        <a :href="'<?php echo base_url() ?>reports/class/download/' + term.termID" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+        <a :href="reportLink" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
         <br><br>
         <button @click="filter = 'class'" :class="{'button is-primary btn-width': true, 'is-outlined': filter != 'class'}">Class</button>
         <button @click="filter = 'room'" :class="{'button is-primary btn-width': true, 'is-outlined': filter != 'room'}">Room</button>
@@ -185,6 +185,16 @@ document.addEventListener('DOMContentLoaded', function() {
     this.populate()
    },
    computed: {
+    reportLink(){
+      const link = '<?php echo base_url() ?>reports/class/'
+      let x = 'download/class/'
+      if(this.filter == 'room'){
+        x = 'download/room/'
+      }else if(this.filter == 'faculty'){
+        x = 'download/faculty/'
+      }
+      return link + x + this.term.termID
+    },
     class_schedules(){
       if(this.filter == 'class'){
         if(this.course.courseID == 'all'){

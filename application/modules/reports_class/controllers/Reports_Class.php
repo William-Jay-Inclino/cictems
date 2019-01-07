@@ -25,10 +25,10 @@ class Reports_Class extends MY_Controller{
 	function download($data){
 
 		$mpdf = new \Mpdf\Mpdf();
-		$this->_data['data'] = $this->mdl_class_list->download($data[0]);
-		$this->_data['term'] = $this->mdl_class_list->get_term($data[0]);
+		$this->_data['data'] = $this->mdl_class_list->download($data[0],$data[1], $view);
+		$this->_data['term'] = $this->mdl_class_list->get_term($data[1]);
 
-		$html = $this->load->view($this->_data['module'].'/download',$this->_data, true);
+		$html = $this->load->view($this->_data['module'].'/'.$view,$this->_data, true);
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
 	}

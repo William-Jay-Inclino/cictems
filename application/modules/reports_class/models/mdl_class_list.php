@@ -3,37 +3,78 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Class_List extends CI_Model{
 
-	function download($termID){
+	function download($value, $termID, &$view){
+		if($value == 'faculty'){
+			$view = 'download_faculty';
+			return $this->get_faculty_list($termID);
+		}else if($value == 'room'){
+			$view = 'download_room';
+			return $this->get_room_list($termID);
+		}else{
+			$view = 'download';
+			return $this->get_class_list($termID);
+		}
+	}
+
+	function get_faculty_list($termID){
 		$arr = [];
 
-		$sections = $this->db->query("
-			SELECT DISTINCT s.secID,s.secName FROM section s 
-			INNER JOIN class c ON s.secID = c.secID 
-			WHERE c.termID = $termID ORDER BY s.secName ASC
-			")->result();
+		$faculties = $this->db->query("
+			SELECT DISTINCT c.facID,u.ln,u.fn FROM faculty f 
+			INNER JOIN class c ON f.facID = c.facID 
+			INNER JOIN users u ON f.uID = u.uID  
+			WHERE c.termID = $termID
+		")->result();
 
-		foreach($sections as $section){
+		foreach($faculties as $faculty){
 			$classes = $this->db->query("
-				SELECT c.classCode,s.subDesc,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName
 				FROM class c 
 				INNER JOIN subject s ON c.subID = s.subID 
+				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN room r ON c.roomID = r.roomID 
+				WHERE c.facID = ".$faculty->facID." AND c.termID = $termID
+				ORDER BY day,c.timeIn ASC
+			")->result();
+			///echo $this->db->last_query(); die();
+			$arr[] = ['ln' => $faculty->ln, 'fn' => $faculty->fn, 'classes' => $classes];
+		}
+		return $arr;
+
+	}
+
+	function get_room_list($termID){
+		$arr = [];
+
+		$rooms = $this->db->query("
+			SELECT DISTINCT c.roomID,r.roomName FROM room r 
+			INNER JOIN class c ON r.roomID = c.roomID 
+			WHERE c.termID = $termID
+		")->result();
+
+		foreach($rooms as $room){
+			$classes = $this->db->query("
+				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,u.ln,u.fn
+				FROM class c 
+				INNER JOIN subject s ON c.subID = s.subID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 
 				INNER JOIN users u ON f.uID = u.uID 
-				WHERE c.secID = ".$section->secID." AND c.termID = $termID
-				ORDER BY c.classID ASC
+				WHERE c.roomID = ".$room->roomID." AND c.termID = $termID
+				ORDER BY day,c.timeIn ASC
 			")->result();
-			$arr[] = ['secName' => $section->secName, 'classes' => $classes];
+			///echo $this->db->last_query(); die();
+			$arr[] = ['roomName' => $room->roomName, 'classes' => $classes];
 		}
 		return $arr;
+
 	}
 
 	function get_term($termID){
 		return $this->db->query("SELECT t.schoolYear, s.semDesc FROM term t INNER JOIN semester s ON t.semID=s.semID WHERE t.termID = $termID LIMIT 1")->row();
 	}
 
-	function get_class_list($termID, $val = NULL){
+	function get_class_list($termID){
 		$arr = [];
 
 		$sections = $this->db->query("
@@ -53,15 +94,11 @@ class mdl_Class_List extends CI_Model{
 				INNER JOIN faculty f ON c.facID = f.facID 
 				INNER JOIN users u ON f.uID = u.uID 
 				WHERE c.secID = ".$section->secID." AND c.termID = $termID
-				ORDER BY c.classID ASC
+				ORDER BY day,c.timeIn ASC
 			")->result();
 			$arr[] = ['secName' => $section->secName,'courseID'=>$section->courseID, 'classes' => $classes];
 		}
-		if($val == NULL){
-			echo json_encode($arr);
-		}else{
-			return $arr;
-		}
+		return $arr;
 		
 	}
 
