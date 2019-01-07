@@ -645,12 +645,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		c.faculty = null 
 	    		c.merge_to = null 
 
-	    		this.$http.get('<?php echo base_url() ?>schedule/splitClass/' + c.classID)
-    			.then(res => {
-    				console.log(res.body)
-    			}, e => {
-    				console.log(e.body)
-    			})
+	    		if(this.current_sec){
+	    			this.$http.get('<?php echo base_url() ?>schedule/splitClass/' + c.classID)
+	    			.then(res => {
+	    				console.log(res.body)
+	    			}, e => {
+	    				console.log(e.body)
+	    			})	
+	    		}
+	    		
 
 	    	},
 	    	mergeClass(){
