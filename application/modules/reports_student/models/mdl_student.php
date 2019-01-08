@@ -149,7 +149,7 @@ class mdl_Student extends CI_Model{
 			INNER JOIN course c ON p.courseID = c.courseID 
 			INNER JOIN year y ON s.yearID = y.yearID
 			INNER JOIN users u ON s.uID = u.uID 
-			WHERE class.termID = $termID
+			WHERE class.termID = $termID AND sc.status = 'Enrolled'
 			ORDER BY y.yearDesc,name ASC
 		")->result();
 		$data['total_rows'] = $this->count_all($termID);

@@ -26,6 +26,7 @@ class mdl_Classes extends CI_Model{
 			INNER JOIN student s ON sc.studID = s.studID
 			INNER JOIN users u ON s.uID = u.uID
 			AND sc.classID = ".$data['class']->classID."
+			ORDER BY name ASC
 		")->result();
 		//die(var_dump($data['students']));
 		$grades = $this->db->order_by('metric','ASC')->get('grade_metric')->result();
@@ -222,6 +223,7 @@ class mdl_Classes extends CI_Model{
 			INNER JOIN student s ON sc.studID = s.studID
 			INNER JOIN users u ON s.uID = u.uID
 			AND sc.classID = ".$data['class'][0]->classID."
+			ORDER BY name ASC
 		")->result();
 
 		echo json_encode($data);

@@ -81,17 +81,14 @@ class mdl_Special extends CI_Model{
 	function update(){
 		$exist = false;
 		$id = $this->input->post('id');
-		$data['secName'] = $this->input->post('sec');
+		$data['specDesc'] = $this->input->post('spec');
 		
 		$this->check_exist($data,$exist,$id);
 
 		if($exist){
 			$output = ['status' => 0];
 		}else{
-			$data['courseID'] = $this->input->post('course')['courseID'];
-			$data['yearID'] = $this->input->post('year')['yearID'];
-			$data['semID'] = $this->input->post('sem')['semID'];
-			$this->db->update('section', $data, "secID = $id");
+			$this->db->update('specialization', $data, "specID = $id");
 			$output = ['status' => 1];
 		}
 

@@ -51,6 +51,8 @@
               </div>
             </div>
             <hr v-show="filter != 0">
+            <h4 class="title is-4"> <span class="icon has-text-primary"> <i class="fa fa-users"></i> </span> Enrolled Students</h4>
+            <hr>
             <table class="table is-fullwidth">
                <thead>
                 <th>#</th>

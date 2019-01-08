@@ -271,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
       selected_student(value){
          if(value == null){
             this.ready = false
+            this.section = null
          }else{
             this.ready = true
             this.classes = []

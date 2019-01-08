@@ -7,7 +7,8 @@
 		<nav class="breadcrumb has-bullet-separator" aria-label="breadcrumbs">
 		  <ul>
 		    <li><a :href="page.list">List</a></li>
-		    <li class="is-active"><a href="#" aria-current="page">Add Form</a></li>
+		    <li><a :href="page.show">Show</a></li>
+		    <li class="is-active"><a href="#" aria-current="page">Update Form</a></li>
 		  </ul>
 		</nav>
 	</div>
@@ -41,13 +42,14 @@
 		    el: '#app',
 		    data: {
 		    	page:{
-		    		title: 'Add Subject Type',
+		    		title: 'Update Subject Type',
 		    		list: '<?php echo base_url() ?>maintenance/specialization',
-		    		success: '<?php echo base_url() ?>maintenance/specialization/form-success/'
+		    		show: '<?php echo base_url()."maintenance/specialization/show/".$record->specID ?>'
 		    	},
 
 		    	form: {
-		    		spec: ''
+		    		id: '<?php echo $record->specID ?>',
+		    		spec: '<?php echo $record->specDesc ?>'
 		    	},
 		    	error: {
 		    		spec: ''
@@ -57,7 +59,7 @@
 		        submitForm() {
 		        	const f = this.form
 		        	if(this.checkForm(f)){
-		        		this.$http.post('<?php echo base_url() ?>maintenance_specialization/create',f)
+		        		this.$http.post('<?php echo base_url() ?>maintenance_specialization/update',f)
 			        	.then(response => {
 			        		const c = response.body
 			        		console.log(c)
@@ -66,7 +68,13 @@
 							      icon: 'warning',
 							    });
 			        		}else{
-			        			window.location.href = this.page.success + c.id
+			        			swal('Specialization successfull updated', {
+							      icon: 'success',
+							    }).then((x) => {
+								  if (x) {
+								    window.location.href = this.page.show
+								  }
+								})
 			        		}
 						 }, e => {
 						 	console.log(e.body);
@@ -85,7 +93,7 @@
 		        		this.error.spec = errMsg
 		        		ok = false
 		        	}else{
-		        		this.error.sec = ''
+		        		this.error.spec = ''
 		        	}
 		        	return ok
 		        }

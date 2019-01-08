@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	            }, response => {
 	            	console.log(response.body)
+	            	this.saveGrade(i, x)
 				})
 	    	},
 	    	is_disabled(i, tg){

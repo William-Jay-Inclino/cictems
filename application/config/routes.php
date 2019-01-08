@@ -25,6 +25,16 @@ $route['grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$
 
 // --------------END CLASS-----------------
 
+// -------------------------MY CLASS FOR FACULTY ONLY---------------------------------
+
+$route['my-class'] = 'my_class';
+$route['my-class/class-selected/(:num)/(:num)/(:num)'] = 'my_class/class_selected/$1/$2/$3';
+$route['my-class/grade-sheet/(:num)/(:num)/(:num)'] = 'my_class/grade_sheet/$1/$2/$3';
+// $route['my-class/student-grade/(:num)/(:num)'] = 'my_class/student_grade/$1/$2';
+// $route['my-class/update-grade/(:any)/(:num)'] = 'my_class/update_grade/$1/$2';
+
+// -------------------------END MY CLASS---------------------------------
+
 $route['incomplete'] = 'incomplete';
 
 $route['auto-schedule'] = 'auto_schedule';
@@ -156,15 +166,6 @@ $route['reports/class/download/(:any)/(:num)'] = 'reports_class/download/$1/$2';
 
 // --------------END REPORTS-----------------
 
-
-// -------------------------MY CLASS FOR FACULTY ONLY---------------------------------
-
-$route['my-class'] = 'my_class';
-$route['my-class/class-selected/(:num)'] = 'my_class/class_selected/$1';
-$route['my-class/student-grade/(:num)/(:num)'] = 'my_class/student_grade/$1/$2';
-$route['my-class/update-grade/(:any)/(:num)'] = 'my_class/update_grade/$1/$2';
-
-// -------------------------END MY CLASS---------------------------------
 
 // -------------------------STUDENT NAVIGATION---------------------------------
 

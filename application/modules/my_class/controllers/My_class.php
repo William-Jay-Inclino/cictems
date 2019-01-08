@@ -12,7 +12,7 @@ class My_Class extends MY_Controller{
 
 	function _remap($method, $params = []){
         if ($method != 'index' && $method != 'class_selected' && $method != 'student_grade' 
-        	&& $method != 'update_grade'){
+        	&& $method != 'update_grade' && $method != 'grade_sheet'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -29,13 +29,27 @@ class My_Class extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
+	function grade_sheet($id){
+		$this->_data['data'] = $this->mdl_myclass->grade_sheet($id[0],$id[1],$id[2]);
+
+		$mpdf = new \Mpdf\Mpdf();
+
+		$html = $this->load->view('classes/grade_sheet',$this->_data, true);
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
+		
+	}
+
 	function get_classes($termID){
 		$this->mdl_myclass->get_classes($termID[0]);
 	}
 
-	function class_selected($classID){
+	function class_selected($id){
 		$this->_data['module_view'] = 'class_selected';
-		$this->_data['classID'] = $classID[0];
+		$this->_data['termID'] = $id[0];
+		$this->_data['id'] = $id[1];
+		$this->_data['prosID'] = $id[2];
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -44,8 +58,8 @@ class My_Class extends MY_Controller{
 	}
 
 
-	function fetch_Class_Selected($classID){
-		$this->mdl_myclass->fetch_Class_Selected($classID[0]);
+	function populate_class_sel($id){
+		$this->mdl_myclass->populate_class_sel($id[0],$id[1],$id[2]);
 	}
 
 	function fetch_Students($classID){

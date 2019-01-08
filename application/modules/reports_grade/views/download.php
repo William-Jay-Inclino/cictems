@@ -48,12 +48,12 @@
 					<th colspan="7"><?php echo $subjects['term'] ?></th>
 				</tr>
 				<tr class="tbl-headers">
-					<th style="text-align: center; width: 5%">Grade</th>
+					<th style="text-align: center; width: 6%">Grade</th>
 					<th style="width: 15%">Course Code</th>
 					<th style="width: 30%">Descriptive Title</th>
 					<th style="text-align: center; width: 5%">Units</th>
 					<th style="width: 15%">Pre-requisites</th>
-					<th style="width: 15%">School Year</th>
+					<th style="width: 14%">School Year</th>
 					<th style="width: 15%">Semester</th>
 				</tr>
 				<?php 

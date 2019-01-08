@@ -31,14 +31,11 @@
 					<th class="has-text-centered">Done</th>
 					<th>Subject Code</th>
 					<th>Description</th>
-					<th>Day</th>
-					<th>Time</th>
-					<th>Room</th>
 					<th>Section</th>
 					<th>Select</th>
 				</thead>
 				<tbody>
-					<tr v-for="c, i in classes">
+					<tr v-for="c in classes">
 						<td class="has-text-primary has-text-centered">
 							<span v-if="c.status == 'unlocked'">
 								---
@@ -49,12 +46,9 @@
 						</td>
 						<td> {{c.subCode}} </td>
 						<td> {{c.subDesc}} </td>
-						<td> {{c.day}} </td>
-						<td> {{c.class_time}} </td>
-						<td> {{c.roomName}} </td>
 						<td> {{c.secName}} </td>
 						<td>
-							<a :href="'<?php echo base_url() ?>my-class/class-selected/' + c.classID" class="button is-outlined is-primary">
+							<a :href="selected_link + c.termID + '/' + c.id + '/' + c.prosID" class="button is-outlined is-primary">
 								<i class="fa fa-angle-double-right fa-lg"></i>
 							</a>
 						</td>
@@ -74,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	selected_link: 'my-class/class-selected/',
 	    	current_term: {termID: '<?php echo $current_term->termID; ?>', term: '<?php echo $current_term->term; ?>'},
 	    	terms: [],
 	    	classes: []
