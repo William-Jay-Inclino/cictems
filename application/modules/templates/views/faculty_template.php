@@ -35,8 +35,8 @@
                <a class="navbar-item <?php if($current_module == 24){echo 'nav-active';} ?>" href="<?php echo base_url() ?>my-class">
                  My Class
                </a>
-               <a class="navbar-item" href="#">
-                 Incomplete
+               <a class="navbar-item <?php if($current_module == 24.1){echo 'nav-active';} ?>" href="<?php echo base_url() ?>inc-grades">
+                 INC Grades
                </a>
                <?php 
                 if(in_array('1', $user_access)){ ?>

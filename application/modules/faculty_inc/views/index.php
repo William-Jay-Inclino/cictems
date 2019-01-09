@@ -87,7 +87,7 @@
 						<td>{{record.yearDesc}}</td>
 						<td>{{record.term}}</td>
 						<td>
-							<a :href="page.show + '/' + record.studID + '/' + record.termID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
+							<a :href="page.show + '/' + record.studID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 						</td>
 					</tr>
 				</tbody>
@@ -123,13 +123,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
-	    	page_title: 'Incomplete',
+	    	page_title: 'Incomplete Grades',
 	    	loading: true,
 	    	pagination: true,
 	    	msg: false,
 	    	page:{
 	    		data_list: 'List of students that has incomplete grade',
-	    		show: '<?php echo base_url() ?>incomplete/classes'
+	    		show: '<?php echo base_url() ?>inc-grades/classes'
 	    	},
 
 	       	entries: ['10','25','50','100'],
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        records: []
 	    },
 	    created() {
-	        this.fetchData(1)
+	      	this.fetchData(1)
 	        this.fetchTerm()
 	    },
 	    watch: {
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        	this.current_page = page
 	        	this.loading = true
 	        	this.msg = false
-	        	this.$http.get('<?php echo base_url() ?>incomplete/read/'+this.option+'/'+this.value + '/' + page + '/' + this.per_page +'/'+this.term.termID)
+	        	this.$http.get('<?php echo base_url() ?>faculty_inc/read/'+this.option+'/'+this.value + '/' + page + '/' + this.per_page +'/'+this.term.termID)
 	        	.then(response => {
 	        		const c = response.body
 	        		console.log(c)
@@ -208,6 +208,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	        		}else{
 	        			this.pagination = true
 	        		}
+				 }, e => {
+				 	console.log(e.body);
+
 				 })
 	        },
 	        fail_students(){
@@ -229,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				})
 				.then((yes) => {
 				  if (yes) {
-				    this.$http.get('<?php echo base_url() ?>incomplete/fail_students/' + this.term.termID)
+				    this.$http.get('<?php echo base_url() ?>faculty_inc/fail_students/' + this.term.termID)
 		        	.then(response => {
 		        		const c = response.body
 		        		if(c == ''){
@@ -242,6 +245,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		        		}else{
 		        			alert('Something went wrong. Please report the issue. Error: '+c)
 		        		}
+					 }, e => {
+					 	console.log(e.body)
+
 					 })
 				  }
 				})

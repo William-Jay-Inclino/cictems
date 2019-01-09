@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 11, 2018 at 12:47 AM
+-- Generation Time: Jan 09, 2019 at 04:51 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -58,6 +58,7 @@ CREATE TABLE `class` (
   `classCode` varchar(15) NOT NULL,
   `timeIn` time NOT NULL,
   `timeOut` time NOT NULL,
+  `merge_with` int(11) NOT NULL,
   `status` enum('unlocked','locked') NOT NULL,
   `date_submitted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -66,18 +67,19 @@ CREATE TABLE `class` (
 -- Dumping data for table `class`
 --
 
-INSERT INTO `class` (`classID`, `termID`, `subID`, `roomID`, `facID`, `secID`, `dayID`, `classCode`, `timeIn`, `timeOut`, `status`, `date_submitted`) VALUES
-(1, 24, 15, 12, 31, 27, 1, 'MAT121', '07:30:00', '08:30:00', 'unlocked', '2018-12-10 23:32:23'),
-(2, 24, 16, 8, 32, 27, 1, 'STS121', '08:30:00', '09:30:00', 'unlocked', '2018-12-08 06:03:24'),
-(3, 24, 17, 14, 30, 27, 1, 'SOCIO121', '09:30:00', '10:30:00', 'unlocked', '2018-12-08 06:03:24'),
-(4, 24, 18, 7, 29, 27, 2, 'IT-Prog121', '13:00:00', '14:00:00', 'unlocked', '2018-12-08 06:03:24'),
-(5, 24, 19, 7, 29, 27, 2, 'IT-Prog121', '14:00:00', '14:30:00', 'unlocked', '2018-12-08 06:03:24'),
-(6, 24, 20, 10, 28, 27, 2, 'IT-HC', '09:00:00', '10:00:00', 'unlocked', '2018-12-10 23:32:23'),
-(7, 24, 21, 10, 28, 27, 2, 'IT-HC', '10:30:00', '11:00:00', 'unlocked', '2018-12-10 23:32:23'),
-(8, 24, 22, 11, 33, 27, 1, 'IT-DIGILog121', '13:00:00', '14:00:00', 'unlocked', '2018-12-08 06:03:24'),
-(9, 24, 23, 15, 30, 27, 1, 'Hist121', '14:00:00', '15:00:00', 'unlocked', '2018-12-08 06:03:24'),
-(10, 24, 24, 15, 30, 27, 1, 'NSTP121', '15:00:00', '16:00:00', 'unlocked', '2018-12-08 06:03:24'),
-(11, 24, 25, 14, 30, 27, 2, 'PE121', '15:00:00', '16:00:00', 'unlocked', '2018-12-08 06:03:24');
+INSERT INTO `class` (`classID`, `termID`, `subID`, `roomID`, `facID`, `secID`, `dayID`, `classCode`, `timeIn`, `timeOut`, `merge_with`, `status`, `date_submitted`) VALUES
+(1, 54, 3, 25, 36, 25, 1, 'ENG111', '07:30:00', '08:30:00', 0, 'unlocked', '2019-01-08 02:35:58'),
+(2, 54, 4, 29, 36, 25, 1, 'MAT112', '08:30:00', '09:30:00', 0, 'unlocked', '2019-01-08 02:35:58'),
+(3, 54, 5, 33, 31, 25, 2, 'Physics111', '09:30:00', '11:00:00', 0, 'unlocked', '2019-01-09 03:05:26'),
+(4, 54, 6, 33, 31, 25, 2, 'Physics111', '11:00:00', '11:30:00', 0, 'unlocked', '2019-01-09 03:05:26'),
+(5, 54, 7, 25, 36, 25, 1, 'MAT113', '13:00:00', '14:00:00', 0, 'unlocked', '2019-01-08 02:35:58'),
+(6, 54, 8, 34, 30, 25, 1, 'Psych111', '14:00:00', '15:00:00', 0, 'unlocked', '2019-01-09 03:05:26'),
+(7, 54, 9, 31, 29, 25, 2, 'IT-Com111', '15:00:00', '16:00:00', 0, 'locked', '2019-01-09 03:08:06'),
+(8, 54, 10, 31, 29, 25, 2, 'IT-Com111', '16:00:00', '16:30:00', 0, 'locked', '2019-01-09 03:08:06'),
+(9, 54, 11, 35, 29, 25, 2, 'IT-Prog111', '16:30:00', '17:30:00', 0, 'locked', '2019-01-09 03:09:01'),
+(10, 54, 12, 35, 29, 25, 2, 'IT-Prog111', '17:30:00', '18:00:00', 0, 'locked', '2019-01-09 03:09:01'),
+(11, 54, 13, 34, 30, 25, 1, 'NSTP111', '18:00:00', '19:00:00', 0, 'unlocked', '2019-01-08 02:35:58'),
+(12, 54, 14, 34, 30, 25, 2, 'PE111', '07:30:00', '08:30:00', 0, 'unlocked', '2019-01-08 02:35:58');
 
 -- --------------------------------------------------------
 
@@ -97,9 +99,14 @@ CREATE TABLE `counter` (
 --
 
 INSERT INTO `counter` (`countID`, `module`, `termID`, `total`) VALUES
-(6, 'fees', 24, 10),
-(7, 'enrol_studs', 24, 19),
-(8, 'enrol_studs', 45, 0);
+(6, 'fees', 24, 0),
+(7, 'enrol_studs', 24, 0),
+(8, 'enrol_studs', 45, 0),
+(9, 'fees', 45, 0),
+(10, 'enrol_studs', 53, 2),
+(11, 'enrol_studs', 54, 4),
+(12, 'enrol_studs', 55, 0),
+(13, 'fees', 54, 5);
 
 -- --------------------------------------------------------
 
@@ -118,23 +125,23 @@ CREATE TABLE `counter2` (
 --
 
 INSERT INTO `counter2` (`countID`, `module`, `total`) VALUES
-(1, 'term', 8),
-(2, 'room', 8),
+(1, 'term', 3),
+(2, 'room', 10),
 (3, 'course', 4),
-(4, 'prospectus', 5),
-(5, 'section', 24),
+(4, 'prospectus', 7),
+(5, 'section', 34),
 (6, 'faculty', 9),
-(7, 'subject', 18),
-(8, 'student', 31),
+(7, 'subject', 64),
+(8, 'student', 32),
 (9, 'staff', 2),
 (10, 'reg_requests', 2),
-(11, 'reg_users', 12),
-(12, 'day', 3),
-(13, 'active_students', 6),
+(11, 'reg_users', 13),
+(12, 'day', 2),
+(13, 'active_students', 7),
 (14, 'guardian', 0),
-(15, 'enrol_requests', 1),
+(15, 'enrol_requests', 4),
 (16, 'specialization', 7),
-(17, 'payment_logs', 17);
+(17, 'payment_logs', 3);
 
 -- --------------------------------------------------------
 
@@ -175,9 +182,9 @@ CREATE TABLE `day` (
 --
 
 INSERT INTO `day` (`dayID`, `dayDesc`, `dayCount`) VALUES
+(0, '', 0),
 (1, 'MWF', 3),
-(2, 'TTH', 2),
-(3, 'Saturday', 1);
+(2, 'TTH', 2);
 
 -- --------------------------------------------------------
 
@@ -223,7 +230,8 @@ INSERT INTO `faculty` (`facID`, `uID`) VALUES
 (33, 111),
 (34, 112),
 (35, 113),
-(36, 114);
+(36, 114),
+(0, 116);
 
 -- --------------------------------------------------------
 
@@ -246,9 +254,6 @@ INSERT INTO `fac_spec` (`id`, `facID`, `specID`) VALUES
 (30, 29, 6),
 (31, 29, 8),
 (32, 29, 7),
-(33, 28, 7),
-(34, 28, 6),
-(35, 28, 8),
 (36, 30, 9),
 (37, 30, 10),
 (38, 32, 6),
@@ -258,7 +263,10 @@ INSERT INTO `fac_spec` (`id`, `facID`, `specID`) VALUES
 (42, 33, 7),
 (43, 34, 6),
 (44, 35, 7),
-(45, 36, 9);
+(45, 36, 9),
+(46, 28, 6),
+(47, 28, 7),
+(48, 28, 8);
 
 -- --------------------------------------------------------
 
@@ -272,7 +280,7 @@ CREATE TABLE `fees` (
   `feeName` varchar(50) NOT NULL,
   `feeDesc` varchar(50) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
-  `dueDate` date NOT NULL,
+  `dueDate` varchar(40) NOT NULL,
   `feeStatus` enum('ongoing','done','cancelled') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -281,11 +289,8 @@ CREATE TABLE `fees` (
 --
 
 INSERT INTO `fees` (`feeID`, `termID`, `feeName`, `feeDesc`, `amount`, `dueDate`, `feeStatus`) VALUES
-(12, 24, 'Christmas Party', 'All CICTE students', '1000.00', '2018-12-10', 'cancelled'),
-(13, 24, 'Graduation 2k19', 'All Graduating students', '5000.00', '2019-03-15', 'cancelled'),
-(14, 24, 'x', 'x', '2500.00', '2018-12-28', 'ongoing'),
-(15, 24, 'sample', 'desc sample', '700.00', '2018-01-31', 'cancelled'),
-(16, 24, 'CICTE Days 2018', 'All ICTE students', '800.00', '2018-12-13', 'cancelled');
+(1, 54, 'Christmas Party 2018', 'All ICTE Students', '500.00', 'December 15, 2018', 'ongoing'),
+(2, 54, 'Foundation Days 2019', 'All ICTE Students', '750.00', 'January 25, 2019', 'ongoing');
 
 -- --------------------------------------------------------
 
@@ -413,7 +418,9 @@ INSERT INTO `modules` (`id`, `modID`, `modDesc`) VALUES
 (31, '25.0', 'confirmation(enrol)'),
 (32, '26.0', 'schedule'),
 (33, '10.5', 'specialization'),
-(34, '21.5', 'reports_payment_logs');
+(34, '21.5', 'reports_payment_logs'),
+(35, '27.0', 'auto_schedule'),
+(36, '24.1', 'faculty_inc');
 
 -- --------------------------------------------------------
 
@@ -428,32 +435,9 @@ CREATE TABLE `payments` (
   `feeID` int(11) NOT NULL,
   `paidDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `amount` decimal(10,2) NOT NULL,
-  `action` enum('collect','refund') NOT NULL,
+  `action` varchar(80) NOT NULL,
   `or_number` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`id`, `studID`, `uID`, `feeID`, `paidDate`, `amount`, `action`, `or_number`) VALUES
-(3, 43, 1, 12, '2018-11-06 01:18:14', '1000.00', 'collect', '0002'),
-(4, 53, 1, 12, '2018-11-06 01:18:32', '500.00', 'collect', '0001'),
-(5, 53, 1, 12, '2018-11-09 01:19:17', '500.00', 'collect', '0003'),
-(6, 46, 1, 12, '2018-11-14 01:29:19', '1000.00', 'collect', '0004'),
-(7, 43, 1, 13, '2018-11-26 01:52:32', '5000.00', 'collect', '0007'),
-(8, 61, 1, 12, '2018-11-26 02:53:23', '1000.00', 'collect', '0009'),
-(9, 50, 1, 12, '2018-11-26 03:01:00', '350.00', 'collect', '00099'),
-(10, 50, 1, 14, '2018-11-26 03:01:13', '2500.00', 'collect', '123'),
-(11, 50, 1, 12, '2018-11-26 03:01:53', '350.00', 'refund', '0123'),
-(12, 43, 1, 12, '2018-11-26 03:02:57', '1000.00', 'refund', '098'),
-(13, 61, 1, 15, '2018-11-27 05:46:39', '700.00', 'collect', '78'),
-(14, 61, 1, 15, '2018-11-27 05:49:21', '700.00', 'refund', '78'),
-(15, 61, 1, 12, '2018-11-27 05:50:14', '1000.00', 'refund', '0008'),
-(16, 46, 1, 14, '2018-11-27 06:21:32', '2000.00', 'collect', '43'),
-(17, 43, 1, 14, '2018-11-27 23:53:37', '1000.00', 'collect', '1'),
-(18, 43, 1, 13, '2018-11-27 23:55:35', '5000.00', 'refund', ''),
-(19, 43, 1, 16, '2018-12-04 03:17:40', '800.00', 'collect', '092192');
 
 -- --------------------------------------------------------
 
@@ -476,11 +460,13 @@ CREATE TABLE `prospectus` (
 --
 
 INSERT INTO `prospectus` (`prosID`, `courseID`, `duration`, `prosCode`, `prosDesc`, `effectivity`, `prosType`) VALUES
-(1, 132, 2, 'ACT 2012-2013', '', '2012-2013', 'Old'),
+(1, 132, 2, 'ACT 2016-2017', '', '2016-2017', 'Old'),
 (3, 374, 4, 'BSIT 2011-2012', '', '2011-2012', 'Old'),
-(4, 376, 4, 'BSCS 2014-2015', '', '2014-2015', 'Old'),
+(4, 376, 4, 'BSCS 2016-2017', '', '2016-2017', 'Old'),
 (5, 377, 5, 'BSCPE 2014-2015', '', '2014-2015', 'Old'),
-(6, 374, 4, 'BSIT 2018-2019', '', '2018-2019 (K+12 Compliant)', 'New');
+(6, 374, 4, 'BSIT 2018-2019', '', '2018-2019 (K+12 Compliant)', 'New'),
+(7, 376, 4, 'BSCS 2018-2019', '', '2018-2019', 'New'),
+(8, 377, 4, 'BSCpE 2018-2019', '', '2018-2019', 'New');
 
 -- --------------------------------------------------------
 
@@ -531,6 +517,27 @@ CREATE TABLE `reg_guardian` (
 INSERT INTO `reg_guardian` (`id`, `regID`, `studID`) VALUES
 (1, 3, 43),
 (2, 3, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reports`
+--
+
+CREATE TABLE `reports` (
+  `id` int(11) NOT NULL,
+  `module` varchar(20) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `description` varchar(70) NOT NULL,
+  `title` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `reports`
+--
+
+INSERT INTO `reports` (`id`, `module`, `name`, `description`, `title`) VALUES
+(1, 'reports_prospectus', 'CHERYL M. TARRE, DBA (cand), MST-CS, MSC', 'Dean-College of ICT & Engineering Western Leyte College of Ormoc City', 'Dean');
 
 -- --------------------------------------------------------
 
@@ -595,22 +602,66 @@ CREATE TABLE `room` (
   `roomID` int(11) NOT NULL,
   `roomName` varchar(15) NOT NULL,
   `roomLoc` varchar(40) NOT NULL,
-  `capacity` int(11) NOT NULL
+  `capacity` int(11) NOT NULL,
+  `status` enum('active','inactive') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `room`
 --
 
-INSERT INTO `room` (`roomID`, `roomName`, `roomLoc`, `capacity`) VALUES
-(7, 'Lab1', '3rd Floor', 30),
-(8, 'Trainers lab', '2nd floor', 35),
-(10, 'Lab2', '4th floor', 30),
-(11, 'Lab3', '4th floor', 30),
-(12, 'Physics room', '3rd floor', 30),
-(13, 'Chemistry room', '3rd floor', 30),
-(14, 'English room', '3rd floor', 30),
-(15, 'ENGdra', '3rd floor', 30);
+INSERT INTO `room` (`roomID`, `roomName`, `roomLoc`, `capacity`, `status`) VALUES
+(0, '', '', 0, 'active'),
+(25, 'Physics Room', '3rd floor', 35, 'active'),
+(26, 'Trainers Lab', '2nd Floor', 35, 'active'),
+(29, 'Chemistry Room', '3rd floor', 35, 'active'),
+(30, 'LAB 2', '2nd floor', 35, 'active'),
+(31, 'LAB 3', '4th floor', 35, 'active'),
+(32, 'LAB 4', '4th floor', 35, 'active'),
+(33, 'LAB 1', '2nd floor', 35, 'active'),
+(34, 'EngDra', '3rd floor', 35, 'active'),
+(35, 'English Room', '3rd floor', 35, 'active'),
+(36, 'LAB 5', '4th floor', 35, 'active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `room_spec`
+--
+
+CREATE TABLE `room_spec` (
+  `id` int(11) NOT NULL,
+  `roomID` int(11) NOT NULL,
+  `specID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `room_spec`
+--
+
+INSERT INTO `room_spec` (`id`, `roomID`, `specID`) VALUES
+(1, 25, 9),
+(2, 26, 6),
+(3, 26, 9),
+(13, 29, 9),
+(14, 30, 6),
+(15, 30, 8),
+(16, 31, 8),
+(17, 31, 7),
+(18, 32, 8),
+(19, 32, 7),
+(20, 33, 6),
+(21, 33, 8),
+(22, 33, 9),
+(23, 33, 7),
+(24, 34, 10),
+(25, 34, 9),
+(26, 35, 9),
+(27, 35, 8),
+(28, 35, 10),
+(29, 36, 7),
+(30, 36, 8),
+(31, 36, 6);
 
 -- --------------------------------------------------------
 
@@ -654,7 +705,17 @@ INSERT INTO `section` (`secID`, `courseID`, `semID`, `yearID`, `secName`) VALUES
 (45, 132, 1, 2, 'ACT-2101'),
 (46, 132, 1, 2, 'ACT-2102'),
 (47, 132, 2, 2, 'ACT-2201'),
-(48, 132, 2, 2, 'ACT-2202');
+(48, 132, 2, 2, 'ACT-2202'),
+(49, 376, 1, 1, 'BSCS -1101'),
+(50, 376, 1, 1, 'BSCS-1102'),
+(51, 376, 1, 2, 'BSCS-2101'),
+(52, 376, 2, 2, 'BSCS-2201'),
+(53, 377, 1, 1, 'BSCPE-1101'),
+(55, 377, 1, 2, 'BSCPE-2101'),
+(56, 377, 1, 3, 'BSCPE-3101'),
+(57, 377, 1, 4, 'BSCPE-4101'),
+(58, 377, 1, 5, 'BSCPE-5101'),
+(59, 377, 1, 1, 'BSCPE-1102');
 
 -- --------------------------------------------------------
 
@@ -673,9 +734,9 @@ CREATE TABLE `semester` (
 --
 
 INSERT INTO `semester` (`semID`, `semOrder`, `semDesc`) VALUES
-(1, 1, '1st Semester'),
-(2, 2, '2nd Semester'),
-(3, 3, 'Summer');
+(1, 2, '1st Semester'),
+(2, 3, '2nd Semester'),
+(3, 1, 'Summer');
 
 -- --------------------------------------------------------
 
@@ -744,16 +805,54 @@ CREATE TABLE `studclass` (
 --
 
 INSERT INTO `studclass` (`scID`, `classID`, `studID`, `prelim`, `midterm`, `prefi`, `final`, `finalgrade`, `remarks`, `reason`, `status`, `enrolled_date`) VALUES
-(1, 6, 43, '74.00', '73.00', '70.00', '72.40', '72.36', 'Failed', '', 'Enrolled', '2018-12-11 07:33:11'),
-(2, 7, 43, '74.00', '73.00', '70.00', '72.40', '72.36', 'Failed', '', 'Enrolled', '2018-12-11 07:33:11'),
-(3, 6, 12, '100.00', '90.50', '100.00', '100.00', '98.1', 'Passed', '', 'Enrolled', '2018-12-11 07:33:16'),
-(4, 7, 12, '100.00', '90.50', '100.00', '100.00', '98.1', 'Passed', '', 'Enrolled', '2018-12-11 07:33:16'),
-(5, 6, 44, '80.00', 'INC', 'INC', '94.80', '', 'Incomplete', '', 'Enrolled', '2018-12-11 07:33:20'),
-(6, 7, 44, '80.00', 'INC', 'INC', '94.80', '', 'Incomplete', '', 'Enrolled', '2018-12-11 07:33:20'),
-(7, 6, 45, '80.00', 'Dropped', '', '', '56', 'Dropped', '', 'Enrolled', '2018-12-11 07:33:38'),
-(8, 7, 45, '80.00', 'Dropped', '', '', '56', 'Dropped', '', 'Enrolled', '2018-12-11 07:33:38'),
-(9, 6, 52, '100.00', '100.00', '100.00', 'Dropped', '80', 'Passed', '', 'Enrolled', '2018-12-11 07:35:16'),
-(10, 7, 52, '100.00', '100.00', '100.00', 'Dropped', '80', 'Passed', '', 'Enrolled', '2018-12-11 07:35:16');
+(1, 1, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(2, 2, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(3, 5, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(4, 6, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(5, 11, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(6, 3, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(7, 4, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(8, 7, 43, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:05:57'),
+(9, 8, 43, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:05:57'),
+(10, 9, 43, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:05:57'),
+(11, 10, 43, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:05:57'),
+(12, 12, 43, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:05:57'),
+(13, 1, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(14, 2, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(15, 5, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(16, 6, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(17, 11, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(18, 3, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(19, 4, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(20, 7, 67, '74.00', '74.00', '71.00', '71.00', '72.2', 'Failed', '', 'Enrolled', '2019-01-09 11:06:08'),
+(21, 8, 67, '74.00', '74.00', '71.00', '71.00', '72.2', 'Failed', '', 'Enrolled', '2019-01-09 11:06:08'),
+(22, 9, 67, '100.00', '100.00', '100.00', '88.00', '95.2', 'Passed', '', 'Enrolled', '2019-01-09 11:06:08'),
+(23, 10, 67, '100.00', '100.00', '100.00', '88.00', '95.2', 'Passed', '', 'Enrolled', '2019-01-09 11:06:08'),
+(24, 12, 67, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:08'),
+(25, 1, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(26, 2, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(27, 5, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(28, 6, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(29, 11, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(30, 3, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(31, 4, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(32, 7, 49, '70.00', '70.00', '70.00', '70.00', '70', 'Failed', '', 'Enrolled', '2019-01-09 11:06:21'),
+(33, 8, 49, '70.00', '70.00', '70.00', '70.00', '70', 'Failed', '', 'Enrolled', '2019-01-09 11:06:21'),
+(34, 9, 49, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:06:21'),
+(35, 10, 49, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:06:21'),
+(36, 12, 49, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:21'),
+(37, 1, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(38, 2, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(39, 5, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(40, 6, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(41, 11, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(42, 3, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(43, 4, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34'),
+(44, 7, 68, 'Dropped', '', '', '', '50', 'Dropped', '', 'Enrolled', '2019-01-09 11:06:34'),
+(45, 8, 68, 'Dropped', '', '', '', '50', 'Dropped', '', 'Enrolled', '2019-01-09 11:06:34'),
+(46, 9, 68, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:06:34'),
+(47, 10, 68, '100.00', '100.00', '100.00', '100.00', '100', 'Passed', '', 'Enrolled', '2019-01-09 11:06:34'),
+(48, 12, 68, '', '', '', '', '', '', '', 'Enrolled', '2019-01-09 11:06:34');
 
 -- --------------------------------------------------------
 
@@ -804,7 +903,8 @@ INSERT INTO `student` (`studID`, `yearID`, `uID`, `controlNo`, `has_user`) VALUE
 (70, 1, 86, 765, 'no'),
 (71, 1, 87, 911, 'no'),
 (72, 1, 88, 755, 'no'),
-(73, 4, 89, 109, 'no');
+(73, 4, 89, 109, 'no'),
+(74, 1, 115, 1928, 'yes');
 
 -- --------------------------------------------------------
 
@@ -829,13 +929,22 @@ CREATE TABLE `studgrade` (
 --
 
 INSERT INTO `studgrade` (`sgID`, `studID`, `subID`, `uID`, `termID`, `sgGrade`, `remarks`, `grade_type`, `sgDate`) VALUES
-(1, 43, 20, 106, 24, '0.0', 'Incomplete', 'Class', '2018-12-09 12:02:13'),
-(2, 43, 21, 106, 24, '0.0', 'Incomplete', 'Class', '2018-12-09 12:02:13'),
-(3, 46, 20, 106, 24, '5.0', 'Dropped', 'Class', '2018-12-09 12:02:13'),
-(4, 46, 21, 106, 24, '5.0', 'Dropped', 'Class', '2018-12-09 12:02:13'),
-(5, 48, 20, 106, 24, '1.3', 'Passed', 'Class', '2018-12-09 12:02:13'),
-(6, 48, 21, 106, 24, '1.3', 'Passed', 'Class', '2018-12-09 12:02:13'),
-(7, 46, 15, 109, 24, '0.0', 'Incomplete', 'Class', '2018-12-09 12:08:54');
+(1, 43, 9, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:08:05'),
+(2, 43, 10, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:08:05'),
+(3, 67, 9, 107, 54, '5.0', 'Failed', 'Class', '2019-01-09 11:08:05'),
+(4, 67, 10, 107, 54, '5.0', 'Failed', 'Class', '2019-01-09 11:08:05'),
+(5, 49, 9, 107, 54, '5.0', 'Failed', 'Class', '2019-01-09 11:08:05'),
+(6, 49, 10, 107, 54, '5.0', 'Failed', 'Class', '2019-01-09 11:08:05'),
+(7, 68, 9, 107, 54, '5.0', 'Dropped', 'Class', '2019-01-09 11:08:05'),
+(8, 68, 10, 107, 54, '5.0', 'Dropped', 'Class', '2019-01-09 11:08:06'),
+(9, 43, 11, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(10, 43, 12, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(11, 67, 11, 107, 54, '1.4', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(12, 67, 12, 107, 54, '1.4', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(13, 49, 11, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(14, 49, 12, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(15, 68, 11, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:09:01'),
+(16, 68, 12, 107, 54, '1.0', 'Passed', 'Class', '2019-01-09 11:09:01');
 
 -- --------------------------------------------------------
 
@@ -860,7 +969,7 @@ INSERT INTO `studprospectus` (`spID`, `studID`, `prosID`) VALUES
 (43, 45, 3),
 (44, 46, 6),
 (46, 48, 6),
-(47, 49, 3),
+(47, 49, 6),
 (48, 50, 3),
 (49, 51, 3),
 (50, 52, 3),
@@ -878,13 +987,14 @@ INSERT INTO `studprospectus` (`spID`, `studID`, `prosID`) VALUES
 (62, 64, 5),
 (63, 65, 5),
 (64, 66, 5),
-(65, 67, 3),
-(66, 68, 3),
+(65, 67, 6),
+(66, 68, 6),
 (67, 69, 3),
 (68, 70, 3),
 (69, 71, 3),
 (70, 72, 3),
-(71, 73, 3);
+(71, 73, 3),
+(72, 74, 7);
 
 -- --------------------------------------------------------
 
@@ -905,34 +1015,14 @@ CREATE TABLE `stud_fee` (
 --
 
 INSERT INTO `stud_fee` (`sfID`, `studID`, `feeID`, `payable`, `receivable`) VALUES
-(64, 57, 12, '0.00', '0.00'),
-(65, 43, 12, '0.00', '0.00'),
-(66, 46, 12, '0.00', '1000.00'),
-(67, 50, 12, '0.00', '0.00'),
-(68, 53, 12, '0.00', '1000.00'),
-(69, 61, 12, '0.00', '0.00'),
-(70, 62, 12, '0.00', '0.00'),
-(71, 43, 13, '0.00', '0.00'),
-(72, 43, 14, '1500.00', '0.00'),
-(73, 46, 14, '500.00', '0.00'),
-(74, 50, 14, '0.00', '0.00'),
-(76, 57, 15, '0.00', '0.00'),
-(77, 61, 15, '0.00', '0.00'),
-(82, 43, 15, '0.00', '0.00'),
-(83, 57, 14, '2500.00', '0.00'),
-(84, 53, 14, '2500.00', '0.00'),
-(85, 61, 14, '2500.00', '0.00'),
-(86, 62, 14, '2500.00', '0.00'),
-(87, 57, 16, '0.00', '0.00'),
-(88, 43, 16, '0.00', '800.00'),
-(89, 46, 16, '0.00', '0.00'),
-(90, 50, 16, '0.00', '0.00'),
-(91, 53, 16, '0.00', '0.00'),
-(92, 72, 16, '0.00', '0.00'),
-(93, 48, 16, '0.00', '0.00'),
-(94, 12, 16, '0.00', '0.00'),
-(95, 61, 16, '0.00', '0.00'),
-(96, 62, 16, '0.00', '0.00');
+(1, 43, 1, '500.00', '0.00'),
+(2, 49, 1, '500.00', '0.00'),
+(3, 67, 1, '500.00', '0.00'),
+(4, 68, 1, '500.00', '0.00'),
+(5, 43, 2, '750.00', '0.00'),
+(6, 49, 2, '750.00', '0.00'),
+(7, 67, 2, '750.00', '0.00'),
+(8, 68, 2, '750.00', '0.00');
 
 -- --------------------------------------------------------
 
@@ -950,6 +1040,7 @@ CREATE TABLE `subject` (
   `subDesc` varchar(70) NOT NULL,
   `units` int(11) NOT NULL,
   `type` enum('lec','lab') NOT NULL,
+  `nonSub_pre` varchar(15) NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -957,30 +1048,88 @@ CREATE TABLE `subject` (
 -- Dumping data for table `subject`
 --
 
-INSERT INTO `subject` (`subID`, `prosID`, `yearID`, `semID`, `specID`, `subCode`, `subDesc`, `units`, `type`, `id`) VALUES
-(3, 6, 1, 1, 9, 'ENG111', 'Purposive Communication', 3, 'lec', 182),
-(4, 6, 1, 1, 9, 'MAT112', 'Remedial Mathematics (Pre-Calculus)', 3, 'lec', 597),
-(5, 6, 1, 1, 9, 'Physics111', 'General Physics', 3, 'lec', 962),
-(6, 6, 1, 1, 9, 'Physics111', 'General Physics', 1, 'lab', 962),
-(7, 6, 1, 1, 9, 'MAT113', 'Mathematics in the Modern World', 3, 'lec', 596),
-(8, 6, 1, 1, 9, 'Psych111', 'Understanding the self', 3, 'lec', 945),
-(9, 6, 1, 1, 6, 'IT-Com111', 'Introduction to Computing', 2, 'lec', 489),
-(10, 6, 1, 1, 6, 'IT-Com111', 'Introduction to Computing', 1, 'lab', 489),
-(11, 6, 1, 1, 6, 'IT-Prog111', 'Fundamentals of Programming', 2, 'lec', 412),
-(12, 6, 1, 1, 6, 'IT-Prog111', 'Fundamentals of Programming', 1, 'lab', 412),
-(13, 6, 1, 1, 10, 'NSTP111', 'National Service Training Prog1', 3, 'lec', 396),
-(14, 6, 1, 1, 10, 'PE111', 'Physical Fitness 1', 2, 'lec', 957),
-(15, 6, 1, 2, 9, 'MAT121', 'Discrete Structures', 3, 'lec', 431),
-(16, 6, 1, 2, 9, 'STS121', 'Service, Technology and Society', 3, 'lec', 764),
-(17, 6, 1, 2, 9, 'SOCIO121', 'Social Issues and Professional Practice', 3, 'lec', 485),
-(18, 6, 1, 2, 6, 'IT-Prog121', 'Computer Programming 2', 2, 'lec', 142),
-(19, 6, 1, 2, 6, 'IT-Prog121', 'Computer Programming 2', 1, 'lab', 142),
-(20, 6, 1, 2, 6, 'IT-HC', 'Introduction to Human Computer Interaction', 2, 'lec', 479),
-(21, 6, 1, 2, 6, 'IT-HC', 'Introduction to Human Computer Interaction', 1, 'lab', 479),
-(22, 6, 1, 2, 6, 'IT-DIGILog121', 'Digital Logic Design', 3, 'lec', 493),
-(23, 6, 1, 2, 9, 'Hist121', 'Readings in Philippine History', 3, 'lec', 852),
-(24, 6, 1, 2, 10, 'NSTP121', 'National Service Training Program 2', 3, 'lec', 356),
-(25, 6, 1, 2, 10, 'PE121', 'Rythmic Activities', 2, 'lec', 562);
+INSERT INTO `subject` (`subID`, `prosID`, `yearID`, `semID`, `specID`, `subCode`, `subDesc`, `units`, `type`, `nonSub_pre`, `id`) VALUES
+(3, 6, 1, 1, 9, 'ENG111', 'Purposive Communication', 3, 'lec', '', 182),
+(4, 6, 1, 1, 9, 'MAT112', 'Remedial Mathematics (Pre-Calculus)', 3, 'lec', 'for non-STEM', 597),
+(5, 6, 1, 1, 9, 'Physics111', 'General Physics', 3, 'lec', 'for non-STEM', 962),
+(6, 6, 1, 1, 9, 'Physics111', 'General Physics', 1, 'lab', 'for non-STEM', 962),
+(7, 6, 1, 1, 9, 'MAT113', 'Mathematics in the Modern World', 3, 'lec', '', 596),
+(8, 6, 1, 1, 9, 'Psych111', 'Understanding the self', 3, 'lec', '', 945),
+(9, 6, 1, 1, 8, 'IT-Com111', 'Introduction to Computing', 2, 'lec', '', 489),
+(10, 6, 1, 1, 8, 'IT-Com111', 'Introduction to Computing', 1, 'lab', '', 489),
+(11, 6, 1, 1, 8, 'IT-Prog111', 'Fundamentals of Programming', 2, 'lec', '', 412),
+(12, 6, 1, 1, 8, 'IT-Prog111', 'Fundamentals of Programming', 1, 'lab', '', 412),
+(13, 6, 1, 1, 10, 'NSTP111', 'National Service Training Prog1', 3, 'lec', '', 396),
+(14, 6, 1, 1, 10, 'PE111', 'Physical Fitness 1', 2, 'lec', '', 957),
+(15, 6, 1, 2, 9, 'MAT121', 'Discrete Structures', 3, 'lec', '', 431),
+(16, 6, 1, 2, 9, 'STS121', 'Service, Technology and Society', 3, 'lec', '', 764),
+(17, 6, 1, 2, 9, 'SOCIO121', 'Social Issues and Professional Practice', 3, 'lec', '', 485),
+(18, 6, 1, 2, 6, 'IT-Prog121', 'Computer Programming 2', 2, 'lec', '', 142),
+(19, 6, 1, 2, 6, 'IT-Prog121', 'Computer Programming 2', 1, 'lab', '', 142),
+(20, 6, 1, 2, 6, 'IT-HC', 'Introduction to Human Computer Interaction', 2, 'lec', '', 479),
+(21, 6, 1, 2, 6, 'IT-HC', 'Introduction to Human Computer Interaction', 1, 'lab', '', 479),
+(22, 6, 1, 2, 6, 'IT-DIGILog121', 'Digital Logic Design', 3, 'lec', '', 493),
+(23, 6, 1, 2, 9, 'Hist121', 'Readings in Philippine History', 3, 'lec', '', 852),
+(24, 6, 1, 2, 10, 'NSTP121', 'National Service Training Program 2', 3, 'lec', '', 356),
+(25, 6, 1, 2, 10, 'PE121', 'Rythmic Activities', 2, 'lec', '', 562),
+(26, 7, 1, 1, 9, 'Physics111', 'General Physics', 3, 'lec', '', 572),
+(27, 7, 1, 1, 9, 'Physics111', 'General Physics', 1, 'lab', '', 572),
+(33, 7, 2, 2, 8, 'subject comsci', 'Description for comsci', 2, 'lec', '', 352),
+(34, 7, 2, 2, 8, 'subject comsci', 'Description for comsci', 1, 'lab', '', 352),
+(35, 7, 2, 2, 9, 'another comsci', 'subject for comsci', 3, 'lec', '', 389),
+(36, 8, 1, 1, 9, 'ENG111', 'Purposive Communication', 3, 'lec', '', 196),
+(37, 8, 1, 1, 9, 'MAT112', 'Remedial Mathematics (Pre-Calculus)', 3, 'lec', 'for non-STEM', 837),
+(38, 8, 1, 1, 9, 'Physics111', 'General Physics', 3, 'lec', 'for non-STEM', 671),
+(39, 8, 1, 1, 9, 'Physics111', 'General Physics', 1, 'lab', 'for non-STEM', 671),
+(40, 8, 1, 1, 9, 'MAT113', 'Mathematics in the Modern World', 3, 'lec', '', 942),
+(41, 8, 1, 1, 9, 'Psych111', 'Understanding the Self', 3, 'lec', '', 652),
+(42, 8, 1, 1, 6, 'CpE-CompDS111', 'Computer Engineering as a Discipline', 3, 'lec', '', 743),
+(43, 8, 1, 1, 7, 'CpE-ProgLo112', 'Programming Logic and Design', 2, 'lec', '', 721),
+(44, 8, 1, 1, 7, 'CpE-ProgLo112', 'Programming Logic and Design', 1, 'lab', '', 721),
+(45, 8, 1, 1, 9, 'Chem111', 'Chemistry for Engineers', 2, 'lec', '', 951),
+(46, 8, 1, 1, 9, 'Chem111', 'Chemistry for Engineers', 1, 'lab', '', 951),
+(47, 8, 1, 1, 10, 'NSTP111', 'National Service Training Prog1', 3, 'lec', '', 269),
+(48, 8, 1, 1, 10, 'PE111', 'Physical Fitness 1', 2, 'lec', '', 419),
+(49, 8, 2, 3, 7, 'CpE-Datstruct201', 'Data Structures and Algorithm Analysis', 3, 'lec', '', 589),
+(50, 8, 2, 3, 7, 'CpE-Datstruct201', 'Data Structures and Algorithm Analysis', 1, 'lab', '', 589),
+(51, 8, 2, 3, 7, 'MAT201', 'Engineering Data Analysis', 3, 'lec', '', 421),
+(52, 8, 1, 2, 9, 'MAT121', 'Discrete Mathematics', 3, 'lec', '', 614),
+(53, 8, 1, 2, 9, 'STS121', 'Science, Technology & Society', 3, 'lec', '', 875),
+(54, 8, 1, 2, 8, 'Draft121', 'Technical Drafting', 2, 'lec', '', 312),
+(55, 8, 1, 2, 8, 'Draft121', 'Technical Drafting', 1, 'lab', '', 312),
+(56, 8, 1, 2, 8, 'Opt121', 'Productivity Tools 1', 2, 'lec', '', 432),
+(57, 8, 1, 2, 8, 'Opt121', 'Productivity Tools 1', 1, 'lab', '', 432),
+(58, 8, 1, 2, 6, 'Cpe-Eco121', 'Engineering Economics', 3, 'lec', '', 381),
+(59, 8, 1, 2, 9, 'Physics121', 'Physics for Engineers', 3, 'lec', '', 274),
+(60, 8, 1, 2, 9, 'Physics121', 'Physics for Engineers', 1, 'lab', '', 274),
+(61, 8, 1, 2, 9, 'Hist121', 'Readings in Philippine History', 3, 'lec', '', 683),
+(62, 8, 1, 2, 10, 'NSTP121', 'National Service Training Prog2', 3, 'lec', '', 176),
+(63, 8, 1, 2, 9, 'MAT122', 'Calculus 1', 3, 'lec', '', 947),
+(64, 8, 1, 2, 10, 'PE121', 'Rhythmic Activities', 2, 'lec', '', 682),
+(65, 8, 1, 2, 8, 'Cpe-HDL121', 'Introduction to HDL', 2, 'lec', '', 486),
+(66, 8, 1, 2, 8, 'Cpe-HDL121', 'Introduction to HDL', 1, 'lab', '', 486),
+(67, 8, 2, 3, 8, 'OPT201', 'Productivity Tools 2', 2, 'lec', '', 271),
+(68, 8, 2, 3, 8, 'OPT201', 'Productivity Tools 2', 1, 'lab', '', 271),
+(69, 4, 1, 1, 9, '*English 01', 'English Plus', 3, 'lec', '', 357),
+(70, 4, 1, 1, 9, 'ENGLISH 1', 'Communication Arts 1', 3, 'lec', '', 214),
+(71, 4, 1, 1, 9, 'MATH 1', 'College Algebra', 3, 'lec', '', 782),
+(72, 4, 1, 1, 6, 'CS 1', 'CS Fundamentals', 3, 'lec', '', 534),
+(73, 4, 1, 1, 7, 'CS 2', 'Computer Programming 1', 3, 'lec', '', 634),
+(74, 4, 1, 1, 7, 'CS 2', 'Computer Programming 1', 1, 'lab', '', 634),
+(76, 4, 1, 1, 6, 'KB 1', 'Keyboarding 1', 3, 'lab', '', 348),
+(77, 4, 1, 1, 10, 'PE 1', 'Physical Fitness 1', 2, 'lec', '', 916),
+(78, 4, 1, 1, 10, 'NSTP 1', 'National Service Training Program 1', 3, 'lec', '', 163),
+(79, 4, 1, 1, 7, 'ACCOUNTING1', 'Accounting Principles', 3, 'lec', '', 513),
+(80, 1, 1, 1, 9, '*ENGLISH 01', 'English Plus', 3, 'lec', '', 427),
+(81, 1, 1, 1, 9, 'ENGLISH 1', 'Communication Arts 1', 3, 'lec', '', 316),
+(82, 1, 1, 1, 9, 'MATH 1', 'College Algebra', 3, 'lec', '', 925),
+(83, 1, 1, 1, 6, 'IT1', 'IT Fundamentals', 3, 'lec', '', 982),
+(84, 1, 1, 1, 7, 'IT 2', 'Computer Programming 1', 3, 'lec', '', 987),
+(85, 1, 1, 1, 7, 'IT 2', 'Computer Programming 1', 1, 'lab', '', 987),
+(86, 1, 1, 1, 6, 'KB 1', 'Keyboarding 1', 3, 'lab', '', 291),
+(87, 1, 1, 1, 10, 'PE 1', 'Physical Fitness 1', 2, 'lec', '', 579),
+(88, 1, 1, 1, 10, 'NSTP 1', 'National Service Training Program 1', 3, 'lec', '', 471),
+(89, 1, 1, 1, 9, 'FILIPINO 1', 'Komunikasyon sa Akademikong Filipino', 3, 'lec', '', 913);
 
 -- --------------------------------------------------------
 
@@ -1007,7 +1156,20 @@ INSERT INTO `subject_req` (`subReqID`, `subID`, `req_type`, `req_subID`) VALUES
 (5, 21, 1, 9),
 (6, 22, 1, 9),
 (7, 24, 1, 13),
-(8, 25, 1, 14);
+(8, 25, 1, 14),
+(12, 52, 1, 40),
+(13, 59, 1, 38),
+(14, 60, 1, 38),
+(15, 62, 1, 47),
+(16, 63, 1, 37),
+(17, 64, 1, 48),
+(18, 49, 1, 52),
+(19, 50, 1, 52),
+(20, 51, 1, 63),
+(21, 67, 1, 56),
+(22, 68, 1, 56),
+(23, 70, 2, 69),
+(24, 81, 2, 80);
 
 -- --------------------------------------------------------
 
@@ -1027,14 +1189,9 @@ CREATE TABLE `term` (
 --
 
 INSERT INTO `term` (`termID`, `semID`, `schoolYear`, `termStat`) VALUES
-(24, 2, '2017-2018', 'active'),
-(45, 1, '2017-2018', 'inactive'),
-(46, 1, '2016-2017', 'inactive'),
-(47, 2, '2016-2017', 'inactive'),
-(48, 3, '2016-2017', 'inactive'),
-(49, 1, '2015-2016', 'inactive'),
-(50, 2, '2015-2016', 'inactive'),
-(51, 3, '2015-2016', 'inactive');
+(53, 2, '2018-2019', 'inactive'),
+(54, 1, '2018-2019', 'active'),
+(55, 3, '2018-2019', 'inactive');
 
 -- --------------------------------------------------------
 
@@ -1065,7 +1222,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`uID`, `roleID`, `userName`, `userPass`, `fn`, `mn`, `ln`, `dob`, `sex`, `address`, `cn`, `email`, `status`, `is_new`, `date_created`) VALUES
-(1, 1, 'admin', 'Iamadmin1', 'Cheryl', '', 'Tarre', '1997-10-24', 'Female', 'Kalimot ko street', '09121212222', 'cheryl@gmail.com', 'active', 'no', '2018-10-09 23:23:09'),
+(1, 1, 'admin', 'Iamadmin1', 'Cheryl', '', 'Tarre', '1997-10-24', 'Female', 'Kalimot ko street', '09121212211', 'cheryl@gmail.com', 'active', 'no', '2019-01-07 12:27:13'),
 (6, 4, 'Banez', 'Angel123', 'Angel Jean', 'Quinte', 'Banez', '1999-01-20', 'Female', 'Casilda', '09106024370', 'agnel@gmail.com', 'active', 'yes', '2018-11-14 02:59:27'),
 (43, 4, 'Inclino', 'Iamwilliam1', 'William Jay', 'Intales', 'Inclino', '1997-10-24', 'Male', 'Puertobello', '0921212121', '', 'active', 'yes', '2018-12-08 04:58:04'),
 (46, 4, 'Pacala', 'Iamraffy1', 'Raffy', '', 'Pacala', '2008-10-29', 'Male', 'Isabel', '098762121212', 'Raf@yahoo.com', 'active', 'yes', '2018-12-04 12:49:10'),
@@ -1074,7 +1231,7 @@ INSERT INTO `users` (`uID`, `roleID`, `userName`, `userPass`, `fn`, `mn`, `ln`, 
 (49, 4, '', '', 'Julito', '', 'Caquilala', '0000-00-00', 'Male', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
 (54, 3, 'Passion', 'Passion1', 'Reyjoy', '', 'Passion', '2008-09-23', 'Male', 'Ormoc city', '09876212111', 'rey@gmail.com', 'active', 'no', '2018-10-10 00:20:38'),
 (58, 4, 'Tayag', 'Apart123', 'Joshua', '', 'Tayag', '1998-01-20', 'Male', 'San Antonio Spurs', '092121212121', 'Josh@gmail.com', 'active', 'yes', '2018-12-03 02:50:42'),
-(59, 4, 'Estrera', 'Estrera1', 'Joseph', '', 'Estrera', '2003-10-29', 'Male', 'Ambot', '0921212121', 'Estrera@gmail.com', 'active', 'yes', '2018-12-04 13:16:12'),
+(59, 4, 'Estrera', 'Estrera1', 'Joseph', '', 'Estrera', '2003-10-29', 'Male', 'Ambot', '0921212121', 'Estrera@gmail.com', 'active', 'yes', '2019-01-07 12:31:35'),
 (60, 4, '', '', 'Mitzi', '', 'Yap', '1998-12-08', 'Female', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
 (61, 4, '', '', 'Scyth', '', 'Badayos', '1996-07-22', 'Female', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
 (62, 4, '', '', 'Angel', '', 'Bestil', '0000-00-00', 'Female', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
@@ -1099,7 +1256,7 @@ INSERT INTO `users` (`uID`, `roleID`, `userName`, `userPass`, `fn`, `mn`, `ln`, 
 (87, 4, '', '', 'Kyle', '', 'Aying', '0000-00-00', 'Male', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
 (88, 4, '', '', 'Axl', '', 'Aliasot', '0000-00-00', 'Male', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
 (89, 4, '', '', 'Ken', '', 'Cormanes', '0000-00-00', 'Male', '', '', '', 'inactive', 'yes', '2018-11-14 02:14:52'),
-(106, 2, 'Bernardo', 'Bernards1', 'Mark', 'Ambot', 'Bernardo', '1992-10-30', 'Male', 'Ormoc City', '', 'mark@gmail.com', 'active', 'no', '2018-12-02 05:11:07'),
+(106, 2, 'Bernardo', 'Bernards1', 'Mark', '', 'Bernardo', '1992-10-30', 'Male', 'Ormoc City', '', 'mark@gmail.com', 'active', 'no', '2019-01-07 12:22:17'),
 (107, 2, 'Cantero', 'Iamjojo1', 'Joscoro', '', 'Cantero', '1888-11-30', 'Male', 'Sanjuan', '', 'jojo@gmail.com', 'active', 'no', '2018-12-01 00:01:41'),
 (108, 2, 'Phua', 'Iamwowhie1', 'Wowhie', '', 'Phua', '1888-10-25', 'Male', 'Cogon Ormoc City', '', 'wow@gmail.com', 'active', 'no', '2018-12-01 07:39:46'),
 (109, 2, 'CoHat', 'Iamalex1', 'Alexander', '', 'CoHat', '1888-09-24', 'Male', 'Ormoc City', '09876173627', 'alex@gmail.com', 'active', 'no', '2018-12-08 05:54:46'),
@@ -1107,7 +1264,9 @@ INSERT INTO `users` (`uID`, `roleID`, `userName`, `userPass`, `fn`, `mn`, `ln`, 
 (111, 2, 'Martinez', 'Iammartin1', 'Martin', '', 'Martinez', '1888-01-01', 'Male', 'Ormoc City', '09785745745', 'mm@yahoo.com', 'active', 'no', '2018-12-08 05:57:21'),
 (112, 2, 'Isip', 'Iamapple1', 'Apple', '', 'Isip', '1888-01-01', 'Female', 'Ormoc City', '09758458454', 'apple@gmail.com', 'active', 'no', '2018-12-08 05:57:38'),
 (113, 2, 'Tarre', 'Iamtarre1', 'Cheryl', '', 'Tarre', '1888-01-01', 'Female', 'Ormoc City', '09847237273', 'che@gmail.com', 'active', 'no', '2018-12-08 05:57:57'),
-(114, 2, 'Lopez', 'Iamlopez1', 'Jotham', '', 'Lopez', '1888-01-01', 'Male', 'Ormoc City', '09323232323', 'jot@gmail.com', 'active', 'no', '2018-12-08 05:58:14');
+(114, 2, 'Lopez', 'Iamlopez1', 'Jotham', '', 'Lopez', '1888-01-01', 'Male', 'Ormoc City', '09323232323', 'jot@gmail.com', 'active', 'no', '2018-12-08 05:58:14'),
+(115, 4, 'Sample', 'Iamsample1', 'Sample', '', 'Sample', '1997-10-24', 'Male', 'Ormoc city', '09121212717', 'sample@gmail.com', 'active', 'yes', '2018-12-13 03:29:09'),
+(116, 2, 'temporary', 'temporary', '', '', '', '0000-00-00', '', '', '', '', 'active', 'no', '2018-12-31 04:06:11');
 
 -- --------------------------------------------------------
 
@@ -1282,6 +1441,12 @@ ALTER TABLE `reg_guardian`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `requisite_type`
 --
 ALTER TABLE `requisite_type`
@@ -1301,6 +1466,14 @@ ALTER TABLE `role`
 ALTER TABLE `room`
   ADD PRIMARY KEY (`roomID`),
   ADD UNIQUE KEY `roomID` (`roomID`);
+
+--
+-- Indexes for table `room_spec`
+--
+ALTER TABLE `room_spec`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `roomID` (`roomID`),
+  ADD KEY `specID` (`specID`);
 
 --
 -- Indexes for table `section`
@@ -1445,13 +1618,13 @@ ALTER TABLE `access_rights`
 -- AUTO_INCREMENT for table `class`
 --
 ALTER TABLE `class`
-  MODIFY `classID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `classID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `counter`
 --
 ALTER TABLE `counter`
-  MODIFY `countID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `countID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `counter2`
@@ -1469,7 +1642,7 @@ ALTER TABLE `course`
 -- AUTO_INCREMENT for table `day`
 --
 ALTER TABLE `day`
-  MODIFY `dayID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `dayID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `enrolment_settings`
@@ -1487,13 +1660,13 @@ ALTER TABLE `faculty`
 -- AUTO_INCREMENT for table `fac_spec`
 --
 ALTER TABLE `fac_spec`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `fees`
 --
 ALTER TABLE `fees`
-  MODIFY `feeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `feeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `grade_formula`
@@ -1511,19 +1684,19 @@ ALTER TABLE `guardian`
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `prospectus`
 --
 ALTER TABLE `prospectus`
-  MODIFY `prosID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `prosID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `registration`
@@ -1538,6 +1711,12 @@ ALTER TABLE `reg_guardian`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
@@ -1547,13 +1726,19 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `roomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `roomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT for table `room_spec`
+--
+ALTER TABLE `room_spec`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `secID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `secID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `semester`
@@ -1577,55 +1762,55 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `studclass`
 --
 ALTER TABLE `studclass`
-  MODIFY `scID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `scID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `studID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `studID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `studgrade`
 --
 ALTER TABLE `studgrade`
-  MODIFY `sgID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `sgID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `studprospectus`
 --
 ALTER TABLE `studprospectus`
-  MODIFY `spID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `spID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `stud_fee`
 --
 ALTER TABLE `stud_fee`
-  MODIFY `sfID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `sfID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
-  MODIFY `subID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `subID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT for table `subject_req`
 --
 ALTER TABLE `subject_req`
-  MODIFY `subReqID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `subReqID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `term`
 --
 ALTER TABLE `term`
-  MODIFY `termID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `termID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `uID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `uID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
 
 --
 -- AUTO_INCREMENT for table `year`
@@ -1698,6 +1883,13 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `prospectus`
   ADD CONSTRAINT `prospectus_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `course` (`courseID`);
+
+--
+-- Constraints for table `room_spec`
+--
+ALTER TABLE `room_spec`
+  ADD CONSTRAINT `room_spec_ibfk_1` FOREIGN KEY (`specID`) REFERENCES `specialization` (`specID`),
+  ADD CONSTRAINT `room_spec_ibfk_2` FOREIGN KEY (`roomID`) REFERENCES `room` (`roomID`);
 
 --
 -- Constraints for table `section`

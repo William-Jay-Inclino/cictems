@@ -25,15 +25,16 @@ $route['grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$
 
 // --------------END CLASS-----------------
 
-// -------------------------MY CLASS FOR FACULTY ONLY---------------------------------
+// -------------------------FACULTY ONLY---------------------------------
 
 $route['my-class'] = 'my_class';
 $route['my-class/class-selected/(:num)/(:num)/(:num)'] = 'my_class/class_selected/$1/$2/$3';
 $route['my-class/grade-sheet/(:num)/(:num)/(:num)'] = 'my_class/grade_sheet/$1/$2/$3';
-// $route['my-class/student-grade/(:num)/(:num)'] = 'my_class/student_grade/$1/$2';
-// $route['my-class/update-grade/(:any)/(:num)'] = 'my_class/update_grade/$1/$2';
+$route['inc-grades'] = 'faculty_inc';
+$route['inc-grades/classes/(:num)'] = 'faculty_inc/classes/$1';
+$route['inc-grades/completion/(:num)/(:num)/(:num)'] = 'faculty_inc/completion/$1/$2/$3';
 
-// -------------------------END MY CLASS---------------------------------
+// -------------------------END FACULTY ONLY---------------------------------
 
 $route['incomplete'] = 'incomplete';
 

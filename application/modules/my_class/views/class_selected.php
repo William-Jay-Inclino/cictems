@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    el: '#app',
 	    data: {
 	    	page: {
-	    		main: '<?php echo base_url() ?>classes'
+	    		main: '<?php echo base_url() ?>my-class'
 	    	},
 	    	add_student_modal: false,
 	    	termID: '<?php echo $termID ?>',

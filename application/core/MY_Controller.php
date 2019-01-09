@@ -54,8 +54,13 @@ class MY_Controller extends MX_Controller{
 			}
 			//die($this->_current_module);
 			// go to modules table in db for identification of modules
-			if(!in_array($current_module, $arr) && ($current_module != 0 && $current_module != 100 && $current_module != 101 && $current_module != 24)){
-				show_404();
+			if(!in_array($current_module, $arr) && ($current_module != 0 && $current_module != 100 && $current_module != 101)){
+				if($roleID != 2){
+					show_404();
+				}
+				if($roleID == 2 && ($current_module != 24 && $current_module != 24.1)){
+					show_404();
+				}
 			}
 			$this->_data['user_access'] = $arr;
 			$this->_data['module_category'] = $arr2;
