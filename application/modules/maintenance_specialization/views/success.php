@@ -10,6 +10,10 @@
 					<td><b>Subject Type:</b> </td>
 					<td> <?php echo $record->specDesc ?> </td>
 				</tr>
+				<tr>
+					<td><b>Prospectus:</b> </td>
+					<td> <?php echo $record->prosCode ?> </td>
+				</tr>
 			</table>
 		</div>
 		<div style="text-align: center">

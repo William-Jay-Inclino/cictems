@@ -27,7 +27,7 @@
 	</div>
 	<br>
 	<div class="container" style="max-width: 600px">
-		<h3 class="title is-3 has-text-centered has-text-primary">Renew password</h3>
+		<h3 class="title is-3 has-text-centered my-title">Renew password</h3>
 		<div class="box" v-if="!has_code">
 			<p>Code will be send via email to <b>{{email}}</b> </p>
 			<hr>

@@ -78,7 +78,7 @@
 
     </nav>
   </header>
-  <br>
+  <br><br>
 
 
 
@@ -89,7 +89,8 @@
     <script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
     <section id="app" class="section" v-cloak>
       <div class="container" style="max-width: 600px">
-        <h3 class="title is-3 has-text-centered has-text-primary">Register</h3>
+        <h3 class="title is-3 has-text-centered my-title">Register</h3>
+        <br><br>
         <div class="steps">
           <div :class="{'step-item': true, 'is-primary is-completed': step1Active ,'is-completed is-success': step1Completed}">
             <div class="step-marker">
@@ -745,7 +746,7 @@
 
 
 
-
+<br><br><br><br>
 
 
   <footer class="footer bg-white">

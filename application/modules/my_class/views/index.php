@@ -1,16 +1,8 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">
-        My Class
-      </h1>
-    </div>
-  </div>
-</section>
-
 <section id="app" class="section" v-cloak>
 	<div class="container">
+		<h3 class="title is-3 my-title"> {{page_title}} </h3>
+		<br><br>
 		<div class="columns">
 			<div class="column is-4">
 				<multiselect v-model="current_term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
@@ -68,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	page_title: 'My Class',
 	    	selected_link: 'my-class/class-selected/',
 	    	current_term: {termID: '<?php echo $current_term->termID; ?>', term: '<?php echo $current_term->term; ?>'},
 	    	terms: [],

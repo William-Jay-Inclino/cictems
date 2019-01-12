@@ -41,7 +41,8 @@ class mdl_Faculty extends CI_Model{
 	
 		$this->db->insert('users', $data);
 		$uID = $this->db->insert_id();
-		$this->db->insert('faculty', ['uID' => $uID]);
+		$special = $this->input->post('special');
+		$this->db->insert('faculty', ['uID' => $uID, 'special' => $special]);
 		$facID = $this->db->insert_id();
 
 		$specs = $this->input->post('spec');
@@ -66,76 +67,13 @@ class mdl_Faculty extends CI_Model{
 
 	}
 
-	// function read1($option = 'name',$search_val = NULL, $page = '1', $per_page = '10', $termID){
-	// 	$records = [];
-	// 	$start = ($page - 1) * $per_page;
-	// 	$search_val = strtr($search_val, '_', ' ');
-	// 	if(trim($search_val) == ''){
-	// 		$query = $this->db->query("
-	// 			SELECT u.uID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,u.status,f.facID,s.specDesc,
-	// 			(SELECT 1 FROM class WHERE termID = $termID AND facID = f.facID LIMIT 1) has_classes
-	// 			FROM faculty f 
-	// 			INNER JOIN users u ON f.uID = u.uID 
-	// 			INNER JOIN specialization s ON f.specID = s.specID  
-	// 			LIMIT $start, $per_page
-	// 		"); 
-	// 		$num_records = $this->count_all();
-	// 	}else{
-	// 		if($option == 'name'){
-	// 			$option = "CONCAT(u.ln,', ',u.fn,' ',u.mn)";
-	// 		}
-	// 		$query = $this->db->query("
-	// 			SELECT u.uID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,u.status,f.facID,s.specDesc,
-	// 			(SELECT 1 FROM class WHERE termID = $termID AND facID = f.facID LIMIT 1) has_classes
-	// 			FROM faculty f 
-	// 			INNER JOIN users u ON f.uID = u.uID 
-	// 			INNER JOIN specialization s ON f.specID = s.specID  
-	// 			WHERE $option LIKE '%".$search_val."%' 
-	// 			ORDER BY $option ASC
-	// 			LIMIT $start, $per_page"
-	// 		);
-	// 		$num_records = $query->num_rows();
-	// 	}
-	// 	$query2 = $query->result();
-	// 	//remove dupicate values and put specialization in one faculty
-	// 	$specDesc = $arr = [];
-
-	// 	foreach($query2 as $q){
-	// 		$f = true;
-	// 		foreach($arr as $r){
-	// 			if($q->uID == $r['uID']){
-	// 				$f = false;
-	// 			}
-	// 		}
-
-	// 		if($f){
-	// 			foreach($query2 as $q2){
-	// 				if($q->uID == $q2->uID && $q->facID != $q2->facID){
-	// 					$specDesc[] = $q2->specDesc;
-	// 				}
-	// 			}
-	// 			$specDesc[] = $q->specDesc;
-	// 			$arr[] = ['uID' => $q->uID, 'name' => $q->name, 'has_classes' => $q->has_classes, 'status' => $q->status, 'specDesc' => $specDesc];
-	// 			$specDesc = [];
-	// 		}
-			
-	// 	}
-	// 	//end
-	// 	$output = [
-	// 		'total_rows'=> $num_records, 
-	// 		'records' => $arr
-	// 	];
-	// 	echo json_encode($output);
-	// }
-
 	function read($option = 'u.fn',$search_val = NULL, $page = '1', $per_page = '10', $termID){
-		$records = [];
 		$start = ($page - 1) * $per_page;
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT u.uID,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,u.is_new,
-				(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
+				SELECT u.uID,f.facID,f.special,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,u.is_new,
+				(SELECT 1 FROM class WHERE termID = $termID AND facID = f.facID LIMIT 1) has_classes 
 				FROM faculty f 
 				INNER JOIN users u ON f.uID = u.uID
 				WHERE f.facID <> 0
@@ -143,59 +81,108 @@ class mdl_Faculty extends CI_Model{
 			"); 
 			$num_records = $this->count_all();
 		}else{
-			if($option != 's.specDesc'){
-				$option = "CONCAT(u.ln,', ',u.fn,' ',u.mn)";
-				$query = $this->db->query("
-				SELECT u.uID,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,u.is_new,
-				(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
+			$query = $this->db->query("
+				SELECT u.uID,f.facID,f.special,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,u.is_new,
+				(SELECT 1 FROM class WHERE termID = $termID AND facID = f.facID LIMIT 1) has_classes 
 				FROM faculty f 
 				INNER JOIN users u ON f.uID = u.uID
 				WHERE f.facID <> 0 AND $option LIKE '%".$search_val."%' 
 				ORDER BY $option ASC
 				LIMIT $start, $per_page"
 			);
-			}else{
-				$query = $this->db->query("
-					SELECT u.uID,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,s.specDesc,u.is_new,
-					(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
-					FROM faculty f 
-					INNER JOIN users u ON f.uID = u.uID
-					INNER JOIN fac_spec fs ON f.facID = fs.facID 
-					INNER JOIN specialization s ON fs.specID = s.specID 
-					WHERE f.facID <> 0 AND $option LIKE '%".$search_val."%' 
-					ORDER BY $option ASC
-					LIMIT $start, $per_page"
-				);
-			}
-			
 			$num_records = $query->num_rows();
 		}
-
-		$faculties = $query->result();
-		foreach($faculties as $f){
-			$specs = $this->db->query("SELECT s.specDesc FROM fac_spec fs INNER JOIN specialization s ON fs.specID = s.specID WHERE fs.facID = ".$f->facID)->result();
-			$records[] = ['facInfo' => $f, 'specs' => $specs];
-		}
-
 		$output = [
 			'total_rows'=> $num_records, 
-			'records' => $records
+			'records' => $query->result()
 		];
 		echo json_encode($output);
 	}
+
+	// function read($option = 'u.fn',$search_val = NULL, $page = '1', $per_page = '10', $termID){
+	// 	$records = [];
+	// 	$start = ($page - 1) * $per_page;
+	// 	$search_val = strtr($search_val, '_', ' ');
+	// 	if(trim($search_val) == ''){
+	// 		$query = $this->db->query("
+	// 			SELECT u.uID,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,u.is_new,
+	// 			(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
+	// 			FROM faculty f 
+	// 			INNER JOIN users u ON f.uID = u.uID
+	// 			WHERE f.facID <> 0
+	// 			LIMIT $start, $per_page
+	// 		"); 
+	// 		$num_records = $this->count_all();
+	// 	}else{
+	// 		if($option != 's.specDesc'){
+	// 			$option = "CONCAT(u.ln,', ',u.fn,' ',u.mn)";
+	// 			$query = $this->db->query("
+	// 			SELECT u.uID,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,u.is_new,
+	// 			(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
+	// 			FROM faculty f 
+	// 			INNER JOIN users u ON f.uID = u.uID
+	// 			WHERE f.facID <> 0 AND $option LIKE '%".$search_val."%' 
+	// 			ORDER BY $option ASC
+	// 			LIMIT $start, $per_page"
+	// 		);
+	// 		}else{
+	// 			$query = $this->db->query("
+	// 				SELECT u.uID,f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) name, u.status,s.specDesc,u.is_new,
+	// 				(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
+	// 				FROM faculty f 
+	// 				INNER JOIN users u ON f.uID = u.uID
+	// 				INNER JOIN fac_spec fs ON f.facID = fs.facID 
+	// 				INNER JOIN specialization s ON fs.specID = s.specID 
+	// 				WHERE f.facID <> 0 AND $option LIKE '%".$search_val."%' 
+	// 				ORDER BY $option ASC
+	// 				LIMIT $start, $per_page"
+	// 			);
+	// 		}
+			
+	// 		$num_records = $query->num_rows();
+	// 	}
+
+	// 	$faculties = $query->result();
+	// 	foreach($faculties as $f){
+	// 		$specs = $this->db->query("SELECT s.specDesc FROM fac_spec fs INNER JOIN specialization s ON fs.specID = s.specID WHERE fs.facID = ".$f->facID)->result();
+	// 		$records[] = ['facInfo' => $f, 'specs' => $specs];
+	// 	}
+
+	// 	$output = [
+	// 		'total_rows'=> $num_records, 
+	// 		'records' => $records
+	// 	];
+	// 	echo json_encode($output);
+	// }
 
 	function read_one($id,$termID){
 		$this->check_form_id($id);
 
 		$faculty = $this->db->query("
-			SELECT f.facID,u.uID,u.userName,u.userPass,u.is_new,u.fn,u.mn,u.ln,u.dob,u.sex,u.cn,u.email,u.address,u.status,
-			(SELECT 1 FROM class WHERE termID = $termID AND facID = facID LIMIT 1) has_classes 
+			SELECT f.facID,f.special,u.uID,u.userName,u.userPass,u.is_new,u.fn,u.mn,u.ln,u.dob,u.sex,u.cn,u.email,u.address,u.status,
+			(SELECT 1 FROM class WHERE termID = $termID AND facID = f.facID LIMIT 1) has_classes 
 			FROM faculty f 
 			INNER JOIN users u ON f.uID = u.uID
 			WHERE f.facID = $id LIMIT 1
 		")->row();
 		
-		$specs = $this->db->query("SELECT s.specID,s.specDesc FROM fac_spec fs INNER JOIN specialization s ON fs.specID = s.specID WHERE fs.facID = $id")->result();
+		$specs = $this->db->query("
+			SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc 
+			FROM fac_spec fs 
+			INNER JOIN specialization s ON fs.specID = s.specID 
+			INNER JOIN prospectus p ON s.prosID = p.prosID
+			WHERE fs.facID = $id
+			ORDER BY p.prosType, p.prosCode ASC
+			")->result();
+
+		// $data['specs'] = $this->db->query("
+		// 		SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc 
+		// 		FROM room_spec rs 
+		// 		INNER JOIN specialization s ON rs.specID = s.specID 
+		// 		INNER JOIN prospectus p ON s.prosID = p.prosID
+		// 		WHERE rs.roomID = ".$data['room']->roomID."
+		// 		ORDER BY p.prosType, p.prosCode ASC
+		// 		")->result();
 
 		return ['facInfo' => $faculty, 'specs' => $specs];
 	}
@@ -224,7 +211,9 @@ class mdl_Faculty extends CI_Model{
 		$uID = $this->db->query("SELECT uID FROM faculty WHERE facID = $id LIMIT 1")->row()->uID;
 
 		$this->get_form_data($data);
-		
+
+		$fac['special'] = $this->input->post('special');
+		$this->db->update('faculty', $fac, "facID = $id");
 		$this->db->update('users', $data, "uID = $uID");
 		$specs = $this->input->post('spec');
 		$this->db->delete('fac_spec', "facID = $id");
@@ -311,7 +300,7 @@ class mdl_Faculty extends CI_Model{
 
 	function fetchSpec(){
 		echo json_encode(
-			$this->db->order_by('specDesc ASC')->get('specialization')->result()
+			$this->db->query("SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc FROM specialization s INNER JOIN prospectus p ON s.prosID = p.prosID ORDER BY p.prosType, p.prosCode ASC")->result()
 		);
 	}
 
@@ -323,8 +312,25 @@ class mdl_Faculty extends CI_Model{
 
 	function populateSpec($id){
 		echo json_encode(
-			$this->db->query("SELECT s.specID,s.specDesc FROM fac_spec fs INNER JOIN specialization s ON fs.specID = s.specID WHERE fs.facID = $id")->result()
+			$this->db->query("
+				SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc 
+				FROM fac_spec fs 
+				INNER JOIN specialization s ON fs.specID = s.specID 
+				INNER JOIN prospectus p ON s.prosID = p.prosID
+				WHERE fs.facID = $id
+				ORDER BY p.prosType, p.prosCode ASC
+				")->result()
 		);
+		// echo json_encode(
+		// 	$this->db->query("
+		// 		SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc 
+		// 		FROM room_spec rs 
+		// 		INNER JOIN specialization s ON rs.specID = s.specID 
+		// 		INNER JOIN prospectus p ON s.prosID = p.prosID
+		// 		WHERE rs.roomID = $id
+		// 		ORDER BY p.prosType, p.prosCode ASC
+		// 		")->result()
+		// );
 	}
 
 }

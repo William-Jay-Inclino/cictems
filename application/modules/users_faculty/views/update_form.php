@@ -88,12 +88,21 @@
 				</p>
 			</div>
 			<div class="field">
-			  <label class="label">Specialization</label>
+			  <label class="label">Subjects</label>
 			  <div class="control">
 				 <multiselect :multiple="true" v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.spec}}
+				</p>
+			</div>
+			<div class="field">
+			  	<label class="label">Specialization</label>
+			  	<div class="control">
+				  	<input class="input" type="text" v-model.trim="form.special">
+			  	</div>
+			  	<p class="help has-text-danger">
+					{{error.special}}
 				</p>
 			</div>
 			<br>
@@ -130,7 +139,8 @@
 		    		address: '<?php echo $record["facInfo"]->address ?>',
 		    		cn: '<?php echo $record["facInfo"]->cn ?>',
 		    		email: '<?php echo $record["facInfo"]->email ?>',
-		    		spec: []
+		    		spec: [],
+		    		special: '<?php echo $record["facInfo"]->special ?>'
 		    	},
 		    	error: {
 		    		fn: '',
@@ -139,6 +149,7 @@
 		    		email: '',
 		    		dob: '',
 		    		specDesc: '',
+		    		special: '',
 		    	},
 		    	sex: [{sex: 'Male'},{sex: 'Female'}],
 		    	specs: []
@@ -203,6 +214,12 @@
 		        		ok = false
 		        	}else{
 		        		this.error.ln = ''
+		        	}
+		        	if(!f.special){
+		        		this.error.special = errMsg
+		        		ok = false
+		        	}else{
+		        		this.error.special = ''
 		        	}
 		        	if(!Date.parse(f.dob)){
 		        		this.error.dob = errMsg

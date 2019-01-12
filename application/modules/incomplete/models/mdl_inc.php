@@ -87,21 +87,38 @@ class mdl_Inc extends CI_Model{
 		return $this->db->query("SELECT s.studID,CONCAT(u.fn,' ',u.mn,' ',u.ln) name,s.controlNo FROM student s INNER JOIN users u ON s.uID = u.uID WHERE s.studID = $studID LIMIT 1")->row();
 	}
 
-	function get_inc_classes($studID, $termID){
+	function get_inc_classes($studID){
 		$inc_classes = $this->db->query("
-			SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty FROM studgrade sg
-				INNER JOIN subject s ON sg.subID = s.subID
-				INNER JOIN class c ON s.subID = c.subID
-				INNER JOIN room r ON c.roomID=r.roomID
-				INNER JOIN day d ON c.dayID=d.dayID
-				INNER JOIN faculty f ON c.facID=f.facID
-				INNER JOIN users u ON f.uID=u.uID
-				WHERE sg.remarks = 'Incomplete' AND sg.studID = $studID AND sg.termID = $termID
+			SELECT c.classID,c.classCode,sub.subDesc,sub.id, t.termID, t.schoolYear, s.semDesc, CONCAT(u.ln,', ',u.fn) faculty
+			FROM class c 
+			INNER JOIN subject sub ON c.subID = sub.subID 
+			INNER JOIN term t ON c.termID = t.termID 
+			INNER JOIN semester s ON t.semID = s.semID 
+			INNER JOIN studclass sc ON c.classID = sc.classID 
+			INNER JOIN faculty f ON c.facID = f.facID 
+			INNER JOIN users u ON f.uID = u.uID 
+			WHERE sc.remarks = 'Incomplete' AND c.status = 'locked' AND sc.studID = $studID
+			ORDER BY t.schoolYear,s.semOrder DESC
 		")->result();
 		if(!$inc_classes){
 			show_404();
 		}
-		return $inc_classes;
+		$arr = [];
+		foreach($inc_classes as $i){
+			$exist = false;
+			foreach($arr as $r){
+				if($r->id == $i->id){
+					$exist = true;
+					break;
+				}
+			}
+
+			if(!$exist){
+				$arr[] = $i;
+			}
+
+		}
+		return $arr;
 	}
 
 	function fail_students($termID){

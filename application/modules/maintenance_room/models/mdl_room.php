@@ -82,7 +82,14 @@ class mdl_Room extends CI_Model{
 			SELECT * FROM room
 			WHERE roomID = $id LIMIT 1
 		")->row();
-		$data['specs'] = $this->db->query("SELECT s.specDesc FROM room_spec rs INNER JOIN specialization s ON rs.specID = s.specID WHERE rs.roomID = ".$data['room']->roomID)->result();
+		$data['specs'] = $this->db->query("
+				SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc 
+				FROM room_spec rs 
+				INNER JOIN specialization s ON rs.specID = s.specID 
+				INNER JOIN prospectus p ON s.prosID = p.prosID
+				WHERE rs.roomID = ".$data['room']->roomID."
+				ORDER BY p.prosType, p.prosCode ASC
+				")->result();
 		
 		return $data;
 	}
@@ -159,13 +166,20 @@ class mdl_Room extends CI_Model{
 
 	function fetchSpec(){
 		echo json_encode(
-			$this->db->order_by('specDesc ASC')->get('specialization')->result()
+			$this->db->query("SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc FROM specialization s INNER JOIN prospectus p ON s.prosID = p.prosID ORDER BY p.prosType, p.prosCode ASC")->result()
 		);
 	}
 
 	function populateSpec($id){
 		echo json_encode(
-			$this->db->query("SELECT s.specID,s.specDesc FROM room_spec rs INNER JOIN specialization s ON rs.specID = s.specID WHERE rs.roomID = $id")->result()
+			$this->db->query("
+				SELECT s.specID, CONCAT(p.prosCode,' | ',s.specDesc) specDesc 
+				FROM room_spec rs 
+				INNER JOIN specialization s ON rs.specID = s.specID 
+				INNER JOIN prospectus p ON s.prosID = p.prosID
+				WHERE rs.roomID = $id
+				ORDER BY p.prosType, p.prosCode ASC
+				")->result()
 		);
 	}
 

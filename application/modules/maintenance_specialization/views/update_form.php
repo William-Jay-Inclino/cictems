@@ -16,16 +16,21 @@
 		<h5 class="title is-4" style="text-align: center">{{ page.title }}</h5>
 		<div class="box">
 			<div class="field">
-			  <label class="label">Subject Type</label>
-			  <div class="control">
-				  	<input class="input" type="text" v-model.trim="form.spec" required>
-			  </div>
-			  <p class="help has-text-danger"> {{error.spec}} </p>
-			<br>
+				  <label class="label">Subject Type</label>
+				  <div class="control">
+					  	<input class="input" type="text" v-model.trim="form.spec" required>
+				  </div>
+				  <p class="help has-text-danger"> {{error.spec}} </p>
+			</div>
+			<div class="field">
+				<label class="label">Prospectus</label>
+				<div class="control">
+					<multiselect v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+				</div>
+				<p class="help has-text-danger"> {{error.pros}} </p>
+			</div>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
-		</div>
-
 	</div>
 </section>
 
@@ -49,13 +54,27 @@
 
 		    	form: {
 		    		id: '<?php echo $record->specID ?>',
-		    		spec: '<?php echo $record->specDesc ?>'
+		    		spec: '<?php echo $record->specDesc ?>',
+		    		pros: {prosID: '<?php echo $record->prosID ?>', prosCode: '<?php echo $record->prosCode ?>'}
 		    	},
 		    	error: {
-		    		spec: ''
+		    		spec: '',
+		    		pros: ''
 		    	},
+		    	prospectuses: []
+		    },
+		    created(){
+		    	this.get_prospectuses()
 		    },
 		    methods: {
+		    	get_prospectuses(){
+		    		this.$http.get('<?php echo base_url() ?>maintenance_specialization/get_prospectuses')
+		        	.then(response => {
+		        		this.prospectuses = response.body
+					 }, e => {
+					 	console.log(e.body);
+					 })
+		    	},
 		        submitForm() {
 		        	const f = this.form
 		        	if(this.checkForm(f)){

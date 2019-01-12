@@ -22,6 +22,10 @@
 					<td><b>Subject Type:</b> </td>
 					<td> {{specDesc}} </td>
 				</tr>
+				<tr>
+					<td><b>Prospectus:</b> </td>
+					<td> {{prosCode}} </td>
+				</tr>
 			</table>
 		</div>
 	</div>
@@ -39,6 +43,7 @@
 		    data: {
 		    	id: '<?php echo $record->specID ?>',
 		    	specDesc: '<?php echo $record->specDesc ?>',
+		    	prosCode: '<?php echo $record->prosCode ?>',
 		    	page:{
 		    		edit: '<?php echo base_url()."maintenance/specialization/form/".$record->specID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/specialization'

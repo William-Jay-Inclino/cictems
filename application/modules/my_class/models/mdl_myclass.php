@@ -210,7 +210,7 @@ class mdl_myclass extends CI_Model{
 			FROM studclass sc
 			INNER JOIN student s ON sc.studID = s.studID
 			INNER JOIN users u ON s.uID = u.uID
-			AND sc.classID = ".$data['class'][0]->classID."
+			WHERE sc.status = 'Enrolled' AND sc.classID = ".$data['class'][0]->classID."
 			ORDER BY name ASC
 		")->result();
 

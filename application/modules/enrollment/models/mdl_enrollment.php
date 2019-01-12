@@ -220,7 +220,13 @@ class mdl_Enrollment extends CI_Model{
 		if($status == 'Pending'){
 			$this->db->query("UPDATE counter2 SET total = total + 1 WHERE module = 'enrol_requests'");
 		}else if($status == 'Enrolled'){
-			$this->db->query("UPDATE counter SET total = total + 1 WHERE module = 'enrol_studs' AND termID = $termID");
+			$query = $this->db->query("SELECT 1 FROM counter WHERE module = 'enrol_studs' AND termID = $termID LIMIT 1");
+			$row =  $query->row();
+			if($row){
+				$this->db->query("UPDATE counter SET total = total + 1 WHERE module = 'enrol_studs' AND termID = $termID");
+			}else{
+				$this->db->query("INSERT INTO counter(module,total) VALUES('enrol_studs','1')");
+			}
 		}
 		else{
 			$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'enrol_requests'");

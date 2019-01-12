@@ -16,7 +16,7 @@
 </style>
 <section id="app" class="section" v-cloak>
 	<div class="container" style="max-width: 600px">
-		<h3 class="title is-3 has-text-centered has-text-primary">My Profile</h3>
+		<h3 class="title is-3 has-text-centered my-title">My Profile</h3>
 		<div class="box">
 		    <figure class="image is-128x128 has-image-centered">
 			  <img src="<?php echo base_url(); ?>assets/img/avatar.png">

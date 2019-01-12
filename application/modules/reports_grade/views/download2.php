@@ -3,19 +3,26 @@
 <head>
 	<meta charset="utf-8">
 	<title>Report</title>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
 	
 	<style>
 		body {
 		  font-size:10px;
 		}
-		.my-border{
-			border: 1px solid black;
-		}
 		.tbl-headers{
      		 background-color: #f2f2f2 
    		}
+   		table, td, th {  
+		  	text-align: left;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		th, td {
+		  padding: 3px;
+		}
    		.row-5{
 	      width: 5%;
 	   }
@@ -29,10 +36,10 @@
 		echo "Name: ".$student->ln.', '.$student->fn.' '; if($student->mn){ echo $student->mn.'.';} 
 	?>
 	<br><br>
-	<div class="has-text-centered">
+	<div style="text-align: center">
 		<?php 
-			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
-			echo "<b>COLLEGE OF ICT & ENGINEERING</b>";
+			echo "<b>WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
+			echo "COLLEGE OF ICT & ENGINEERING</b>";
 
 		?>
 	</div>
@@ -41,9 +48,9 @@
 	<?php 
 		foreach($data as $d){ ?>
 			
-			<table class="table my-border" style="width: 100%">
+			<table border="1">
 				<tr>
-					<th colspan="3"> <?php echo $d['term'] ?> </th>
+					<th colspan="10"> <?php echo $d['term'] ?> </th>
 				</tr>
 				<tr class="tbl-headers">
 		            <th class="row-10">Code</th>

@@ -139,8 +139,9 @@ class mdl_Prospectus extends CI_Model{
 		$output = 0;
 		$query = $this->db->select('1')->get_where('studprospectus', "prosID = $id", 1)->row();
 		$query2 = $this->db->select('1')->get_where('subject', "prosID = $id", 1)->row();
+		$query3 = $this->db->select('1')->get_where('specialization', "prosID = $id", 1)->row();
 
-		if(!$query && !$query2){
+		if(!$query && !$query2 && !$query3){
 			$output = 1;
 		}
 

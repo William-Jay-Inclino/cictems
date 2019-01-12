@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		this.$http.get('<?php echo base_url() ?>classes/populate_class_sel/'+this.facID+'/'+this.termID+'/'+this.id+'/'+this.prosID)
 	            .then(response => {
 	            	const c = response.body 
+	            	console.log(c);
 	               	this.classes = c.class 
 	               	this.status = c.class[0].status
 	               	this.date_submitted = c.class[0].date_submitted

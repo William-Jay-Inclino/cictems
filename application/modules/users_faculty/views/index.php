@@ -66,7 +66,7 @@
 			<table class="table is-fullwidth">
 				<thead>
 					<th>Name</th>
-					<th>Specializations</th>
+					<th>Specialization</th>
 					<th>Has Classes</th>
 					<th>Status</th>
 					<th>View</th>
@@ -77,12 +77,8 @@
 
 				<tbody v-show="!loading">
 					<tr v-for="record, i in records">
-						<td>{{record.facInfo.name}}</td>
-						<td>
-							<span v-for="spec, i of record.specs">
-								{{spec.specDesc}} <span v-if="i != record.specs.length - 1">,</span>
-							</span>
-						</td>
+						<td>{{record.name}}</td>
+						<td>{{record.special}}</td>
 						<td>
 							<span v-if="record.has_classes != null">
 								<span class="tag is-success">Yes</span>
@@ -92,11 +88,11 @@
 							</span>
 						</td>
 						<td>
-							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.facInfo.status == 'active'" @change="changeStatus(i)" :disabled="record.facInfo.is_new == 'yes'">
+							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.status == 'active'" @change="changeStatus(i)" :disabled="record.is_new == 'yes'">
 						 	<label :for="i"></label>
 						</td>
 						<td>
-							<a :href="page.show + '/' + record.facInfo.facID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
+							<a :href="page.show + '/' + record.facID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 						</td>
 					</tr>
 				</tbody>
@@ -156,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
     			{value: 'u.fn', text: 'Firstname'},
     			{value: 'u.mn', text: 'Middlename'},
     			{value: 'u.ln', text: 'Lastname'},
-    			{value: 's.specDesc', text: 'Specialization'}
+    			{value: 'f.special', text: 'Specialization'}
     		],
 
 	        records: []
@@ -193,16 +189,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		    	const record = this.records[i]
 		    	let new_stat = ''
 		    	let msg = ''
-		    	if(record.facInfo.status == 'active'){
+		    	if(record.status == 'active'){
 		    		new_stat = 'inactive'
 		    		msg = 'Status successfully deactivated!'
 		    	}else{
 		    		new_stat = 'active'
 		    		msg = 'Status successfully activated!'
 		    	}
-		    	record.facInfo.status = new_stat
+		    	record.status = new_stat
 		    	swal('Success', msg, 'success')
-		    	this.$http.post('<?php echo base_url() ?>users_faculty/changeStatus', {uID: record.facInfo.uID,status: new_stat})
+		    	this.$http.post('<?php echo base_url() ?>users_faculty/changeStatus', {uID: record.uID,status: new_stat})
 	        	.then(response => {
 				 }, e => {
 				 	this.changeStatus(i)

@@ -32,6 +32,15 @@
 				<div class="column is-6 is-offset-4">
 					<div class="is-pulled-right">
 						<div class="field has-addons">
+							<div class="control">
+								<span class="select">
+									<select v-model="option">
+										<option v-for="option in search_options" :value="option.value">
+											{{ option.text }}
+										</option>
+									</select>
+								</span>
+							</div>
 						  <div class="control">
 						    <input class="input" type="text" v-model="search_value" placeholder="Search" v-on:keyup.enter="search">
 						  </div>
@@ -50,6 +59,7 @@
 			<table class="table is-fullwidth">
 				<thead>
 					<th>Specialization</th>
+					<th>Prospectus</th>
 					<th>View</th>
 				</thead>
 
@@ -59,6 +69,7 @@
 				<tbody v-show="!loading">
 					<tr v-for="record, i in records">
 						<td>{{record.specDesc}}</td>
+						<td> {{record.prosCode}} </td>
 						<td>
 							<a :href="page.show + '/' + record.specID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 						</td>
@@ -115,7 +126,11 @@ document.addEventListener('DOMContentLoaded', function() {
     		current_page: 1,
 
     		search_value: '',
-    		option: 'specDesc',
+    		option: 's.specDesc',
+    		search_options: [
+    			{value: 's.specDesc', text: 'Type'},
+    			{value: 'p.prosCode', text: 'Prospectus'}
+    		],
 
 	        records: []
 	       

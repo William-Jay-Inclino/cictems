@@ -32,8 +32,8 @@
 	<br><br>
 	<div style="text-align: center;">
 		<?php 
-			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
-			echo "<b>COLLEGE OF ICT & ENGINEERING</b><br><br>";
+			echo "<b>WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
+			echo "COLLEGE OF ICT & ENGINEERING</b><br><br>";
 			echo '<b>'.$data['prospectus']->description.' with G.R. #04 series of 2005'.'</b><br>'; 
 			echo "Effective School Year ".$data['prospectus']->effectivity.' [K + 12] Compliant <br>';
 			echo "Revised Curriculum No. 25 Series of 2015";

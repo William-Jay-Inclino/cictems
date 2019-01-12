@@ -100,7 +100,7 @@
 			<div class="field">
 			  <label class="label">Type</label>
 			  <div class="control">
-				  	<multiselect v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
+				  	<multiselect v-model="form.spec" track-by="specID" label="specDesc" :options="subject_types"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.spec}}
@@ -129,7 +129,7 @@
 		    	page:{
 		    		title: 'Update Subject',
 		    		list: '<?php echo base_url() ?>maintenance/subject',
-		    		show: '<?php echo base_url()."maintenance/subject/show/".$id."/" ?>'
+		    		show: '<?php echo base_url()."maintenance/subject/show/".$id."/".$prosID ?>'
 		    	},
 
 		    	form: {
@@ -181,6 +181,7 @@
 		    watch: {
 		    	prospectus(val){
 		    		this.form.year = null
+		    		this.form.spec = null
 		    		this.years = []
 		    		
 		    		if(val != null){
@@ -218,6 +219,11 @@
 		    	},
 		    	sem(){
 		    		return this.form.sem	
+		    	},
+		    	subject_types(){
+		    		const specs = this.specs 
+		    		const prosID = (this.form.prospectus) ? this.form.prospectus.prosID : 0
+		    		return specs.filter(s => s.prosID == prosID)
 		    	}
 		    },
 		    methods: {
@@ -249,38 +255,6 @@
 		    			//this.populate()
 		    		})
 		    	},
-		    // 	fetch_requisites(){
-		    // 		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_requisites/'+this.form.id)
-		    //     	.then(response => {
-		    //     		const c = response.body
-		    //     		const arr = []
-		    //     		const arr2 = []
-		    //     		for(x of c){
-		    //     			if(x.req_type == 1){
-		    //     				arr.push({subID: x.req_subID, subCode: x.req_code})
-		    //     			}else{
-		    //     				arr2.push({subID: x.req_subID, subCode: x.req_code})
-		    //     			}
-		    //     		}
-		    //     		this.form.pre = arr
-		    //     		this.form.coreq = arr2
-					 // })
-		    // 	},
-		    // 	fetchYearReq(){
-		    // 		this.$http.get('<?php echo base_url() ?>maintenance_subject/fetchYearReq/' + this.form.id)
-		    // 		.then(response => {
-		    // 			const c = response.body
-		    // 			if(c){
-		    // 				this.form.pre2 = {yearID: c.yearID, yearDesc: c.yearDesc}
-		    // 			}
-		    // 		})
-		    // 	},
-		    // 	fetchProspectus(){
-		    // 		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_prospectuses')
-		    // 		.then(response => {
-		    // 			this.prospectuses = response.body
-		    // 		})
-		    // 	},
 		    	fetchYears(prosID){
 		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/get_years/' + prosID)
 		    		.then(response => {
@@ -328,7 +302,7 @@
 							      icon: 'success',
 							    }).then((x) => {
 								  if (x) {
-								    window.location.href = this.page.show + f.prospectus.prosID
+								    window.location.href = this.page.show
 								  }
 								})
 			        		}

@@ -99,7 +99,7 @@
 			<div class="field">
 			  <label class="label">Type</label>
 			  <div class="control">
-				  	<multiselect v-model="form.spec" track-by="specID" label="specDesc" :options="specs"></multiselect>
+				  	<multiselect v-model="form.spec" track-by="specID" label="specDesc" :options="subject_types"></multiselect>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.spec}}
@@ -192,6 +192,7 @@
 		    watch: {
 		    	prospectus(val){
 		    		this.form.year = null
+		    		this.form.spec = null
 		    		this.years = []
 		    		
 		    		if(val != null){
@@ -236,6 +237,11 @@
 		    			units.push({unit: i})
 		    		}
 		    		return units
+		    	},
+		    	subject_types(){
+		    		const specs = this.specs 
+		    		const prosID = (this.form.prospectus) ? this.form.prospectus.prosID : 0
+		    		return specs.filter(s => s.prosID == prosID)
 		    	}
 		    },
 		    methods: {

@@ -38,7 +38,7 @@ class mdl_Prospectus extends CI_Model{
 			WHERE p.prosID = $prosID LIMIT 1
 		")->row();
 
-		$data['specializations'] = $this->db->get('specialization')->result();
+		$data['specializations'] = $this->db->get_where('specialization', "prosID = $prosID")->result();
 
 		$years = $this->db->query("SELECT y.yearID, y.yearDesc FROM subject s INNER JOIN year y ON s.yearID = y.yearID WHERE s.prosID = $prosID GROUP BY y.yearID ORDER BY y.duration ASC")->result();
 

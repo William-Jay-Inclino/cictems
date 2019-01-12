@@ -45,6 +45,10 @@ class Maintenance_Specialization extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
+	function get_prospectuses(){
+		$this->mdl_special->get_prospectuses();
+	}
+
 	function create(){
 		$this->mdl_special->create();
 	}

@@ -53,6 +53,10 @@
 				</tr>
 				<tr>
 					<td><b>Specialization:</b> </td>
+					<td> <?php echo $record['facInfo']->special ?> </td>
+				</tr>
+				<tr>
+					<td><b>Subjects:</b> </td>
 					<td>
 						<?php 
 							foreach($record['specs'] as $spec){

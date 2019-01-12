@@ -25,7 +25,7 @@
    <section class="section">
       <div class="container">
          <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
-
+         {{btnGenerate_link}}
         <button :disabled="!selected_student" @click="generateReport" class="button is-primary is-pulled-right">Generate Report</button>
          <br><br>
          <div class="box">
@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
          this.$http.get('<?php echo base_url() ?>reports_grade/get_grade_by_class/'+this.selected_student.studID)
          .then(response => {
             const c = response.body
+            console.log(c);
             // for(x of c){
             //    for(i of x.class2){
             //       // if(i.equiv == '' && i.class.remarks != 'Incomplete'){
@@ -174,6 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classes = c
             this.loader = false
             this.ready = true
+         }, e => {
+            console.log(e.body);
+
          })
       },
       get_student(){

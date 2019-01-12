@@ -68,7 +68,7 @@
 					<td> {{address}} </td>
 				</tr>
 				<tr>
-					<td><b>Contact number:</b> </td>
+					<td><b>Contact #:</b> </td>
 					<td> {{cn}} </td>
 				</tr>
 				<tr>
@@ -76,7 +76,11 @@
 					<td> {{mail}} </td>
 				</tr>
 				<tr>
-					<td><b>Specialization:</b> </td>
+					<th>Specialization</th>
+					<td> {{special}} </td>
+				</tr>
+				<tr>
+					<td><b>Subjects:</b> </td>
 					<td>
 						<?php
 							$len = count($record['specs']) - 1;
@@ -131,6 +135,7 @@
 		    	cn: '<?php echo $record["facInfo"]->cn ?>',
 		    	mail: '<?php echo $record["facInfo"]->email ?>',
 		    	status: '<?php echo $record["facInfo"]->status ?>',
+		    	special: '<?php echo $record["facInfo"]->special ?>',
 		    	page:{
 		    		edit: '<?php echo base_url()."users/faculty/form/".$record["facInfo"]->facID ?>',
 		    		rights: '<?php echo base_url()."users/faculty/access-rights/".$record["facInfo"]->facID ?>',

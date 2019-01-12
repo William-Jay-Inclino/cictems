@@ -26,14 +26,13 @@
 			</h5>
 		</div>
 		<div class="box">
-			<table class="table is-fullwidth is-centered">
+			<table class="table is-fullwidth">
 				<thead>
 					<th>Class Code</th>
 					<th>Description</th>
-					<th>Day</th>
-					<th>Time</th>
-					<th>Room</th>
 					<th>Instructor</th>
+					<th>School Year</th>
+					<th>Semester</th>
 					<th>Comply</th>
 				</thead>
 				<tbody>
@@ -42,10 +41,9 @@
 							<tr>
 								<td><?php echo $class->classCode ?></td>
 								<td><?php echo $class->subDesc ?></td>
-								<td><?php echo $class->day ?></td>
-								<td><?php echo $class->class_time ?></td>
-								<td><?php echo $class->roomName ?></td>
 								<td><?php echo $class->faculty ?></td>
+								<td><?php echo $class->schoolYear ?></td>
+								<td><?php echo $class->semDesc ?></td>
 								<td>
 									<a href="<?php echo base_url().'incomplete/completion/'.$class->classID.'/'.$studID.'/'.$termID ?>" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 								</td>

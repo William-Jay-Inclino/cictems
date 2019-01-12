@@ -147,9 +147,9 @@
                    <a class="navbar-item <?php if($current_module == 20){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/grade">
                      Grade
                    </a>
-                   <a class="navbar-item <?php if($current_module == 20.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/remark">
+                   <!-- <a class="navbar-item <?php if($current_module == 20.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/remark">
                      Remark
-                   </a>
+                   </a> -->
                    <a class="navbar-item <?php if($current_module == 21){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/fees">
                      Departmental Fees
                    </a>

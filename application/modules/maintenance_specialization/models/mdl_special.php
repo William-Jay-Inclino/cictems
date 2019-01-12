@@ -17,7 +17,7 @@ class mdl_Special extends CI_Model{
 		//print_r($_POST);
 		$exist = false;
 		$data['specDesc'] = $this->input->post('spec');
-		
+		$data['prosID'] = $this->input->post('pros')['prosID'];
 
 		$this->check_exist($data,$exist);
 
@@ -39,23 +39,25 @@ class mdl_Special extends CI_Model{
 		echo json_encode($output);
 	}
 
-	function read($option = 'specDesc',$search_val = NULL, $page = '1', $per_page = '10'){
+	function read($option = 's.specDesc',$search_val = NULL, $page = '1', $per_page = '10'){
 		$start = ($page - 1) * $per_page;
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT * 
-				FROM specialization
-				ORDER BY specDesc ASC
+				SELECT s.specID, p.prosCode, s.specDesc 
+				FROM specialization s
+				INNER JOIN prospectus p ON s.prosID = p.prosID
+				ORDER BY p.prosType,p.prosCode ASC
 				LIMIT $start, $per_page
 			");
 			$num_records = $this->count_all();
 		}else{
 			$query = $this->db->query("
-				SELECT * 
-				FROM specialization 
+				SELECT s.specID, p.prosCode, s.specDesc 
+				FROM specialization s
+				INNER JOIN prospectus p ON s.prosID = p.prosID
 				WHERE $option LIKE '%".$search_val."%' 
-				ORDER BY specDesc ASC
+				ORDER BY p.prosType,p.prosCode ASC
 				LIMIT $start, $per_page"
 			);
 			$num_records = $query->num_rows();
@@ -71,8 +73,9 @@ class mdl_Special extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT * 
-			FROM specialization
+			SELECT s.specID, s.specDesc, p.prosCode,s.prosID 
+			FROM specialization s 
+			INNER JOIN prospectus p ON s.prosID = p.prosID 
 			WHERE specID = $id LIMIT 1
 		");
 		return $query->row();
@@ -82,6 +85,7 @@ class mdl_Special extends CI_Model{
 		$exist = false;
 		$id = $this->input->post('id');
 		$data['specDesc'] = $this->input->post('spec');
+		$data['prosID'] = $this->input->post('pros')['prosID'];
 		
 		$this->check_exist($data,$exist,$id);
 
@@ -103,11 +107,11 @@ class mdl_Special extends CI_Model{
 	function check_exist($data,&$exist,$id = NULL){
 		if($id == NULL){
 			$query = $this->db->query("
-				SELECT 1 FROM specialization WHERE specDesc = '".$data['specDesc']."'  LIMIT 1
+				SELECT 1 FROM specialization WHERE specDesc = '".$data['specDesc']."' AND prosID = '".$data['prosID']."'  LIMIT 1
 			");
 		}else{
 			$query = $this->db->query("
-				SELECT 1 FROM specialization WHERE specID <> $id AND specDesc = '".$data['specDesc']."' LIMIT 1
+				SELECT 1 FROM specialization WHERE specID <> $id AND specDesc = '".$data['specDesc']."' AND prosID = '".$data['prosID']."' LIMIT 1
 			");
 		}
 		
@@ -127,8 +131,9 @@ class mdl_Special extends CI_Model{
 		$output = 0;
 		$query = $this->db->select('1')->get_where('fac_spec', "specID = $id", 1)->row();
 		$query2 = $this->db->select('1')->get_where('subject', "specID = $id", 1)->row();
+		$query3 = $this->db->select('1')->get_where('room_spec', "specID = $id", 1)->row();
 
-		if(!$query && !$query2){
+		if(!$query && !$query2 && !$query3){
 			$output = 1;
 		}
 
@@ -150,6 +155,11 @@ class mdl_Special extends CI_Model{
 		);
 	}
 
+	function get_prospectuses(){
+		echo json_encode(
+			$this->db->query("SELECT prosID, prosCode FROM prospectus ORDER BY prosType, prosCode ASC")->result()
+		); 
+	}
 
 }
 

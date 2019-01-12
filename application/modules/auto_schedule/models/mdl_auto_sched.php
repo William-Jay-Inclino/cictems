@@ -308,7 +308,7 @@ class mdl_auto_sched extends CI_Model{
 		$arr = null;
 		//$selected_day = null;
 		$sql = $this->db->query("SELECT 1 FROM subject WHERE prosID = ".$subject->prosID." AND id = ".$subject->id." AND subID <> ".$subject->subID." LIMIT 1")->row();
-
+		shuffle($days);
 		foreach($days as $day){
 			if(($subject->units % $day['dayCount'] == 0) && !$sql){
 				$arr = $day;
