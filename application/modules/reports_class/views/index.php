@@ -64,7 +64,7 @@
                        <td> {{x.day}} </td>
                        <td> {{x.class_time}} </td>
                        <td>
-                         <span v-if="x.roomName == ''" class="has-text-danger">
+                         <span v-if="x.roomID == 0" class="has-text-danger">
                            Unassigned
                          </span>
                          <span v-else>
@@ -95,7 +95,7 @@
                        <td> {{x.day}} </td>
                        <td> {{x.class_time}} </td>
                        <td>
-                         <span v-if="x.ln == ''" class="has-text-danger">
+                         <span v-if="x.facID == 0" class="has-text-danger">
                            Unassigned
                          </span>
                          <span v-else>
@@ -128,7 +128,7 @@
                            <td> {{x.day}} </td>
                            <td> {{x.class_time}} </td>
                            <td>
-                             <span v-if="x.roomName == ''" class="has-text-danger">
+                             <span v-if="x.roomID == 0" class="has-text-danger">
                                Unassigned
                              </span>
                              <span v-else>
@@ -136,7 +136,7 @@
                              </span>
                            </td>
                            <td>
-                             <span v-if="x.ln == ''" class="has-text-danger">
+                             <span v-if="x.facID == 0" class="has-text-danger">
                                Unassigned
                              </span>
                              <span v-else>

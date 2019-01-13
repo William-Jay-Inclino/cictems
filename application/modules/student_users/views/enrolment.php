@@ -13,8 +13,13 @@
     <div class="box">
       <label class="label">Status:</label>
       <?php
-        if($data['status'] == 'Enrolled'){
-          echo "<span class='has-text-success'>Enrolled</span>";
+        if($data['status'] == 'Enrolled'){ ?>
+          <div class="message is-success">
+            <div class="message-body has-text-centered has-text-success">
+              Enrolled
+            </div>
+          </div>
+          <?php
         }else if($data['status'] == 'Pending'){
           echo "<span class='has-text-primary'>Pending</span>";
         }else{
@@ -25,7 +30,7 @@
           <hr>
           <?php 
             if($data['status'] != 'Pending'){ ?>
-                <div class="field has-addons" v-if="!has_classes">
+                <div class="field has-addons" v-if="!has_classes && has_sections">
                   <div class="control" style="width: 100%">
                     <multiselect v-model="section" track-by="secID" label="secName" :options="sections" placeholder="Select Section"></multiselect>
                   </div>
@@ -34,37 +39,34 @@
                   </div>
               </div>
               <br>
-              <div class="is-divider" data-content="OR" v-if="!has_classes"></div>
+              <div class="is-divider" data-content="OR" v-if="!has_classes && has_sections"></div>
                 <?php
             }
           ?>
-          
-          <div class="table__wrapper" v-if="has_classes">
+
+          <div v-if="!has_sections" class="message is-danger">
+            <div class="message-body has-text-centered">
+              No classes offered
+            </div>
+          </div>
+
+          <div class="table__wrapper" v-if="has_classes && has_sections">
               <table class="table is-fullwidth is-centered">
                   <thead>
                     <tr>
                       <th style="text-align: left">Class Code</th>
                       <th style="text-align: left">Description</th>
-                      <th colspan="3" class="has-text-centered">Units</th>
+                      <th>Units</th>
                       <th>Days</th>
                       <th>Time</th>
                       <th v-if="status == 'Unenrolled'">Remove</th>
-                    </tr>
-                    <tr>
-                      <th colspan="2"></th>
-                      <th>Lec</th>
-                      <th>Lab</th>
-                      <th>Total</th>
-                      <th colspan="3"></th>
                     </tr>
                 </thead>
                 <tbody>
                    <tr v-for="record, i in classes">
                       <td style="text-align: left">{{record.classCode}}</td>
                       <td style="text-align: left">{{record.subDesc}}</td>
-                      <td>{{record.lec}}</td>
-                      <td>{{record.lab}}</td>
-                      <td>{{ Number(record.lec) + Number(record.lab) }}</td>
+                      <td>{{ record.units }}</td>
                       <td>{{record.day}}</td>
                       <td>{{record.class_time}}</td>
                       <td v-if="status == 'Unenrolled'">
@@ -78,9 +80,7 @@
                    <tr>
                       <th></th>
                       <th>Total units: </th>
-                      <th>{{ units.lec }}</th>
-                      <th>{{ units.lab }}</th>
-                      <th>{{ units.tot  }}</th>
+                      <th>{{ total_units }}</th>
                       <th colspan="3"></th>
                    </tr>
                 </tbody>
@@ -90,7 +90,7 @@
           <?php 
             if($data['status'] != 'Pending'){ ?>
               <br>
-              <div class="has-text-centered">
+              <div class="has-text-centered" v-if="has_sections">
                 <button class="button is-primary" @click="classModal = true">Add Single Class</button>    
               </div>
                 <?php
@@ -137,20 +137,14 @@
                      <tr>
                         <td><b>Days: </b></td>
                         <td> {{ selected_class.day }} </td>
-                        <td><b>Lec</b></td>
-                        <td>{{ selected_class.lec }}</td>
+                        <td><b>Room: </b></td>
+                        <td> {{ selected_class.roomName }} </td>
                      </tr>
                      <tr>
                         <td><b>Time: </b></td>
                         <td> {{ selected_class.class_time }} </td>
-                        <td><b>Lab</b></td>
-                        <td>{{ selected_class.lab }}</td>
-                     </tr>
-                     <tr>
-                        <td><b>Room: </b></td>
-                        <td> {{ selected_class.roomName }} </td>
-                        <td><b>Total</b></td>
-                        <td>{{ Number(selected_class.lec) + Number(selected_class.lab) }}</td>
+                        <td><b>Units: </b></td>
+                        <td> {{ selected_class.units }} </td>
                      </tr>
                   </table>
               </div>
@@ -198,26 +192,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
    },
    computed: {
-    has_classes(){
-        let x = false 
-        if(this.classes.length > 0){
-            x = true
-        }
-        return x
+    has_sections(){
+      if(this.sections.length > 0){
+        return true
+      }else{
+        return false
+      }
     },
-    units(){
-         const a = this.classes
-         let lec = 0
-         let lab = 0
-         for(x of a){
-            lec += Number(x.lec)
-            lab += Number(x.lab)
-         }
-         return {
-            lec: lec,
-            lab: lab,
-            tot: lec + lab
-         }
+    has_classes(){
+        if(this.classes.length > 0){
+          return true
+        }else{
+          return false
+        }
+    },
+    total_units(){
+         return this.classes.reduce((total, c) => {
+          return total + Number(c.units)
+         }, 0)
       },
    },
    methods: {
@@ -229,6 +221,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.sections = c.sections
             this.active_sections = c.active_sections
             this.classes = c.classes
+         }, e => {
+          console.log(e.body)
+
          })
     },
     remove(classID,index){

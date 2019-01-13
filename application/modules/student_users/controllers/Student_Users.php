@@ -95,8 +95,8 @@ class Student_Users extends MY_Controller{
 		$this->mdl_student_users->populate_class_sched();
 	}
 
-	function get_class_list($termID, $courseID){
-		$this->mdl_student_users->get_class_list($termID, $courseID);
+	function get_class_list($termID){
+		echo json_encode($this->mdl_student_users->get_class_list($termID));
 	}
 
 

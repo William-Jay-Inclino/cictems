@@ -15,14 +15,14 @@
             <div class="column">
               <label class="label">Filter Course</label>
               <div class="control">
-                <multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" :allow-empty="false" @input="fetch_class_list"></multiselect>
+                <multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" :allow-empty="false"></multiselect>
               </div>
             </div>
           </div>
         </div>
         <div v-show="loader" class="loader"></div>
          <div v-show="!loader">
-            <div v-for="c of class_list">
+            <div v-for="c of class_schedules">
                <div class="box">
                   <h6 class="title is-6"><span class="has-text-primary">SECTION:</span> {{c.secName}}</h6>
                   <hr>
@@ -42,8 +42,22 @@
 	                           <td> {{x.subDesc}} </td>
 	                           <td> {{x.day}} </td>
 	                           <td> {{x.class_time}} </td>
-	                           <td> {{x.roomName}} </td>
-	                           <td> {{x.faculty}} </td>
+	                           <td>
+		                         <span v-if="x.roomID == 0" class="has-text-danger">
+		                           Unassigned
+		                         </span>
+		                         <span v-else>
+		                           {{x.roomName}}
+		                         </span>
+		                        </td>
+	                           <td>
+		                         <span v-if="x.facID == 0" class="has-text-danger">
+		                           Unassigned
+		                         </span>
+		                         <span v-else>
+		                           {{x.ln + ',' + x.fn}}
+		                         </span>
+		                        </td>
 	                        </tr>
 	                     </tbody>
 	                  </table>
@@ -69,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	      	term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
 	      	terms: [],
 	      	class_list: [],
-	      	course: null,
+	      	course: {courseID: 'all', courseCode: 'All'},
 	      	courses: [],
 	      	has_data: true
 	       
@@ -81,7 +95,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	    },
 	    computed: {
-
+	    	class_schedules(){
+	    		if(this.course.courseID == 'all'){
+		          return this.class_list
+		        }else{
+		          return this.class_list.filter(x => this.course.courseID == x.courseID)
+		        }
+	    	}
 	    },
 	    methods: {
 	    	populate(){
@@ -90,8 +110,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	          const c = response.body
 	          this.terms = c.terms 
 	          this.courses = c.courses
-	          this.course = c.courses[0]
+	          this.courses.unshift({
+	            courseID: 'all',
+	            courseCode: 'All'
+	          })
+
+	          for(let cc of c.class_list){
+	            for(let x of cc.classes){
+	              if(x.class_time == '12:00AM-12:00AM'){
+	                x.class_time = ''
+	              }
+	            }
+	          }
+
 	          this.class_list = c.class_list
+	          console.log(this.class_list);
+
 	          this.loader = false
 	        }, e => {
 	        	console.log(e.body)
@@ -99,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	      },
 	      fetch_class_list(){
 	         this.loader = true
-	         this.$http.get('<?php echo base_url() ?>student_users/get_class_list/' + this.term.termID +'/'+this.course.courseID)
+	         this.$http.get('<?php echo base_url() ?>student_users/get_class_list/' + this.term.termID)
 	           .then(response => {
 	           	console.log(response.body);
 	             this.class_list = response.body

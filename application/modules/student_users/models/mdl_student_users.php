@@ -27,7 +27,7 @@ class mdl_Student_Users extends CI_Model{
 
 	function get_student_classes($termID){
 		return $this->db->query("
-			SELECT s.subCode,s.subDesc,s.lec,s.lab,d.dayDesc,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty
+			SELECT s.subCode,s.subDesc,s.type,s.units,d.dayDesc,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty
 			FROM studclass sc
 			INNER JOIN class c ON sc.classID = c.classID 
 			INNER JOIN day d ON c.dayID = d.dayID 
@@ -36,21 +36,23 @@ class mdl_Student_Users extends CI_Model{
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID  
 			WHERE sc.status = 'Enrolled' AND c.termID = $termID AND sc.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1)
+			ORDER BY d.dayDesc,c.timeIn
 		")->result();
 	}
 
-	function get_class_list($termID, $courseID, $val = NULL){
+	function get_class_list($termID){
 		$arr = [];
 
 		$sections = $this->db->query("
-			SELECT DISTINCT s.secID,s.secName FROM section s 
+			SELECT DISTINCT s.secID,s.courseID,s.secName FROM section s 
 			INNER JOIN class c ON s.secID = c.secID 
-			WHERE c.termID = $termID AND s.courseID = $courseID ORDER BY s.secName ASC
-			")->result();
+			WHERE c.termID = $termID ORDER BY s.secName ASC
+		")->result();
+		
 		
 		foreach($sections as $section){
 			$classes = $this->db->query("
-				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+				SELECT c.classCode,c.roomID,c.facID,s.subDesc,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn
 				FROM class c 
 				INNER JOIN subject s ON c.subID = s.subID 
 				INNER JOIN room r ON c.roomID = r.roomID 
@@ -58,14 +60,11 @@ class mdl_Student_Users extends CI_Model{
 				INNER JOIN faculty f ON c.facID = f.facID 
 				INNER JOIN users u ON f.uID = u.uID 
 				WHERE c.secID = ".$section->secID." AND c.termID = $termID
+				ORDER BY day,c.timeIn ASC
 			")->result();
-			$arr[] = ['secName' => $section->secName, 'classes' => $classes];
+			$arr[] = ['secName' => $section->secName,'courseID'=>$section->courseID, 'classes' => $classes];
 		}
-		if($val == NULL){
-			echo json_encode($arr);
-		}else{
-			return $arr;
-		}
+		return $arr;
 		
 	}
 
@@ -73,7 +72,7 @@ class mdl_Student_Users extends CI_Model{
 		$data['terms'] = $this->db->query('SELECT t.termID, CONCAT(t.schoolYear," ",s.semDesc) term FROM term t INNER JOIN semester s ON t.semID=s.semID ORDER BY t.schoolYear DESC,s.semOrder DESC')->result();
 		$data['courses'] = $this->db->query('SELECT courseID,courseCode FROM course ORDER BY courseCode ASC')->result();
 		$active_term = $this->db->query("SELECT termID FROM term WHERE termStat = 'active' LIMIT 1")->row()->termID;
-		$data['class_list'] = $this->get_class_list($active_term, $data['courses'][0]->courseID, 1);
+		$data['class_list'] = $this->get_class_list($active_term, 1);
 		echo json_encode($data);
 	}
 
@@ -93,7 +92,7 @@ class mdl_Student_Users extends CI_Model{
 
 				$term =  $row4['yearDesc'].' - '.$row4['semDesc'];
 
-				$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,(s.lec + s.lab) units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req,(SELECT sg.sgGrade FROM studgrade sg,student stud,subject sub WHERE sg.studID=stud.studID AND sg.subID=sub.subID AND sg.studID = '.$studID.' AND sg.subID = s.subID ORDER BY sg.sgGrade ASC LIMIT 1) grade,(SELECT CONCAT(sg.grade_type,"|",t.schoolYear,"|",sem.semDesc) FROM term t,semester sem,studgrade sg WHERE sg.termID = t.termID AND t.semID=sem.semID AND sg.subID = s.subID AND sg.studID = '.$studID.') term')->get_where('subject s','s.prosID = '.$row['prosID'].' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
+				$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,s.units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req,(SELECT sg.sgGrade FROM studgrade sg,student stud,subject sub WHERE sg.studID=stud.studID AND sg.subID=sub.subID AND sg.studID = '.$studID.' AND sg.subID = s.subID ORDER BY sg.sgGrade ASC LIMIT 1) grade,(SELECT CONCAT(sg.grade_type,"|",t.schoolYear,"|",sem.semDesc) FROM term t,semester sem,studgrade sg WHERE sg.termID = t.termID AND t.semID=sem.semID AND sg.subID = s.subID AND sg.studID = '.$studID.') term')->get_where('subject s','s.prosID = '.$row['prosID'].' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
 				$row5 = $query5->result_array();
 
 				foreach($row5 as $val){
@@ -203,7 +202,7 @@ class mdl_Student_Users extends CI_Model{
 		}
 
 		$classes = $this->db->query("
-			SELECT c.classID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
+			SELECT c.classID,c.classCode,s.subDesc,s.units,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
 			FROM studclass sc 
 			INNER JOIN class c ON sc.classID = c.classID
 			INNER JOIN subject s ON c.subID = s.subID 
@@ -227,7 +226,7 @@ class mdl_Student_Users extends CI_Model{
 		$studID = $this->db->select('studID')->get_where('student', "uID = ".$this->session->userdata('uID'), 1)->row()->studID;
 
 		$classes = $this->db->query("
-			SELECT c.classID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
+			SELECT c.classID,c.classCode,s.subDesc,s.units,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
 			FROM class c 
 			INNER JOIN subject s ON c.subID = s.subID 
 			INNER JOIN day d ON c.dayID = d.dayID 
@@ -248,14 +247,14 @@ class mdl_Student_Users extends CI_Model{
 
 	function enrolment_get_classes($secID, $termID){
 		$sql = $this->db->query("
-			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.lec,s.lab,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
+			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.units,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn) faculty
 			FROM class c 
 			INNER JOIN subject s ON c.subID = s.subID
 			INNER JOIN room r ON c.roomID = r.roomID
 			INNER JOIN day d ON c.dayID = d.dayID
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID 
-			WHERE c.termID = $termID AND c.secID = $secID LIMIT 10 
+			WHERE c.termID = $termID AND c.secID = $secID
 		")->result();
 		echo json_encode($sql);
 	}
