@@ -108,7 +108,7 @@
 			<div class="field">
 			  <label class="label">Units</label>
 			  <div class="columns">
-			  	<div class="column is-half">
+			  	<div class="column">
 			  		<div class="control">
 			  			<multiselect v-model="form.lec" track-by="unit" label="unit" :options="units" placeholder="Lecture"></multiselect>
 			  		</div>
@@ -116,6 +116,11 @@
 			  	<div class="column">
 			  		<div class="control">
 			  			<multiselect v-model="form.lab" track-by="unit" label="unit" :options="units" placeholder="Laboratory"></multiselect>
+			  		</div>
+			  	</div>
+			  	<div class="column">
+			  		<div class="control">
+			  			<multiselect v-model="form.totUnits" track-by="unit" label="unit" :options="units" placeholder="Total"></multiselect>
 			  		</div>
 			  	</div>
 			  </div>
@@ -161,7 +166,8 @@
 		    		pre: null,
 		    		pre2: null,
 		    		coreq: null,
-		    		spec: null
+		    		spec: null,
+		    		totUnits: null
 		    	},
 		    	error: {
 		    		prospectus: '',
@@ -354,7 +360,7 @@
 		        	}else{
 		        		this.error.spec = ''
 		        	}
-		        	if(!f.lec && !f.lab){
+		        	if(!f.lec && !f.lab && !f.totUnits){
 		        		this.error.units = errMsg
 		        		ok = false
 		        	}else{

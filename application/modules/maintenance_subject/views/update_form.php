@@ -12,6 +12,7 @@
 		  </ul>
 		</nav>
 	</div>
+	{{form.totUnits}}
 	<div class="container" style="max-width: 600px;">
 		<div class="box">
 			<h5 class="title is-4 has-text-primary has-text-centered">{{ page.title }}</h5>
@@ -106,6 +107,15 @@
 					{{error.spec}}
 				</p>
 			</div>
+			<div class="field">
+			  <label class="label">Total Units</label>
+			  <div class="control">
+				  	<multiselect v-model="form.totUnits" track-by="unit" label="unit" :options="units"></multiselect>
+			  </div>
+			  	<p class="help has-text-danger">
+					{{error.units}}
+				</p>
+			</div>
 			<br>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
@@ -141,6 +151,7 @@
 		    		subCode: '<?php echo $records[0]->subCode ?>',
 		    		subDesc: '<?php echo $records[0]->subDesc ?>',
 		    		nonSub_pre: '<?php echo $records[0]->nonSub_pre ?>',
+		    		totUnits: {unit: '<?php echo $records[0]->total_units ?>'},
 		    		pre: null,
 		    		pre2: null,
 		    		coreq: null,
@@ -155,7 +166,8 @@
 		    		pre: '',
 		    		pre2: '',
 		    		coreq: '',
-		    		spec: ''
+		    		spec: '',
+		    		units: ''
 		    	},
 		    	prospectuses: [],
 		    	years: [],
@@ -220,6 +232,13 @@
 		    	sem(){
 		    		return this.form.sem	
 		    	},
+		    	units(){
+		    		const units = []
+		    		for(let i = 1; i < 10; ++i){
+		    			units.push({unit: i})
+		    		}
+		    		return units
+		    	},
 		    	subject_types(){
 		    		const specs = this.specs 
 		    		const prosID = (this.form.prospectus) ? this.form.prospectus.prosID : 0
@@ -231,7 +250,6 @@
 		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/populate/'+this.form.subID)
 		    		.then(response => {
 		    			const c = response.body
-		    			console.log(c)
 		    			this.specs = c.specs
 		    			if(c.yearReq){
 		    				this.form.pre2 = {yearID: c.yearReq.yearID, yearDesc: c.yearReq.yearDesc}
@@ -360,6 +378,12 @@
 		        		ok = false
 		        	}else{
 		        		this.error.spec = ''
+		        	}
+		        	if(f.totUnits == null){
+		        		this.error.units = errMsg
+		        		ok = false
+		        	}else{
+		        		this.error.units = ''
 		        	}
 		        	return ok
 		        }

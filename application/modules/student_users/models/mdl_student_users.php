@@ -77,6 +77,7 @@ class mdl_Student_Users extends CI_Model{
 	}
 
 	function get_grades_by_prospectus(){
+		$holder2 = [];
 		$studID = $this->session->userdata('uID');
 		$query = $this->db->select('prosID')->get_where('studprospectus','studID='.$studID,1);
 		$row = $query->row_array();
@@ -311,6 +312,7 @@ class mdl_Student_Users extends CI_Model{
 		echo json_encode($data);
 
 	}
+
 
 }
 

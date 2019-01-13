@@ -29,6 +29,10 @@ class MY_Controller extends MX_Controller{
 		$this->_data['current_module'] = $current_module;
 		if($roleID == 1){
 			$this->_template = 'templates/admin';
+		}else if($roleID == 4){
+			$this->_template = 'templates/student';
+		}else if($roleID == 5){
+			$this->_template = 'templates/guardian';
 		}else{
 			// query for getting the user access goes here!
 			$arr = [];
@@ -61,14 +65,12 @@ class MY_Controller extends MX_Controller{
 			$this->_data['user_access'] = $arr;
 			$this->_data['module_category'] = $arr2;
 			if($roleID == 2){
-				$this->_template = 'templates/faculty';
+				$template = 'templates/faculty';
 			}else if($roleID == 3){
-				$this->_template = 'templates/staff';
-			}else if($roleID == 4){
-				$this->_template = 'templates/student';
-			}else if($roleID == 5){
-				$this->_template = 'templates/guardian';
+				$template = 'templates/staff';
 			}
+			
+			$this->_template = $template;
 		}
 	} 
 

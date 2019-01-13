@@ -1,6 +1,4 @@
-<?php if($roleID == 4): ?>
-		<script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
-<?php endif ?>
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
 
 <style>
 	.has-image-centered {
@@ -27,89 +25,22 @@
 			</figure>
 			<hr>
 			<table class="table is-fullwidth">
-				<tr :class="{'active-input': editName}">
+				<tr>
 					<td><b>Name</b></td>
-					<td>
-						<span v-if="editName">
-							<input type="text" v-model="form.fn" class="input" autofocus="true" placeholder="Firstname" @keyup.enter="save('name')"> 
-							<p class="help dang-msg"> {{error.fn}} </p>
-							<br>
-							<input type="text" v-model="form.mn" class="input" placeholder="Middlename" @keyup.enter="save('name')"> <br>
-							<p>&nbsp;</p>
-							<input type="text" v-model="form.ln" class="input" placeholder="Lastname" @keyup.enter="save('name')">
-							<p class="help dang-msg"> {{error.ln}} </p>
-							<hr>
-							<button class="button is-link is-small" @click="save('name')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{fullName}}
-						</span>
-					</td>
-					<td>
-						<?php if($roleID != 4): ?>
-						<span v-if="editName">
-							<button class="button is-small" @click="editName = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('name')"><i class="fa fa-pencil"></i></button>
-						</span>
-						<?php endif ?>
+					<td colspan="2">
+						{{fullName}}
 					</td>
 				</tr>
-				<tr :class="{'active-input': editSex}">
+				<tr>
 					<td><b>Sex</b></td>
-					<td>
-						<span v-if="editSex">
-							<div class="select">
-							  <select v-model="form.sex">
-							    <option value="Male">Male</option>
-							    <option value="Female">Female</option>
-							  </select>
-							</div>
-							<hr>
-							<button class="button is-link is-small" @click="save('sex')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{sex}}
-						</span>
-					</td>
-					<td>
-						<?php if($roleID != 4): ?>
-						<span v-if="editSex">
-							<button class="button is-small" @click="editSex = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('sex')"><i class="fa fa-pencil"></i></button>
-						</span>
-						<?php endif ?>
+					<td colspan="2">
+						{{sex}}
 					</td>
 				</tr>
-				<tr :class="{'active-input': editDob}">
+				<tr>
 					<td><b>Date of birth</b></td>
-					<td>
-						<span v-if="editDob">
-							<input type="date" v-model="form.dob" class="input" autofocus="true" @keyup.enter="save('dob')">
-							<p class="help"><i>Month / Day / Year</i></p>
-							<p class="help dang-msg"> {{error.dob}} </p>
-							<hr>
-							<button class="button is-link is-small" @click="save('dob')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{dob}}
-						</span>
-					</td>
-					<td>
-						<?php if($roleID != 4): ?>
-						<span v-if="editDob">
-							<button class="button is-small" @click="editDob = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('dob')"><i class="fa fa-pencil"></i></button>
-						</span>
-						<?php endif ?>
+					<td colspan="2">
+						{{dob}}
 					</td>
 				</tr>
 				<tr :class="{'active-input': editCn}">
@@ -226,6 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		email: ''
 	    	}
 	    },
+	    created(){
+	    	this.save('a')
+	    },
 	    watch: {
 	    	editName(val){
 	    		if(!val){
@@ -271,18 +205,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	    },
 	    methods: {
 	    	save(value){
-	    		const res = this.is_valid(value)
-	    		if(res.valid){
-	    			this.$http.post('<?php echo base_url() ?>profile/save',{data: res.data[0]})
-		        	.then(response => {
-		        		if(response.body == ''){
-		        			this.after_update(res.data, value)
-		        		}else{
-		        			alert('Oooops something went wrong!')
-		        			window.location.href = '<?php echo base_url() ?>/profile'
-		        		}
-					 })
-	    		}
+	    		this.$http.get('<?php echo base_url() ?>student_users/populate_class_sched')
+	    		.then(res => {
+	    			console.log(res);
+
+	    		})
+	    		
 	    	},
 	    	after_update(data, value){
 	    		let msg = ' successfully updated!'
@@ -421,6 +349,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
-<?php if($roleID == 4): ?>
-		<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-resource.js"></script>
-<?php endif ?>

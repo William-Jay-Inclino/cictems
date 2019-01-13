@@ -178,5 +178,7 @@ $route['student/grades-by-prospectus'] = 'student_users/grades_by_prospectus';
 $route['student/grades-by-class'] = 'student_users/grades_by_class';
 $route['student/fees'] = 'student_users/fees';
 $route['student/payment-logs'] = 'student_users/payment_logs';
+$route['student/profile'] = 'student_users/profile';
+$route['student/payment-logs'] = 'student_users/payment_logs';
 
 // -------------------------END STUDENT NAVIGATION---------------------------------

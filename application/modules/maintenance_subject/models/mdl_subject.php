@@ -16,6 +16,7 @@ class mdl_Subject extends CI_Model{
 	private function get_form_data(&$data){
 		$data['specID'] = $this->input->post('spec')['specID'];
 		$data['yearID'] = $this->input->post('year')['yearID'];
+		$data['total_units'] = $this->input->post('totUnits')['unit'];
 		$data['semID'] = $this->input->post('sem')['semID'];
 		$data['subDesc'] = $this->input->post('subDesc');
 		$data['nonSub_pre'] = $this->input->post('nonSub_pre');
@@ -144,7 +145,7 @@ class mdl_Subject extends CI_Model{
 		$this->check_form_id($id, $prosID);
 
 		$query = $this->db->query("
-			SELECT s.subID,s.subCode,s.subDesc,s.nonSub_pre,p.prosID,p.prosCode,spec.specID,spec.specDesc,s.units,s.type,s.id,yy.yearID,yy.yearDesc,sem.semID,sem.semDesc,
+			SELECT s.subID,s.subCode,s.subDesc,s.total_units,s.nonSub_pre,p.prosID,p.prosCode,spec.specID,spec.specDesc,s.units,s.type,s.id,yy.yearID,yy.yearDesc,sem.semID,sem.semDesc,
 			(SELECT CONCAT(y.yearDesc,' Standing') FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
 			FROM subject s 
 			INNER JOIN prospectus p ON s.prosID = p.prosID
@@ -153,7 +154,7 @@ class mdl_Subject extends CI_Model{
 			INNER JOIN semester sem ON s.semID = sem.semID  
 			WHERE s.id = $id AND s.prosID = $prosID
 		")->result();
-	
+		
 		return $query;
 	}
 
