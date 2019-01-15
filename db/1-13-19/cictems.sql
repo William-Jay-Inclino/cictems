@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 13, 2019 at 06:38 AM
+-- Generation Time: Jan 13, 2019 at 05:41 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -113,7 +113,7 @@ INSERT INTO `counter2` (`countID`, `module`, `total`) VALUES
 (4, 'prospectus', 7),
 (5, 'section', 34),
 (6, 'faculty', 10),
-(7, 'subject', 61),
+(7, 'subject', 52),
 (8, 'student', 32),
 (9, 'staff', 2),
 (10, 'reg_requests', 2),
@@ -980,46 +980,46 @@ INSERT INTO `subject` (`subID`, `prosID`, `yearID`, `semID`, `specID`, `subCode`
 (10, 6, 1, 1, 13, 'IT-Prog111', 'Fundamentals of Programming', 1, 3, 'lab', '', 965),
 (11, 6, 1, 1, 14, 'NSTP111', 'National Service Training Prog1', 3, 3, 'lec', '', 831),
 (12, 6, 1, 1, 14, 'PE111', 'Physical Fitness 1', 2, 2, 'lec', '', 647),
-(13, 6, 1, 2, 15, 'MAT121', 'Discrete Structure', 3, 3, 'lec', '', 257),
+(13, 6, 1, 2, 12, 'MAT121', 'Discrete Structure', 3, 3, 'lec', '', 257),
 (14, 6, 1, 2, 12, 'STS121', 'Science, Technology & Society', 3, 3, 'lec', '', 869),
 (15, 6, 1, 2, 12, 'Socio121', 'Social Issues & Professional Practice', 3, 3, 'lec', '', 348),
-(16, 6, 1, 2, 13, 'IT-Prog121', 'Computer Programming 2', 2, 3, 'lec', '', 645),
-(17, 6, 1, 2, 13, 'IT-Prog121', 'Computer Programming 2', 1, 3, 'lab', '', 645),
-(18, 6, 1, 2, 15, 'IT-HC1211', 'Introduction to Human Computer Interaction', 2, 3, 'lec', '', 265),
-(19, 6, 1, 2, 15, 'IT-HC1211', 'Introduction to Human Computer Interaction', 1, 3, 'lab', '', 265),
-(20, 6, 1, 2, 15, 'IT-DiGiLog121', 'Digital Logic Design', 3, 3, 'lec', '', 543),
+(16, 6, 1, 2, 15, 'IT-Prog121', 'Computer Programming 2', 2, 3, 'lec', '', 645),
+(17, 6, 1, 2, 15, 'IT-Prog121', 'Computer Programming 2', 1, 3, 'lab', '', 645),
+(18, 6, 1, 2, 13, 'IT-HC1211', 'Introduction to Human Computer Interaction', 2, 3, 'lec', '', 265),
+(19, 6, 1, 2, 13, 'IT-HC1211', 'Introduction to Human Computer Interaction', 1, 3, 'lab', '', 265),
+(20, 6, 1, 2, 13, 'IT-DiGiLog121', 'Digital Logic Design', 3, 3, 'lec', '', 543),
 (21, 6, 1, 2, 12, 'Hist121', 'Readings in Philippine History', 3, 3, 'lec', '', 291),
 (22, 6, 1, 2, 14, 'NSTP121', 'National Service Training Prog2', 3, 3, 'lec', '', 193),
 (23, 6, 1, 2, 14, 'PE121', 'Rhythmic Activities', 2, 2, 'lec', '', 964),
-(24, 6, 2, 1, 13, 'IT-DBms211', 'Fundamentals of Database Systems', 2, 3, 'lec', '', 495),
-(25, 6, 2, 1, 13, 'IT-DBms211', 'Fundamentals of Database Systems', 1, 3, 'lab', '', 495),
-(26, 6, 2, 1, 16, 'IT-Ele211', 'Object Oriented Programming', 2, 3, 'lec', '', 761),
-(27, 6, 2, 1, 16, 'IT-Ele211', 'Object Oriented Programming', 1, 3, 'lab', '', 761),
-(28, 6, 2, 1, 16, 'IT-Ele212', 'Platform Technologies', 2, 3, 'lec', '', 324),
-(29, 6, 2, 1, 16, 'IT-Ele212', 'Platform Technologies', 1, 3, 'lab', '', 324),
-(30, 6, 2, 1, 12, 'Hum211', 'Art Appreciation', 3, 3, 'lec', '', 852),
-(31, 6, 2, 1, 12, 'Socio211', 'The Contemporary World', 3, 3, 'lec', '', 392),
-(32, 6, 2, 1, 13, 'IT-Datstruct1202', 'Data Structure & Algorithm Analysis', 2, 3, 'lec', '', 765),
-(33, 6, 2, 1, 13, 'IT-Datstruct1202', 'Data Structure & Algorithm Analysis', 1, 3, 'lab', '', 765),
-(34, 6, 2, 1, 16, 'Filipino211', 'Komonikasyon sa Akademikong Filipino', 3, 3, 'lec', '', 298),
+(24, 6, 2, 1, 15, 'IT-DBms211', 'Fundamentals of Database Systems', 2, 3, 'lec', '', 495),
+(25, 6, 2, 1, 15, 'IT-DBms211', 'Fundamentals of Database Systems', 1, 3, 'lab', '', 495),
+(26, 6, 2, 1, 15, 'IT-Ele211', 'Object Oriented Programming', 2, 3, 'lec', '', 761),
+(27, 6, 2, 1, 15, 'IT-Ele211', 'Object Oriented Programming', 1, 3, 'lab', '', 761),
+(28, 6, 2, 1, 15, 'IT-Ele212', 'Platform Technologies', 2, 3, 'lec', '', 324),
+(29, 6, 2, 1, 15, 'IT-Ele212', 'Platform Technologies', 1, 3, 'lab', '', 324),
+(30, 6, 2, 1, 14, 'Hum211', 'Art Appreciation', 3, 3, 'lec', '', 852),
+(31, 6, 2, 1, 14, 'Socio211', 'The Contemporary World', 3, 3, 'lec', '', 392),
+(32, 6, 2, 1, 15, 'IT-Datstruct1202', 'Data Structure & Algorithm Analysis', 2, 3, 'lec', '', 765),
+(33, 6, 2, 1, 15, 'IT-Datstruct1202', 'Data Structure & Algorithm Analysis', 1, 3, 'lab', '', 765),
+(34, 6, 2, 1, 12, 'Filipino211', 'Komonikasyon sa Akademikong Filipino', 3, 3, 'lec', '', 298),
 (35, 6, 2, 1, 14, 'PE211', 'Individual Sports', 2, 2, 'lec', '', 352),
-(36, 6, 2, 1, 12, 'Ethics211', 'Ethics', 3, 3, 'lec', '', 659),
+(36, 6, 2, 1, 14, 'Ethics211', 'Ethics', 3, 3, 'lec', '', 659),
 (37, 6, 2, 2, 12, 'Filipino221', 'Panitikan', 3, 3, 'lec', '', 517),
-(38, 6, 2, 2, 13, 'IT-DBms221', 'Information Management 2', 2, 3, 'lec', '', 615),
-(39, 6, 2, 2, 13, 'IT-DBms221', 'Information Management 2', 1, 3, 'lab', '', 615),
+(38, 6, 2, 2, 15, 'IT-DBms221', 'Information Management 2', 2, 3, 'lec', '', 615),
+(39, 6, 2, 2, 15, 'IT-DBms221', 'Information Management 2', 1, 3, 'lab', '', 615),
 (40, 6, 2, 2, 15, 'IT-IntProg221', 'Integrative Programming & Technologies 1', 2, 3, 'lec', '', 123),
 (41, 6, 2, 2, 15, 'IT-IntProg221', 'Integrative Programming & Technologies 1', 1, 3, 'lab', '', 123),
-(42, 6, 2, 2, 15, 'IT-Netwrk221', 'Networking 2', 2, 3, 'lec', '#REF!', 643),
-(43, 6, 2, 2, 15, 'IT-Netwrk221', 'Networking 2', 1, 3, 'lab', '#REF!', 643),
+(42, 6, 2, 2, 13, 'IT-Netwrk221', 'Networking 2', 2, 3, 'lec', '#REF!', 643),
+(43, 6, 2, 2, 13, 'IT-Netwrk221', 'Networking 2', 1, 3, 'lab', '#REF!', 643),
 (44, 6, 2, 2, 15, 'IT-SAD221', 'Systems Analysis & Design', 3, 3, 'lec', '', 376),
-(45, 6, 2, 2, 15, 'IT-NetWrk201', 'Networking 1', 2, 3, 'lec', '', 672),
-(46, 6, 2, 2, 15, 'IT-NetWrk201', 'Networking 1', 1, 3, 'lab', '', 672),
-(47, 6, 2, 2, 12, 'Entrep221', 'The Entrepreneurial Mind', 3, 3, 'lec', '', 741),
-(48, 6, 2, 2, 15, 'IT-QM221', 'Quantitative Methods (incl. Modelling & Simulation)', 3, 3, 'lec', '', 548),
+(45, 6, 2, 2, 13, 'IT-NetWrk201', 'Networking 1', 2, 3, 'lec', '', 672),
+(46, 6, 2, 2, 13, 'IT-NetWrk201', 'Networking 1', 1, 3, 'lab', '', 672),
+(47, 6, 2, 2, 14, 'Entrep221', 'The Entrepreneurial Mind', 3, 3, 'lec', '', 741),
+(48, 6, 2, 2, 12, 'IT-QM221', 'Quantitative Methods (incl. Modelling & Simulation)', 3, 3, 'lec', '', 548),
 (49, 6, 2, 2, 14, 'PE221', 'Team Sports', 2, 2, 'lec', '', 384),
-(50, 6, 3, 1, 15, 'IT-ACTA311', 'Computer Accounting', 3, 3, 'lec', '', 465),
-(51, 6, 3, 1, 15, 'IT-SIA311', 'System Integration & Architecture1', 2, 3, 'lec', '', 462),
-(52, 6, 3, 1, 15, 'IT-SIA311', 'System Integration & Architecture1', 1, 3, 'lab', '', 462),
+(50, 6, 3, 1, 13, 'IT-ACTA311', 'Computer Accounting', 3, 3, 'lec', '', 465),
+(51, 6, 3, 1, 13, 'IT-SIA311', 'System Integration & Architecture1', 2, 3, 'lec', '', 462),
+(52, 6, 3, 1, 13, 'IT-SIA311', 'System Integration & Architecture1', 1, 3, 'lab', '', 462),
 (53, 6, 3, 1, 15, 'IT-IAS311', 'Information Assurance & Security 1', 2, 3, 'lec', '', 173),
 (54, 6, 3, 1, 15, 'IT-IAS311', 'Information Assurance & Security 1', 1, 3, 'lab', '', 173),
 (55, 6, 3, 1, 15, 'IT-APSDEV311', 'Application Devt & Emerging Technologies', 2, 3, 'lec', '', 271),
@@ -1031,28 +1031,16 @@ INSERT INTO `subject` (`subID`, `prosID`, `yearID`, `semID`, `specID`, `subCode`
 (61, 6, 3, 1, 16, 'IT-Free-Ele311', 'Business Analytics', 3, 3, 'lec', '', 541),
 (62, 6, 3, 2, 16, 'IT-Free-Ele321', 'Animation Technology & 2D', 2, 3, 'lec', '', 542),
 (63, 6, 3, 2, 16, 'IT-Free-Ele321', 'Animation Technology & 2D', 1, 3, 'lab', '', 542),
-(64, 6, 3, 2, 15, 'IT-IAS321', 'Information Assurance & Security', 2, 3, 'lec', '', 243),
-(65, 6, 3, 2, 15, 'IT-IAS321', 'Information Assurance & Security', 1, 3, 'lab', '', 243),
-(66, 6, 3, 2, 16, 'IT-ELE321', 'Integrative Programming & Technologies', 2, 3, 'lec', '', 976),
-(67, 6, 3, 2, 16, 'IT-ELE321', 'Integrative Programming & Technologies', 1, 3, 'lab', '', 976),
-(68, 6, 3, 2, 16, 'IT-ELE322', 'Intelligent Systems', 2, 3, 'lec', '', 978),
-(69, 6, 3, 2, 16, 'IT-ELE322', 'Intelligent Systems', 1, 3, 'lab', '', 978),
+(64, 6, 3, 2, 13, 'IT-IAS321', 'Information Assurance & Security', 2, 3, 'lec', '', 243),
+(65, 6, 3, 2, 13, 'IT-IAS321', 'Information Assurance & Security', 1, 3, 'lab', '', 243),
+(66, 6, 3, 2, 15, 'IT-ELE321', 'Integrative Programming & Technologies', 2, 3, 'lec', '', 976),
+(67, 6, 3, 2, 15, 'IT-ELE321', 'Integrative Programming & Technologies', 1, 3, 'lab', '', 976),
+(68, 6, 3, 2, 15, 'IT-ELE322', 'Intelligent Systems', 2, 3, 'lec', '', 978),
+(69, 6, 3, 2, 15, 'IT-ELE322', 'Intelligent Systems', 1, 3, 'lab', '', 978),
 (70, 6, 3, 2, 15, 'IT-Pro321', 'IT Proposal', 3, 3, 'lec', '', 613),
 (71, 6, 3, 2, 15, 'IT-Techno301', 'Technopreneurship', 3, 3, 'lec', '', 295),
-(72, 6, 3, 2, 16, 'IT-Free-Ele-322', 'Analytics Modelling: Techniques and Tools', 3, 3, 'lec', '', 763),
-(73, 6, 3, 2, 12, 'Rizal321', 'Life & Works of Dr. Jose Rizal', 3, 3, 'lec', '', 347),
-(74, 6, 4, 3, 15, 'IT-PRAC401', 'PRACTICUM/OJT', 9, 9, 'lec', '', 438),
-(75, 6, 4, 1, 13, 'IT-Free-ELe411', '3D Animation and Modelling', 2, 3, 'lec', '', 651),
-(76, 6, 4, 1, 13, 'IT-Free-ELe411', '3D Animation and Modelling', 1, 3, 'lab', '', 651),
-(77, 6, 4, 1, 15, 'IT-SysAd411', 'System Administration & Maintenance', 3, 3, 'lec', '', 218),
-(78, 6, 4, 1, 12, 'IT-Capstone411', 'Capstone Project 1', 9, 9, 'lec', '', 794),
-(79, 6, 4, 1, 16, 'IT-ELe411', 'Web Systems Technologies', 2, 3, 'lec', '', 321),
-(80, 6, 4, 1, 16, 'IT-ELe411', 'Web Systems Technologies', 1, 3, 'lab', '', 321),
-(81, 6, 4, 1, 12, 'IT-CertExam411', 'Philnits/Microsoft/TESDA', 3, 3, 'lec', '', 158),
-(82, 6, 4, 2, 15, 'IT-Capstone421', 'Capstone Project 2', 9, 9, 'lec', '', 329),
-(83, 6, 4, 2, 16, 'IT-ELE-421', 'Embedded Systems', 2, 3, 'lec', '', 185),
-(84, 6, 4, 2, 16, 'IT-ELE-421', 'Embedded Systems', 1, 3, 'lab', '', 185),
-(85, 6, 4, 2, 15, 'ITSeminar421', 'IT Seminars/Fieldtrips', 3, 3, 'lec', '', 714);
+(72, 6, 3, 2, 13, 'IT-Free-Ele-322', 'Analytics Modelling: Techniques and Tools', 3, 3, 'lec', '', 763),
+(73, 6, 3, 2, 14, 'Rizal321', 'Life & Works of Dr. Jose Rizal', 3, 3, 'lec', '', 347);
 
 -- --------------------------------------------------------
 
@@ -1072,16 +1060,37 @@ CREATE TABLE `subject_req` (
 --
 
 INSERT INTO `subject_req` (`subReqID`, `subID`, `req_type`, `req_subID`) VALUES
+(1, 13, 1, 5),
+(2, 18, 1, 7),
+(3, 19, 1, 7),
+(4, 16, 1, 9),
+(5, 17, 1, 9),
+(6, 20, 1, 7),
 (7, 22, 1, 11),
 (8, 23, 1, 12),
+(9, 24, 1, 16),
+(10, 25, 1, 16),
+(11, 26, 1, 16),
+(12, 27, 1, 16),
+(13, 28, 1, 16),
+(14, 29, 1, 16),
+(15, 32, 1, 16),
+(16, 33, 1, 16),
 (17, 35, 1, 23),
 (18, 37, 1, 34),
+(19, 38, 1, 24),
+(20, 39, 1, 24),
 (21, 40, 1, 26),
 (22, 40, 1, 28),
 (23, 41, 1, 26),
 (24, 41, 1, 28),
 (25, 44, 1, 26),
+(26, 45, 1, 20),
+(27, 46, 1, 20),
+(28, 48, 1, 13),
 (29, 49, 1, 35),
+(30, 51, 1, 42),
+(31, 52, 1, 42),
 (32, 53, 1, 38),
 (33, 54, 1, 38),
 (34, 55, 1, 40),
@@ -1090,41 +1099,12 @@ INSERT INTO `subject_req` (`subReqID`, `subID`, `req_type`, `req_subID`) VALUES
 (37, 58, 1, 38),
 (38, 59, 1, 38),
 (39, 60, 1, 37),
+(40, 64, 1, 53),
+(41, 65, 1, 53),
+(42, 66, 1, 40),
+(43, 67, 1, 40),
 (44, 71, 1, 38),
-(46, 74, 1, 70),
-(49, 77, 1, 51),
-(53, 82, 1, 78),
-(54, 13, 1, 5),
-(55, 16, 1, 9),
-(56, 17, 1, 9),
-(57, 18, 1, 7),
-(58, 19, 1, 7),
-(59, 20, 1, 7),
-(60, 24, 1, 16),
-(61, 25, 1, 16),
-(62, 26, 1, 16),
-(63, 27, 1, 16),
-(64, 28, 1, 16),
-(65, 29, 1, 16),
-(68, 32, 1, 16),
-(69, 33, 1, 16),
-(70, 38, 1, 24),
-(71, 39, 1, 24),
-(72, 45, 1, 20),
-(73, 46, 1, 20),
-(75, 48, 1, 13),
-(76, 51, 1, 42),
-(77, 52, 1, 42),
-(80, 66, 1, 40),
-(81, 67, 1, 40),
-(82, 72, 1, 61),
-(83, 75, 1, 62),
-(84, 76, 1, 62),
-(85, 78, 1, 74),
-(86, 79, 1, 66),
-(87, 80, 1, 66),
-(88, 64, 1, 53),
-(89, 65, 1, 53);
+(45, 72, 1, 61);
 
 -- --------------------------------------------------------
 
@@ -1264,15 +1244,13 @@ CREATE TABLE `year_req` (
 --
 
 INSERT INTO `year_req` (`yrID`, `subID`, `yearID`) VALUES
+(1, 50, 3),
 (2, 61, 3),
 (3, 62, 3),
 (4, 63, 3),
-(7, 70, 3),
-(10, 50, 3),
-(11, 68, 3),
-(12, 69, 3),
-(13, 83, 4),
-(14, 84, 4);
+(5, 68, 3),
+(6, 69, 3),
+(7, 70, 3);
 
 --
 -- Indexes for dumped tables
@@ -1764,13 +1742,13 @@ ALTER TABLE `stud_fee`
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
-  MODIFY `subID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `subID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `subject_req`
 --
 ALTER TABLE `subject_req`
-  MODIFY `subReqID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+  MODIFY `subReqID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `term`
@@ -1794,7 +1772,7 @@ ALTER TABLE `year`
 -- AUTO_INCREMENT for table `year_req`
 --
 ALTER TABLE `year_req`
-  MODIFY `yrID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `yrID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables

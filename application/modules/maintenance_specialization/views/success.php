@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-swatches/vue-swatches.min.css">
 <div id="app" v-cloak>
 <section class="section">
 
@@ -13,6 +14,10 @@
 				<tr>
 					<td><b>Prospectus:</b> </td>
 					<td> <?php echo $record->prosCode ?> </td>
+				</tr>
+				<tr>
+					<td><b>Color:</b> </td>
+					<td> <swatches v-model="color" disabled></swatches> </td>
 				</tr>
 			</table>
 		</div>
@@ -30,7 +35,7 @@
 <script>
 	
 	document.addEventListener('DOMContentLoaded', function() {
-
+		Vue.component('swatches', window.VueSwatches.default)	
 		new Vue({
 		    el: '#app',
 		    data: {
@@ -40,7 +45,7 @@
 		    		edit: '<?php echo base_url()."maintenance/specialization/form/".$record->specID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/specialization'
 		    	},
-
+		    	color: '<?php echo $record->specColor ?>'
 		    }
 
 
@@ -51,3 +56,4 @@
 
 </script>
 
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swatches/vue-swatches.min.js"></script>

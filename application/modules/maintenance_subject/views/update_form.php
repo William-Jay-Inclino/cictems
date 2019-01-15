@@ -12,7 +12,6 @@
 		  </ul>
 		</nav>
 	</div>
-	{{form.totUnits}}
 	<div class="container" style="max-width: 600px;">
 		<div class="box">
 			<h5 class="title is-4 has-text-primary has-text-centered">{{ page.title }}</h5>
@@ -120,7 +119,6 @@
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
 		</div>
-
 	</div>
 </section>
 
@@ -306,6 +304,7 @@
 		    	},
 		        submitForm() {
 		        	const f = this.form
+		        	//console.log(f);
 		        	if(this.checkForm(f)){
 		        		this.$http.post('<?php echo base_url() ?>maintenance_subject/update',f)
 			        	.then(response => {

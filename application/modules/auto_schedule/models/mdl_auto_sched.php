@@ -56,49 +56,77 @@ class mdl_auto_sched extends CI_Model{
 			if($is_dt_auto == 'yes'){
 				$noon_class = false;
 				$last_added = null;
-				foreach($subjects as $s){
-					$is_moved_time = false;
 
-					if($last_added){
-						if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
-							//same subject but diff. unit and separated by lunch break
-							//move last_added after lunch break
-							if($this->is_break_separated($min_time, $last_added['timeOut'], $break_min_time, $break_max_time)){
-								$this->move_last_added($min_time, $last_added);
-								$min_time = $last_added['timeOut'];
-							}
-							
-						}else{
-							$rand_day = $this->random_day($days, $s);
+				foreach($subjects as $s){
+
+					if($secDT_holder){
+						$last_added = end($secDT_holder);
+						if($last_added['id'] != $s->id){
+							$rand_day = $this->random_day($days, $s, $last_added);
 						}
 					}else{
 						$rand_day = $this->random_day($days, $s);
 					}
 
-					$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
-					
-					
-					if($this->is_time_out_greater($timeOut,$break_min_time) && !$noon_class){ //lunch break
-						$min_time = $break_max_time;
-						$noon_class = true;
-						$is_moved_time = true;
-					}else if($this->is_time_out_greater($timeOut, $max_time)){ //time out should not exceed max time
-						$min_time = $min_time2;
-						if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
-							$this->move_last_added($min_time, $last_added);
-							$min_time = $last_added['timeOut'];
-						}
-						$noon_class = false;
-						$is_moved_time = true;
-					}
+					if($secDT_holder){
+						//get day and time with no conflict in this section
+						$ctr = 0;
+						while(true){ 
 
-					if($is_moved_time){
+							if($ctr == 48){ //there are 48 30 minutes in 1 day
+								// break;
+								while(true){
+									$day = $days[array_rand($days, 1)];
+									if($day['dayID'] != $rand_day['dayID']){
+										$rand_day = $day;
+										if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
+											$last_added['dayID'] = $rand_day['dayID'];
+											$last_added['timeIn'] = $min_time2;
+											$last_added['timeOut'] = $this->get_timeOut($min_time2, $s->units, $rand_day['dayCount']);
+											$min_time = $last_added['timeOut'];
+										}
+										break;
+									}
+								}
+								$ctr = 0;
+							}
+
+							$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+
+							if(($this->convert_to_mins($timeOut) > $this->convert_to_mins($break_min_time)) && !$noon_class){ //lunch break
+								if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
+									$this->move_last_added($last_added, $break_max_time, $secDT_holder, $rand_day);
+									$min_time = $last_added['timeOut'];
+								}else{
+									$min_time = $break_max_time;
+								}
+								$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+								$noon_class = true;
+							}else if(($this->convert_to_mins($timeOut) > $this->convert_to_mins($max_time)) && $noon_class){ //time out should not exceed max time
+								if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
+									$this->move_last_added($last_added,$min_time2, $secDT_holder, $rand_day);
+									$min_time = $last_added['timeOut'];
+								}else{
+									$min_time = $min_time2;
+								}
+								$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+								$noon_class = false;
+							}
+
+							if(!$this->section_conflict($secDT_holder, $rand_day, $min_time, $timeOut)){
+								break;
+							}else{
+								if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
+									$this->move_last_added($last_added, $min_time, $secDT_holder, $rand_day);
+									$min_time = $last_added['timeOut'];
+								}
+							}
+							++$ctr;
+						}
+					}else{
 						$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
 					}
 					
-					if($secDT_holder){
-						$this->check_section_conflict($secDT_holder, $min_time, $timeOut, $rand_day, $max_time, $min_time2, $break_min_time, $break_max_time, $last_added, $noon_class, $s);	
-					}
 
 					$data['timeIn'] = $min_time;
 					$data['timeOut'] = $timeOut;
@@ -119,12 +147,14 @@ class mdl_auto_sched extends CI_Model{
 						}
 						$data['roomID'] = $last_added['roomID'];
 						$data['facID'] = $last_added['facID'];
-
 						$update['timeIn'] = $last_added['timeIn'];
 						$update['timeOut'] = $last_added['timeOut'];
 						$update['roomID'] = $last_added['roomID'];
 						$update['facID'] = $last_added['facID'];
+						$update['dayID'] = $last_added['dayID'];
 						$this->db->update('class', $update, "classID = ".$last_added['classID']);
+						$this->update_section_holder($secDT_holder, $last_added);
+
 					}else{
 						if($is_room_auto == 'yes'){
 							$data['roomID'] = $this->random_room($rooms, $s->specID, $term['termID'], $rand_day['dayID'], $data['timeIn'], $data['timeOut']);
@@ -141,17 +171,20 @@ class mdl_auto_sched extends CI_Model{
 					$min_time = $timeOut;
 					print_r($data);
 					$this->db->insert('class', $data);
-					$data['classID'] = $this->db->insert_id();
-					$data['id'] = $s->id;
-					$data['prosID'] = $s->prosID;
-					$last_added = $data;
 					$secDT_holder[] = [
-						'classID'=>$data['classID'], 'timeIn'=>$data['timeIn'], 'timeOut'=> $data['timeOut'], 'dayID'=> $data['dayID']
+						'classID' => $this->db->insert_id(), 
+						'timeIn' => $data['timeIn'], 
+						'timeOut' => $data['timeOut'], 
+						'dayID' => $data['dayID'], 
+						'id' => $s->id, 
+						'prosID' => $s->prosID,
+						'termID' => $data['termID'],
+						'roomID' => $data['roomID'],
+						'facID' => $data['facID'],
+						'subID' => $s->subID
 					];
 
-					array_splice($data, 10, 3);
 				}
-
 			}else{
 				foreach($subjects as $s){
 					$data['termID'] = $term['termID'];
@@ -178,52 +211,58 @@ class mdl_auto_sched extends CI_Model{
 
 	}
 
-	function check_section_conflict($secDT_holder, &$timeIn, &$timeOut, $rand_day, $max_time, $min_time2, $break_min_time, $break_max_time, &$last_added, $noon_class, $s){
-		$ctr = 0;
-		while(true){
-			$is_conflict = false;
-			if($ctr == 48){
+	function update_section_holder(&$secDT_holder, $last_added){
+		$z = 0;
+		foreach($secDT_holder as $s){
+			if($s['classID'] == $last_added['classID']){
+				$secDT_holder[$z]['timeIn'] = $last_added['timeIn'];
+				$secDT_holder[$z]['timeOut'] = $last_added['timeOut'];
+				$secDT_holder[$z]['roomID'] = $last_added['roomID'];
+				$secDT_holder[$z]['facID'] = $last_added['facID'];
+			}
+			++$z;
+		}
+	}
+
+	function section_conflict($secDT_holder, $rand_day, &$min_time, &$timeOut, $classID = 0){
+		$is_conflict = false;
+
+		foreach($secDT_holder as $sec){
+			if($sec['dayID'] == $rand_day['dayID'] && $timeOut > $sec['timeIn'] && $sec['timeOut'] > $min_time && $sec['classID'] != $classID){
+				$is_conflict = true;
 				break;
 			}
-			$is_moved_time = false;
-
-			foreach($secDT_holder as $sec){
-
-				if($sec['dayID'] == $rand_day['dayID'] && $timeOut > $sec['timeIn'] && $sec['timeOut'] > $timeIn){
-					$is_conflict = true;
-					break;
-				}
-			}
-			if(!$is_conflict){
-				break;
-			}
-
-			//add 30 mins. for every conflict
-			$timeIn_mins = $this->convert_to_mins($timeIn);
-			$timeOut_mins = $this->convert_to_mins($timeOut);
-			$timeIn = $this->convert_to_hr($timeIn_mins + 30);
-			$timeOut = $this->convert_to_hr($timeOut_mins + 30);
-
-			//check again
-			if($this->is_time_out_greater($timeOut,$break_min_time) && !$noon_class){ //lunch break
-				$timeIn = $break_max_time;
-				$noon_class = true;
-				$is_moved_time = true;
-			}else if($this->is_time_out_greater($timeOut, $max_time)){ //time out should not exceed max time
-				$timeIn = $min_time2;
-				if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
-					$this->move_last_added($timeIn, $last_added);
-					$timeIn = $last_added['timeOut'];
-				}
-				$noon_class = false;
-				$is_moved_time = true;
-			}
-			if($is_moved_time){
-				$timeOut = $this->get_timeOut($timeIn, $s->units, $rand_day['dayCount']);
-			}
-			++$ctr;
 		}
 
+		if($is_conflict){
+			$timeIn_mins = $this->convert_to_mins($min_time);
+			$timeOut_mins = $this->convert_to_mins($timeOut);
+			$min_time = $this->convert_to_hr($timeIn_mins + 30);
+			$timeOut = $this->convert_to_hr($timeOut_mins + 30); 
+		}
+
+		return $is_conflict;
+
+	}
+
+	function move_last_added(&$last_added, $new_timeIn, $secDT_holder, $rand_day){
+		$timeIn = $this->convert_to_mins($last_added['timeIn']);
+		$timeOut = $this->convert_to_mins($last_added['timeOut']);
+		$timeRange = $timeOut - $timeIn;
+
+		$new_timeIn_mins = $this->convert_to_mins($new_timeIn);
+		$new_timeOut = $this->convert_to_hr($new_timeIn_mins + $timeRange);
+
+		while(true){
+
+			if(!$this->section_conflict($secDT_holder, $rand_day, $new_timeIn, $new_timeOut, $last_added['classID'])){
+				break;
+			}
+
+		}
+
+		$last_added['timeIn'] = $new_timeIn;
+		$last_added['timeOut'] = $new_timeOut;
 	}
 
 	function convert_to_mins($time){
@@ -237,36 +276,6 @@ class mdl_auto_sched extends CI_Model{
 		if(strlen($hours) == 1){$hours = '0'.$hours;}
 		if(strlen($minutes) == 1){$minutes = '0'.$minutes;}
 		return $hours.':'.$minutes.':00';
-	}
-
-	function is_break_separated($min_time, $last_timeOut, $break_min_time, $break_max_time){
-		$min_time = $this->convert_to_mins($min_time);
-		$last_timeOut = $this->convert_to_mins($last_timeOut);
-		$break_min_time = $this->convert_to_mins($break_min_time);
-		$break_max_time = $this->convert_to_mins($break_max_time);
-
-		return ($last_timeOut <= $break_min_time && $min_time >= $break_max_time) ? true : false;
-
-	}
-
-	function is_time_out_greater($timeOut,$break_min_time){
-		$timeOut = $this->convert_to_mins($timeOut);
-		$break_min_time = $this->convert_to_mins($break_min_time);
-		
-		return ($timeOut > $break_min_time) ? true : false;
-
-	}
-
-	function move_last_added($min_time,&$last_added){
-		$timeIn = $this->convert_to_mins($last_added['timeIn']);
-		$timeOut = $this->convert_to_mins($last_added['timeOut']);
-		
-		$timeRange = $timeOut - $timeIn;
-		$min_time_mins = $this->convert_to_mins($min_time);
-		$new_timeOut = $this->convert_to_hr($min_time_mins + $timeRange);
-
-		$last_added['timeIn'] = $min_time;
-		$last_added['timeOut'] = $new_timeOut;
 	}
 
 	function checkConflicts($last_added, $timeOut, $is_room_auto, $is_faculty_auto){
@@ -303,32 +312,38 @@ class mdl_auto_sched extends CI_Model{
 
 	}
 
-	function random_day($days, $subject){
-		//subjects with lab should be TTH or the least day count
+	function random_day($days, $subject, $last_added = NULL){
 		$arr = null;
-		//$selected_day = null;
-		$sql = $this->db->query("SELECT 1 FROM subject WHERE prosID = ".$subject->prosID." AND id = ".$subject->id." AND subID <> ".$subject->subID." LIMIT 1")->row();
+		$sql = $this->db->query("SELECT units FROM subject WHERE prosID = ".$subject->prosID." AND id = ".$subject->id." AND subID <> ".$subject->subID." LIMIT 1")->row();
+
 		shuffle($days);
+
+		if($sql){
+			$total_units = $subject->units + $sql->units;
+		}else{
+			$total_units = $subject->units;
+		}
+
 		foreach($days as $day){
-			if(($subject->units % $day['dayCount'] == 0) && !$sql){
+			//only total units with equal daycount and not divisible by 6 or 3
+			if(($total_units % $day['dayCount'] == 0) && ($total_units % 6 != 0) && ($total_units % 3 != 0)){
 				$arr = $day;
 				break;
 			}
-			if($arr){
-				if($sql){ //is subject has lab, assign to the least day count
-					if($day['dayCount'] < $arr['dayCount']){
-						$arr = $day;
-					}	
-				}else{ //assign to the most day count
-					if($day['dayCount'] > $arr['dayCount']){
-						$arr = $day;
-					}
-				}
-			}else{
-				$arr = $day;
-			}
 		}
 		
+		if(!$arr){ // balanced day
+			while(true){
+				$arr = $days[array_rand($days, 1)];
+				if(!$last_added){
+					break;
+				}
+				if($arr['dayID'] != $last_added['dayID']){
+					break;
+				}
+			}
+		}
+
 		return $arr;
 
 	}

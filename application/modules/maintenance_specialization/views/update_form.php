@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-swatches/vue-swatches.min.css">
 
 <div id="app" v-cloak>
 
@@ -29,6 +30,15 @@
 				</div>
 				<p class="help has-text-danger"> {{error.pros}} </p>
 			</div>
+			<div class="field">
+				<label class="label">Color</label>
+				<div class="control">
+					<swatches v-model="form.color">
+				      <input slot="trigger" :value="form.color" class="input" readonly>
+				    </swatches>
+				</div>
+				<p class="help has-text-danger"> {{error.color}} </p>
+			</div>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
 	</div>
@@ -40,7 +50,7 @@
 <script>
 	
 	document.addEventListener('DOMContentLoaded', function() {
-
+		Vue.component('swatches', window.VueSwatches.default)	
 		Vue.component('multiselect', window.VueMultiselect.default)	
 
 		new Vue({
@@ -55,11 +65,13 @@
 		    	form: {
 		    		id: '<?php echo $record->specID ?>',
 		    		spec: '<?php echo $record->specDesc ?>',
-		    		pros: {prosID: '<?php echo $record->prosID ?>', prosCode: '<?php echo $record->prosCode ?>'}
+		    		pros: {prosID: '<?php echo $record->prosID ?>', prosCode: '<?php echo $record->prosCode ?>'},
+		    		color: '<?php echo $record->specColor ?>'
 		    	},
 		    	error: {
 		    		spec: '',
-		    		pros: ''
+		    		pros: '',
+		    		color: ''
 		    	},
 		    	prospectuses: []
 		    },
@@ -133,4 +145,4 @@
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swatches/vue-swatches.min.js"></script>

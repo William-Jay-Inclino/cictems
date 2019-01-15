@@ -159,7 +159,7 @@ class mdl_Subject extends CI_Model{
 	}
 
 	function update(){
-		// die(print_r($_POST));
+		//die(print_r($_POST));
 		$id = $this->input->post('id');
 		$prosID = $this->input->post('prospectus')['prosID'];
 		$subCode = $this->input->post('subCode');
@@ -305,15 +305,15 @@ class mdl_Subject extends CI_Model{
 		$data = [];
 		if($id == 0){
 			$query = $this->db->query("
-				SELECT DISTINCT id,subCode FROM subject WHERE prosID=$prosID and yearID <= $yearID
+				SELECT DISTINCT id,prosID,subCode FROM subject WHERE prosID=$prosID and yearID <= $yearID
 			")->result();
 		}else{
 			$query = $this->db->query("
-				SELECT DISTINCT id,subCode FROM subject WHERE prosID=$prosID and yearID <= $yearID AND id <> $id
+				SELECT DISTINCT id,prosID,subCode FROM subject WHERE prosID=$prosID and yearID <= $yearID AND id <> $id
 			")->result();
 		}
 		foreach($query as $q){
-			$subID = $this->db->select('subID')->get_where('subject', "id = ".$q->id, 1)->row()->subID;
+			$subID = $this->db->select('subID')->get_where('subject', "id = ".$q->id." AND prosID = ".$q->prosID, 1)->row()->subID;
 			$data[] = ['id'=>$q->id,'subID'=>$subID,'subCode'=>$q->subCode];
 		}
 		echo json_encode($data);

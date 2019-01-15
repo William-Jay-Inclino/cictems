@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 13, 2019 at 06:38 AM
+-- Generation Time: Jan 15, 2019 at 01:58 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -113,8 +113,8 @@ INSERT INTO `counter2` (`countID`, `module`, `total`) VALUES
 (4, 'prospectus', 7),
 (5, 'section', 34),
 (6, 'faculty', 10),
-(7, 'subject', 61),
-(8, 'student', 32),
+(7, 'subject', 146),
+(8, 'student', 33),
 (9, 'staff', 2),
 (10, 'reg_requests', 2),
 (11, 'reg_users', 13),
@@ -186,7 +186,7 @@ CREATE TABLE `enrolment_settings` (
 
 INSERT INTO `enrolment_settings` (`id`, `name`, `some_value`) VALUES
 (1, 'enrollment_pw', 'Enrolment1'),
-(2, 'status', 'inactive');
+(2, 'status', 'active');
 
 -- --------------------------------------------------------
 
@@ -234,24 +234,55 @@ CREATE TABLE `fac_spec` (
 --
 
 INSERT INTO `fac_spec` (`id`, `facID`, `specID`) VALUES
-(56, 28, 8),
-(57, 28, 6),
-(58, 28, 7),
-(59, 29, 7),
-(60, 29, 6),
-(61, 29, 8),
-(62, 30, 9),
-(63, 30, 10),
-(65, 31, 9),
-(66, 32, 7),
-(67, 32, 6),
-(71, 33, 8),
-(72, 33, 7),
-(73, 33, 6),
-(74, 34, 6),
-(75, 35, 7),
-(76, 36, 9),
-(77, 37, 10);
+(78, 28, 6),
+(79, 28, 7),
+(80, 28, 8),
+(81, 28, 18),
+(82, 28, 20),
+(83, 28, 21),
+(84, 28, 13),
+(85, 28, 16),
+(86, 28, 15),
+(87, 29, 6),
+(88, 29, 8),
+(89, 29, 7),
+(90, 29, 13),
+(91, 29, 15),
+(92, 29, 16),
+(121, 35, 15),
+(122, 35, 20),
+(123, 35, 35),
+(124, 36, 32),
+(125, 36, 17),
+(126, 36, 12),
+(127, 37, 17),
+(128, 37, 32),
+(129, 37, 12),
+(130, 31, 17),
+(131, 31, 12),
+(132, 31, 32),
+(133, 30, 17),
+(134, 30, 19),
+(135, 30, 12),
+(136, 30, 14),
+(137, 30, 32),
+(138, 30, 34),
+(139, 32, 15),
+(140, 32, 13),
+(141, 32, 33),
+(142, 32, 35),
+(143, 33, 21),
+(144, 33, 18),
+(145, 33, 20),
+(146, 33, 13),
+(147, 33, 16),
+(148, 33, 15),
+(149, 33, 33),
+(150, 33, 35),
+(151, 33, 36),
+(152, 34, 18),
+(153, 34, 13),
+(154, 34, 33);
 
 -- --------------------------------------------------------
 
@@ -617,28 +648,150 @@ CREATE TABLE `room_spec` (
 --
 
 INSERT INTO `room_spec` (`id`, `roomID`, `specID`) VALUES
-(1, 25, 9),
-(2, 26, 6),
-(3, 26, 9),
-(13, 29, 9),
-(14, 30, 6),
-(15, 30, 8),
-(16, 31, 8),
-(17, 31, 7),
-(18, 32, 8),
-(19, 32, 7),
-(20, 33, 6),
-(21, 33, 8),
-(22, 33, 9),
-(23, 33, 7),
-(24, 34, 10),
-(25, 34, 9),
-(26, 35, 9),
-(27, 35, 8),
-(28, 35, 10),
-(29, 36, 7),
-(30, 36, 8),
-(31, 36, 6);
+(35, 34, 9),
+(36, 34, 18),
+(37, 34, 12),
+(38, 34, 17),
+(39, 34, 34),
+(40, 34, 19),
+(41, 34, 32),
+(42, 34, 14),
+(43, 34, 29),
+(44, 34, 10),
+(45, 34, 39),
+(46, 34, 37),
+(47, 34, 24),
+(48, 34, 22),
+(49, 29, 17),
+(50, 29, 32),
+(51, 29, 12),
+(52, 29, 19),
+(53, 29, 34),
+(54, 29, 22),
+(55, 29, 9),
+(56, 29, 10),
+(57, 29, 39),
+(58, 35, 8),
+(59, 35, 10),
+(60, 35, 9),
+(61, 35, 17),
+(62, 35, 19),
+(63, 35, 32),
+(64, 35, 34),
+(65, 35, 12),
+(66, 35, 14),
+(67, 35, 22),
+(68, 35, 24),
+(69, 35, 29),
+(70, 35, 37),
+(71, 35, 39),
+(72, 33, 7),
+(73, 33, 8),
+(74, 33, 6),
+(75, 33, 20),
+(76, 33, 21),
+(77, 33, 36),
+(78, 33, 15),
+(79, 33, 25),
+(80, 33, 30),
+(81, 33, 40),
+(82, 30, 8),
+(83, 30, 6),
+(84, 30, 18),
+(85, 30, 20),
+(86, 30, 21),
+(87, 30, 35),
+(88, 30, 36),
+(89, 30, 13),
+(90, 30, 23),
+(91, 30, 25),
+(92, 30, 28),
+(93, 30, 30),
+(94, 30, 7),
+(95, 30, 38),
+(96, 30, 40),
+(97, 30, 41),
+(98, 31, 7),
+(99, 31, 8),
+(100, 31, 18),
+(101, 31, 21),
+(102, 31, 33),
+(103, 31, 15),
+(104, 31, 16),
+(105, 31, 23),
+(106, 31, 20),
+(107, 31, 35),
+(108, 31, 25),
+(109, 31, 26),
+(110, 31, 30),
+(111, 31, 28),
+(112, 31, 31),
+(113, 31, 6),
+(114, 31, 38),
+(115, 31, 41),
+(116, 31, 40),
+(117, 32, 7),
+(118, 32, 8),
+(119, 32, 18),
+(120, 32, 20),
+(121, 32, 21),
+(122, 32, 33),
+(123, 32, 35),
+(124, 32, 36),
+(125, 32, 13),
+(126, 32, 15),
+(127, 32, 16),
+(128, 32, 23),
+(129, 32, 25),
+(130, 32, 26),
+(131, 32, 28),
+(132, 32, 30),
+(133, 32, 31),
+(134, 32, 6),
+(135, 32, 38),
+(136, 32, 40),
+(137, 32, 41),
+(138, 36, 8),
+(139, 36, 6),
+(140, 36, 7),
+(141, 36, 18),
+(142, 36, 20),
+(143, 36, 21),
+(144, 36, 33),
+(145, 36, 35),
+(146, 36, 36),
+(147, 36, 13),
+(148, 36, 15),
+(149, 36, 16),
+(150, 36, 23),
+(151, 36, 25),
+(152, 36, 26),
+(153, 36, 28),
+(154, 36, 31),
+(155, 36, 30),
+(156, 36, 41),
+(157, 36, 40),
+(158, 36, 38),
+(159, 25, 9),
+(160, 25, 17),
+(161, 25, 32),
+(162, 25, 12),
+(163, 25, 22),
+(164, 25, 27),
+(165, 25, 37),
+(166, 26, 6),
+(167, 26, 9),
+(168, 26, 18),
+(169, 26, 35),
+(170, 26, 36),
+(171, 26, 21),
+(172, 26, 33),
+(173, 26, 13),
+(174, 26, 16),
+(175, 26, 23),
+(176, 26, 24),
+(177, 26, 14),
+(178, 26, 19);
 
 -- --------------------------------------------------------
 
@@ -724,49 +877,50 @@ INSERT INTO `semester` (`semID`, `semOrder`, `semDesc`) VALUES
 CREATE TABLE `specialization` (
   `specID` int(11) NOT NULL,
   `prosID` int(11) NOT NULL,
-  `specDesc` varchar(50) NOT NULL
+  `specDesc` varchar(50) NOT NULL,
+  `specColor` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `specialization`
 --
 
-INSERT INTO `specialization` (`specID`, `prosID`, `specDesc`) VALUES
-(6, 4, 'Common CS Courses'),
-(7, 4, 'Professional CS Courses'),
-(8, 4, 'CS Electives/Free Electives'),
-(9, 4, 'General Education Courses (Including Filipino)'),
-(10, 4, 'Other Courses (PE and NSTP)'),
-(12, 6, 'General Education Courses (Including Filipino)'),
-(13, 6, 'Common IT Courses'),
-(14, 6, 'Other Courses (PE and NSTP)'),
-(15, 6, 'Professional IT Courses'),
-(16, 6, 'IT Electives/Free Electives'),
-(17, 8, 'General Education Courses (Including Filipino)'),
-(18, 8, 'Common BSCpE Courses'),
-(19, 8, 'Other Courses (PE and NSTP)'),
-(20, 8, 'Professional BSCpE Courses'),
-(21, 8, 'BSCpE Electives/Free Electives'),
-(22, 1, 'General Education Courses (Including Filipino)'),
-(23, 1, 'Common ACT Courses'),
-(24, 1, 'Other Courses (PE and NSTP)'),
-(25, 1, 'Professional ACT Courses'),
-(26, 1, 'ACT Electives/Free Electives'),
-(27, 5, 'General Education Courses (Including Filipino)'),
-(28, 5, 'Common BSCpE Courses'),
-(29, 5, 'Other Courses (PE and NSTP)'),
-(30, 5, 'Professional BSCpE Courses'),
-(31, 5, 'BSCpE Electives/Free Electives'),
-(32, 7, 'General Education Courses (Including Filipino)'),
-(33, 7, 'Common CS Courses'),
-(34, 7, 'Other Courses (PE and NSTP)'),
-(35, 7, 'Professional CS Courses'),
-(36, 7, 'CS Electives/Free Electives'),
-(37, 3, 'General Education Courses (Including Filipino)'),
-(38, 3, 'Common IT Courses'),
-(39, 3, 'Other Courses (PE and NSTP)'),
-(40, 3, 'Professional IT Courses'),
-(41, 3, 'IT Electives/Free Electives');
+INSERT INTO `specialization` (`specID`, `prosID`, `specDesc`, `specColor`) VALUES
+(6, 4, 'Common CS Courses', '#C0382B'),
+(7, 4, 'Professional CS Courses', '#2980B9'),
+(8, 4, 'CS Electives/Free Electives', '#8E43AD'),
+(9, 4, 'General Education Courses (Including Filipino)', '#222F3D'),
+(10, 4, 'Other Courses (PE and NSTP)', '#27AF60'),
+(12, 6, 'General Education Courses (Including Filipino)', '#222F3D'),
+(13, 6, 'Common IT Courses', '#C0382B'),
+(14, 6, 'Other Courses (PE and NSTP)', '#27AF60'),
+(15, 6, 'Professional IT Courses', '#2980B9'),
+(16, 6, 'IT Electives/Free Electives', '#8E43AD'),
+(17, 8, 'General Education Courses (Including Filipino)', '#222F3D'),
+(18, 8, 'Common BSCpE Courses', '#C0382B'),
+(19, 8, 'Other Courses (PE and NSTP)', '#27AF60'),
+(20, 8, 'Professional BSCpE Courses', '#2980B9'),
+(21, 8, 'BSCpE Electives/Free Electives', '#8E43AD'),
+(22, 1, 'General Education Courses (Including Filipino)', '#222F3D'),
+(23, 1, 'Common ACT Courses', '#C0382B'),
+(24, 1, 'Other Courses (PE and NSTP)', '#27AF60'),
+(25, 1, 'Professional ACT Courses', '#2980B9'),
+(26, 1, 'ACT Electives/Free Electives', '#8E43AD'),
+(27, 5, 'General Education Courses (Including Filipino)', '#222F3D'),
+(28, 5, 'Common BSCpE Courses', '#C0382B'),
+(29, 5, 'Other Courses (PE and NSTP)', '#27AF60'),
+(30, 5, 'Professional BSCpE Courses', '#2980B9'),
+(31, 5, 'BSCpE Electives/Free Electives', '#8E43AD'),
+(32, 7, 'General Education Courses (Including Filipino)', '#222F3D'),
+(33, 7, 'Common CS Courses', '#C0382B'),
+(34, 7, 'Other Courses (PE and NSTP)', '#27AF60'),
+(35, 7, 'Professional CS Courses', '#2980B9'),
+(36, 7, 'CS Electives/Free Electives', '#8E43AD'),
+(37, 3, 'General Education Courses (Including Filipino)', '#222F3D'),
+(38, 3, 'Common IT Courses', '#C0382B'),
+(39, 3, 'Other Courses (PE and NSTP)', '#27AF60'),
+(40, 3, 'Professional IT Courses', '#2980B9'),
+(41, 3, 'IT Electives/Free Electives', '#8E43AD');
 
 -- --------------------------------------------------------
 
@@ -858,7 +1012,8 @@ INSERT INTO `student` (`studID`, `yearID`, `uID`, `controlNo`, `has_user`) VALUE
 (71, 1, 87, 911, 'no'),
 (72, 1, 88, 755, 'no'),
 (73, 4, 89, 109, 'no'),
-(74, 1, 115, 1928, 'yes');
+(74, 1, 115, 1928, 'yes'),
+(75, 4, 118, 111, 'no');
 
 -- --------------------------------------------------------
 
@@ -926,7 +1081,8 @@ INSERT INTO `studprospectus` (`spID`, `studID`, `prosID`) VALUES
 (69, 71, 3),
 (70, 72, 3),
 (71, 73, 3),
-(72, 74, 7);
+(72, 74, 7),
+(73, 75, 6);
 
 -- --------------------------------------------------------
 
@@ -1052,7 +1208,127 @@ INSERT INTO `subject` (`subID`, `prosID`, `yearID`, `semID`, `specID`, `subCode`
 (82, 6, 4, 2, 15, 'IT-Capstone421', 'Capstone Project 2', 9, 9, 'lec', '', 329),
 (83, 6, 4, 2, 16, 'IT-ELE-421', 'Embedded Systems', 2, 3, 'lec', '', 185),
 (84, 6, 4, 2, 16, 'IT-ELE-421', 'Embedded Systems', 1, 3, 'lab', '', 185),
-(85, 6, 4, 2, 15, 'ITSeminar421', 'IT Seminars/Fieldtrips', 3, 3, 'lec', '', 714);
+(85, 6, 4, 2, 15, 'ITSeminar421', 'IT Seminars/Fieldtrips', 3, 3, 'lec', '', 714),
+(86, 8, 1, 1, 17, 'ENG111', 'Purposive Communication', 3, 3, 'lec', '', 357),
+(87, 8, 1, 1, 17, 'MAT112', 'Remedial Mathematics (Pre-Calculus)', 3, 3, 'lec', 'for non-STEM', 329),
+(88, 7, 1, 1, 32, 'ENG111', 'Purposive Communication', 3, 3, 'lec', '', 157),
+(89, 8, 1, 1, 17, 'Physics111', 'General Physics', 3, 4, 'lec', 'for non-STEM', 845),
+(90, 8, 1, 1, 17, 'Physics111', 'General Physics', 3, 4, 'lab', 'for non-STEM', 845),
+(91, 8, 1, 1, 17, 'MAT113', 'Mathematics in the Modern World', 3, 3, 'lec', '', 425),
+(92, 8, 1, 1, 17, 'Psych111', 'Understanding the Self', 3, 3, 'lec', '', 876),
+(93, 7, 1, 1, 32, 'MAT112', 'Remedial Mathematics (Pre-Calculus)', 3, 3, 'lec', 'for non-STEM', 942),
+(94, 8, 1, 1, 20, 'CpE-CompDs111', 'Computer Engineering as a Discipline', 3, 1, 'lec', '', 731),
+(95, 7, 1, 1, 32, 'Physics111', 'General Physics', 3, 4, 'lec', 'for non-STEM', 943),
+(96, 7, 1, 1, 32, 'Physics111', 'General Physics', 1, 4, 'lab', 'for non-STEM', 943),
+(97, 8, 1, 1, 20, 'CpE-ProgLo112', 'Programming Logic and Design', 3, 2, 'lec', '', 619),
+(98, 8, 1, 1, 20, 'CpE-ProgLo112', 'Programming Logic and Design', 3, 2, 'lab', '', 619),
+(99, 7, 1, 1, 32, 'MAT113', 'Mathematics in the Modern World', 3, 3, 'lec', '', 751),
+(100, 8, 1, 1, 20, 'Chem111', 'Chemistry for Engineers', 3, 2, 'lec', '', 643),
+(101, 8, 1, 1, 20, 'Chem111', 'Chemistry for Engineers', 3, 2, 'lab', '', 643),
+(102, 7, 1, 1, 32, 'Psych111', 'Understanding the Self', 3, 3, 'lec', '', 584),
+(103, 8, 1, 1, 19, 'NSTP111', 'National Service Training Prog1', 3, 3, 'lec', '', 428),
+(104, 7, 1, 1, 33, 'CS-COM111', 'Introduction to Computing', 2, 3, 'lec', '', 214),
+(105, 7, 1, 1, 33, 'CS-COM111', 'Introduction to Computing', 1, 3, 'lab', '', 214),
+(106, 8, 1, 1, 19, 'PE111', 'Physical Fitness 1`', 2, 2, 'lec', '', 732),
+(107, 8, 1, 2, 17, 'MAT121', 'Discrete Mathematics', 3, 3, 'lec', '', 692),
+(108, 7, 1, 1, 33, 'CS-Prog111', 'Fundamentals of Programming', 2, 3, 'lec', '', 236),
+(109, 7, 1, 1, 33, 'CS-Prog111', 'Fundamentals of Programming', 1, 3, 'lab', '', 236),
+(110, 8, 1, 2, 17, 'STS121', 'Science, Technology & Society', 3, 3, 'lec', '', 281),
+(111, 7, 1, 1, 34, 'NSTP111', 'National Service Training Prog1', 3, 3, 'lec', '', 149),
+(112, 8, 1, 2, 21, 'Draft121', 'Technical Drafting', 3, 1, 'lec', '', 548),
+(113, 7, 1, 1, 34, 'PE111', 'Physical Fitness 1', 2, 2, 'lec', '', 349),
+(114, 8, 1, 2, 21, 'Opt121', 'Productivity Tools 1', 3, 2, 'lec', '', 395),
+(115, 8, 1, 2, 21, 'Opt121', 'Productivity Tools 1', 3, 2, 'lab', '', 395),
+(116, 8, 1, 2, 20, 'Cpe-Eco121', 'Engineering Economics', 3, 3, 'lec', '', 715),
+(117, 7, 1, 2, 36, 'MAT121', 'Discrete Structures 1', 3, 3, 'lec', '', 792),
+(118, 8, 1, 2, 17, 'Physics121', 'Physics for Engineers', 3, 2, 'lec', '', 653),
+(119, 8, 1, 2, 17, 'Physics121', 'Physics for Engineers', 3, 2, 'lab', '', 653),
+(120, 7, 1, 2, 32, 'STS121', 'Science, Technology & Society', 3, 3, 'lec', '', 896),
+(121, 8, 1, 2, 17, 'Hist121', 'Readings in Philippine History', 3, 3, 'lec', '', 986),
+(122, 8, 1, 2, 19, 'NSTP121', 'National Service Training Prog2', 3, 3, 'lec', '', 493),
+(123, 8, 1, 2, 17, 'MAT122', 'Calculus 1', 3, 3, 'lec', '', 318),
+(124, 7, 1, 2, 32, 'Socio121', 'Social Issues & Professional Practice', 3, 3, 'lec', '', 217),
+(125, 8, 1, 2, 19, 'PE121', 'Rythmic Activities', 2, 2, 'lec', '', 861),
+(126, 7, 1, 2, 33, 'CS-Prog121', 'Computer Programming 2', 2, 3, 'lec', '', 712),
+(127, 7, 1, 2, 33, 'CS-Prog121', 'Computer Programming 2', 1, 3, 'lab', '', 712),
+(128, 7, 1, 2, 35, 'CS-HC1211', 'Introduction to Human Computer Interaction', 2, 3, 'lec', '', 187),
+(129, 7, 1, 2, 35, 'CS-HC1211', 'Introduction to Human Computer Interaction', 1, 3, 'lab', '', 187),
+(130, 8, 2, 3, 21, 'CpE-Datstruct201', 'Data Structures & Algorithm Analysis', 3, 4, 'lec', '', 562),
+(131, 8, 2, 3, 21, 'CpE-Datstruct201', 'Data Structures & Algorithm Analysis', 3, 4, 'lab', '', 562),
+(132, 8, 2, 3, 17, 'MAT201', 'Engineering  Data Analysis', 3, 3, 'lec', '', 956),
+(133, 8, 2, 3, 21, 'OPT201', 'Productivity Tools 2', 3, 2, 'lec', '', 279),
+(134, 8, 2, 3, 21, 'OPT201', 'Productivity Tools 2', 3, 2, 'lab', '', 279),
+(135, 8, 2, 1, 20, 'CAD211', 'Computer-Aided Drafting', 3, 2, 'lec', '', 746),
+(136, 8, 2, 1, 20, 'CAD211', 'Computer-Aided Drafting', 3, 2, 'lab', '', 746),
+(137, 8, 2, 1, 20, 'CpE-OOP211', 'Object-Oriented Programming', 3, 3, 'lec', '', 196),
+(138, 8, 2, 1, 20, 'CpE-OOP211', 'Object-Oriented Programming', 3, 3, 'lab', '', 196),
+(139, 8, 2, 1, 17, 'CpE-EC211', 'Fundamentals of Electric Circuits', 3, 3, 'lec', '', 487),
+(140, 8, 2, 1, 17, 'CpE-EC211', 'Fundamentals of Electric Circuits', 3, 3, 'lab', '', 487),
+(141, 8, 2, 1, 17, 'MAT211', 'Calculus 2', 3, 3, 'lec', '', 749),
+(142, 8, 2, 1, 17, 'Hum211', 'Art Appreciation', 3, 3, 'lec', '', 365),
+(143, 8, 2, 1, 17, 'Socio211', 'The Contemporary World', 3, 3, 'lec', '', 568),
+(144, 8, 2, 1, 17, 'Filipino211', 'Komonikasyon sa Akademikong Filipino', 3, 3, 'lec', '', 685),
+(145, 8, 2, 1, 19, 'PE211', 'Individual Sports', 2, 2, 'lec', '', 948),
+(146, 8, 2, 1, 21, 'Ethics211', 'Engineering Ethics', 3, 3, 'lec', '', 271),
+(147, 8, 2, 2, 17, 'Filipino221', 'Panitikan', 3, 3, 'lec', '', 623),
+(148, 8, 2, 2, 21, 'MAT221', 'Differential Equations', 3, 3, 'lec', '', 384),
+(149, 8, 2, 2, 20, 'CpE-EC221', 'Fundamentals of Electronic Circuits', 3, 3, 'lec', '', 321),
+(150, 8, 2, 2, 20, 'CpE-EC221', 'Fundamentals of Electronic Circuits', 3, 3, 'lab', '', 321),
+(151, 8, 2, 2, 20, 'Cpe-SoftD221', 'Software Design', 3, 3, 'lec', '', 324),
+(152, 8, 2, 2, 20, 'Cpe-SoftD221', 'Software Design', 3, 3, 'lab', '', 324),
+(153, 8, 2, 2, 20, 'CPE-OS221', 'Operating Systems', 3, 3, 'lec', '', 924),
+(154, 8, 2, 2, 20, 'CPE-OS221', 'Operating Systems', 3, 3, 'lab', '', 924),
+(155, 8, 2, 2, 17, 'CpE-NUM221', 'Numerical Methods', 3, 3, 'lec', '', 254),
+(156, 8, 2, 2, 20, 'ENVI-221', 'Environmental Engineering', 3, 3, 'lec', '', 179),
+(157, 8, 2, 2, 19, 'PE221', 'Team Sports', 2, 2, 'lec', '', 496),
+(158, 8, 2, 2, 20, 'CpE-TECEng221', 'Engineering Technologies in CpE', 3, 3, 'lec', '', 596),
+(159, 8, 3, 3, 20, 'CpE-Techno301', 'Technopreneurship', 3, 3, 'lec', '', 651),
+(160, 8, 3, 3, 20, 'CpE-Laws301', 'CpE Laws and Professional Practice', 3, 3, 'lec', '', 725),
+(161, 8, 3, 3, 20, 'CpE-HDL301', 'Introduction to HDL', 3, 2, 'lec', '', 251),
+(162, 8, 3, 3, 20, 'CpE-HDL301', 'Introduction to HDL', 3, 2, 'lab', '', 251),
+(163, 8, 3, 1, 20, 'CpE-SenS311', 'Fundamentals of Mixed Signals and', 3, 3, 'lec', '', 827),
+(164, 8, 3, 1, 20, 'CpE-SenS311', 'Fundamentals of Mixed Signals and', 3, 3, 'lab', '', 827),
+(165, 8, 3, 1, 20, 'CpE-LDes311', 'Logic Circuits and Design', 3, 3, 'lec', '', 165),
+(166, 8, 3, 1, 20, 'CpE-LDes311', 'Logic Circuits and Design', 3, 3, 'lab', '', 165),
+(167, 8, 3, 1, 20, 'CpE-Dat311', 'Data and Digital Communications', 3, 3, 'lec', '', 847),
+(168, 8, 3, 1, 20, 'CpE-Dat311', 'Data and Digital Communications', 3, 3, 'lab', '', 847),
+(169, 8, 3, 1, 20, 'CpE-Cont311', 'Feedback and Control Systems', 3, 3, 'lec', '', 274),
+(170, 8, 3, 1, 20, 'CpE-Cont311', 'Feedback and Control Systems', 3, 3, 'lab', '', 274),
+(171, 8, 3, 1, 20, 'CpE-Research311', 'CPE Research', 3, 3, 'lec', '', 638),
+(172, 8, 3, 1, 17, 'Filipino311', 'Masining na Pagpapahayag', 3, 3, 'lec', '', 135),
+(173, 8, 3, 1, 20, 'CpE-Ele311', 'Introduction to Robotics', 3, 3, 'lec', '', 246),
+(174, 8, 3, 1, 20, 'CpE-Ele311', 'Introduction to Robotics', 3, 3, 'lab', '', 246),
+(175, 8, 3, 1, 20, 'CAD311', 'Computer Engineering Drafting & Design', 3, 2, 'lec', '', 512),
+(176, 8, 3, 1, 20, 'CAD311', 'Computer Engineering Drafting & Design', 3, 2, 'lab', '', 512),
+(177, 8, 3, 2, 21, 'CpE-Safe321', 'Basic Occupational Health & Safety', 3, 3, 'lec', '', 613),
+(178, 8, 3, 2, 20, 'CpE-Netwrk321', 'Computer Network and Security', 3, 3, 'lec', '', 591),
+(179, 8, 3, 2, 20, 'CpE-Netwrk321', 'Computer Network and Security', 3, 3, 'lab', '', 591),
+(180, 8, 3, 2, 20, 'CpE-Micro321', 'Microprocessor', 3, 3, 'lec', '', 462),
+(181, 8, 3, 2, 20, 'CpE-Micro321', 'Microprocessor', 3, 3, 'lab', '', 462),
+(182, 8, 3, 2, 20, 'Cpe-Research321', 'Methods of Research', 3, 3, 'lec', '', 594),
+(183, 8, 3, 2, 20, 'Cpe-Mgnt321', 'Engineering Management', 3, 3, 'lec', '', 421),
+(184, 8, 3, 2, 20, 'Cpe-Ele321', 'Robot Dynamics', 3, 3, 'lec', '', 894),
+(185, 8, 3, 2, 20, 'Cpe-Ele321', 'Robot Dynamics', 3, 3, 'lab', '', 894),
+(186, 8, 3, 2, 20, 'Cpe-Free-Ele321', 'Business Analytics', 3, 3, 'lec', '', 375),
+(187, 8, 3, 2, 17, 'Rizal321', 'Life & Works of Dr. Jose Rizal', 3, 3, 'lec', '', 813),
+(188, 8, 4, 3, 17, 'CpE-PRAC401', 'Practicum/OJT', 6, 6, 'lec', '', 359),
+(189, 8, 4, 1, 20, 'CpE-AO411', 'Computer Architecture & Organization', 3, 3, 'lec', '', 713),
+(190, 8, 4, 1, 20, 'CpE-AO411', 'Computer Architecture & Organization', 3, 3, 'lab', '', 713),
+(191, 8, 4, 1, 20, 'CpE-ELE411', 'Robot Design', 3, 3, 'lec', '', 391),
+(192, 8, 4, 1, 20, 'CpE-ELE411', 'Robot Design', 3, 3, 'lab', '', 391),
+(193, 8, 4, 2, 20, 'CpE-ProjDe421', 'CpE Practice and Design 2', 6, 9, 'lec', '', 367),
+(194, 8, 4, 2, 20, 'CpE-ProjDe421', 'CpE Practice and Design 2', 3, 9, 'lab', '', 367),
+(195, 8, 4, 1, 20, 'CpE-DSP411', 'Digital Signal Processing', 3, 3, 'lec', '', 792),
+(196, 8, 4, 1, 20, 'CpE-DSP411', 'Digital Signal Processing', 3, 3, 'lab', '', 792),
+(197, 8, 4, 2, 18, 'CpE-Seminar421', 'CpE Seminars and Field Trips', 3, 3, 'lec', '', 839),
+(198, 8, 4, 1, 20, 'CpE-ProjDe411', 'CpE Practice and Design 1', 6, 9, 'lec', '', 589),
+(199, 8, 4, 1, 20, 'CpE-ProjDe411', 'CpE Practice and Design 1', 3, 9, 'lab', '', 589),
+(200, 8, 4, 2, 20, 'CpE-ES421', 'Embedded Systems', 3, 3, 'lec', '', 532),
+(201, 8, 4, 2, 20, 'CpE-ES421', 'Embedded Systems', 3, 3, 'lab', '', 532),
+(202, 8, 4, 1, 20, 'CpE-Free-Ele411', 'Analytics Modelling Technologies and Tools', 3, 1, 'lec', '', 695),
+(203, 7, 4, 1, 35, 'CS-CertExam411', 'Philnits/Microsoft/TESDA', 3, 3, 'lec', '', 741),
+(204, 8, 1, 2, 18, 'Cpe-HDL121', 'Introduction to HDL', 3, 2, 'lec', '', 842),
+(205, 8, 1, 2, 18, 'Cpe-HDL121', 'Introduction to HDL', 3, 2, 'lab', '', 842);
 
 -- --------------------------------------------------------
 
@@ -1124,7 +1400,75 @@ INSERT INTO `subject_req` (`subReqID`, `subID`, `req_type`, `req_subID`) VALUES
 (86, 79, 1, 66),
 (87, 80, 1, 66),
 (88, 64, 1, 53),
-(89, 65, 1, 53);
+(89, 65, 1, 53),
+(90, 107, 1, 91),
+(92, 118, 1, 89),
+(93, 119, 1, 89),
+(94, 117, 1, 99),
+(95, 122, 1, 103),
+(97, 125, 1, 106),
+(98, 126, 1, 108),
+(99, 127, 1, 108),
+(100, 128, 1, 104),
+(101, 129, 1, 104),
+(108, 130, 1, 107),
+(109, 131, 1, 107),
+(112, 132, 1, 123),
+(113, 133, 1, 114),
+(114, 134, 1, 114),
+(117, 137, 1, 130),
+(118, 138, 1, 130),
+(119, 139, 1, 97),
+(120, 140, 1, 97),
+(122, 145, 1, 125),
+(123, 147, 1, 144),
+(124, 148, 1, 141),
+(125, 149, 1, 139),
+(126, 150, 1, 139),
+(127, 123, 1, 87),
+(128, 151, 1, 137),
+(129, 152, 1, 137),
+(130, 153, 1, 137),
+(131, 154, 1, 137),
+(133, 157, 1, 145),
+(134, 161, 1, 151),
+(135, 162, 1, 151),
+(136, 135, 1, 112),
+(137, 136, 1, 112),
+(138, 141, 1, 123),
+(139, 155, 1, 141),
+(140, 163, 1, 149),
+(141, 164, 1, 149),
+(142, 165, 1, 151),
+(143, 166, 1, 151),
+(144, 167, 1, 161),
+(145, 168, 1, 161),
+(146, 169, 1, 153),
+(147, 170, 1, 153),
+(148, 172, 1, 147),
+(149, 175, 1, 135),
+(150, 176, 1, 135),
+(151, 178, 1, 165),
+(152, 179, 1, 165),
+(153, 180, 1, 163),
+(154, 181, 1, 163),
+(155, 182, 1, 171),
+(156, 184, 1, 173),
+(157, 185, 1, 173),
+(158, 188, 1, 182),
+(161, 191, 1, 184),
+(162, 192, 1, 184),
+(163, 195, 1, 163),
+(164, 196, 1, 163),
+(167, 200, 1, 191),
+(168, 201, 1, 191),
+(169, 202, 1, 186),
+(174, 189, 1, 178),
+(175, 190, 1, 178),
+(176, 198, 1, 182),
+(177, 199, 1, 182),
+(178, 193, 1, 198),
+(179, 194, 1, 198);
 
 -- --------------------------------------------------------
 
@@ -1222,7 +1566,8 @@ INSERT INTO `users` (`uID`, `roleID`, `userName`, `userPass`, `fn`, `mn`, `ln`, 
 (114, 2, 'Lopez', 'Iamlopez1', 'Jotham', '', 'Lopez', '1888-01-01', 'Male', 'Ormoc City', '09323232323', 'jot@gmail.com', 'active', 'no', '2018-12-08 05:58:14'),
 (115, 4, 'Sample', 'Iamsample1', 'Sample', '', 'Sample', '1997-10-24', 'Male', 'Ormoc city', '09121212717', 'sample@gmail.com', 'active', 'yes', '2018-12-13 03:29:09'),
 (116, 2, 'temporary', 'temporary', '', '', '', '0000-00-00', '', '', '', '', 'active', 'no', '2018-12-31 04:06:11'),
-(117, 2, 'Gablino', 'Gablino1', 'Archiebald', '', 'Gablino', '1777-01-28', 'Male', 'Ormoc City', '', 'Gablins@gmail.com', 'active', 'no', '2019-01-12 02:43:59');
+(117, 2, 'Gablino', 'Gablino1', 'Archiebald', '', 'Gablino', '1777-01-28', 'Male', 'Ormoc City', '', 'Gablins@gmail.com', 'active', 'no', '2019-01-12 02:43:59'),
+(118, 4, '', '', 'Sample', 'Sample name', 'Sample last', '1998-08-24', 'Female', '', '09484924908', '', 'inactive', 'yes', '2019-01-13 10:36:48');
 
 -- --------------------------------------------------------
 
@@ -1272,7 +1617,10 @@ INSERT INTO `year_req` (`yrID`, `subID`, `yearID`) VALUES
 (11, 68, 3),
 (12, 69, 3),
 (13, 83, 4),
-(14, 84, 4);
+(14, 84, 4),
+(15, 171, 3),
+(16, 173, 3),
+(17, 174, 3);
 
 --
 -- Indexes for dumped tables
@@ -1632,7 +1980,7 @@ ALTER TABLE `faculty`
 -- AUTO_INCREMENT for table `fac_spec`
 --
 ALTER TABLE `fac_spec`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT for table `fees`
@@ -1704,7 +2052,7 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT for table `room_spec`
 --
 ALTER TABLE `room_spec`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
 
 --
 -- AUTO_INCREMENT for table `section`
@@ -1722,7 +2070,7 @@ ALTER TABLE `semester`
 -- AUTO_INCREMENT for table `specialization`
 --
 ALTER TABLE `specialization`
-  MODIFY `specID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `specID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -1740,7 +2088,7 @@ ALTER TABLE `studclass`
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `studID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `studID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `studgrade`
@@ -1752,7 +2100,7 @@ ALTER TABLE `studgrade`
 -- AUTO_INCREMENT for table `studprospectus`
 --
 ALTER TABLE `studprospectus`
-  MODIFY `spID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `spID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `stud_fee`
@@ -1764,13 +2112,13 @@ ALTER TABLE `stud_fee`
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
-  MODIFY `subID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `subID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
 
 --
 -- AUTO_INCREMENT for table `subject_req`
 --
 ALTER TABLE `subject_req`
-  MODIFY `subReqID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+  MODIFY `subReqID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=180;
 
 --
 -- AUTO_INCREMENT for table `term`
@@ -1782,7 +2130,7 @@ ALTER TABLE `term`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `uID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `uID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT for table `year`
@@ -1794,7 +2142,7 @@ ALTER TABLE `year`
 -- AUTO_INCREMENT for table `year_req`
 --
 ALTER TABLE `year_req`
-  MODIFY `yrID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `yrID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables

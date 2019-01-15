@@ -10,7 +10,7 @@ class mdl_Prospectus extends CI_Model{
 
 	function populate($prosID = NULL){
 		$sql = $this->db->query("SELECT name, description FROM reports WHERE module = 'reports_prospectus'")->row();
-		$specs = $this->db->get('specialization')->result();
+		$specs = $this->db->get_where('specialization', "prosID = $prosID")->result();
 
 		if($prosID){
 			foreach($specs as $s){
@@ -53,10 +53,11 @@ class mdl_Prospectus extends CI_Model{
 
 			foreach($sems as $sem){
 				$term = $y->yearDesc.' - '.$sem->semDesc;
-				$holder = [];
+				$holder = $last_added = [];
+				$tot_units = 0;
 
 				$subjects = $this->db->query("
-					SELECT s.subID,s.id,sp.specID,s.subCode,s.subDesc,s.type,s.units,s.nonSub_pre,(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
+					SELECT s.subID,s.id,sp.specID,sp.specColor,s.subCode,s.subDesc,s.type,s.units,s.total_units,s.total_units,s.nonSub_pre,(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
 					FROM subject s
 					INNER JOIN specialization sp ON s.specID = sp.specID
 					WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID." AND s.semID = ".$sem->semID."
@@ -70,11 +71,27 @@ class mdl_Prospectus extends CI_Model{
 						INNER JOIN subject_req sr ON s.subID = sr.subID AND s.subID = ".$subject->subID."
 					")->result();
 
-					$holder[] = ['subject'=>$subject,'sub_req'=>$sub_req];
+					if($last_added){
+						if($last_added->id != $subject->id){
+							$tot_units += $subject->total_units;
+						}
+					}else{
+						$tot_units = $subject->total_units;
+					}
 
+					$lec = $lab = 0;
+
+					if($subject->type == 'lec'){
+						$lec = $subject->units;
+					}else if($subject->type == 'lab'){
+						$lab = $subject->units;
+					}
+
+					$holder[] = ['subject'=>$subject,'sub_req'=>$sub_req, 'lec'=>$lec,'lab'=>$lab];	
+					$last_added = $subject;
 				}
-
-				$holder2[] = ['term' => $term, 'subjects' => $holder];
+				$this->prepare_subject($holder);
+				$holder2[] = ['term' => $term, 'subjects' => $holder, 'tot_units'=>$tot_units];
 
 			}
 
@@ -91,42 +108,103 @@ class mdl_Prospectus extends CI_Model{
 
 	}
 
-	// function get_subjects2($prosID){
-	// 	//echo $prosID; die();
-	// 	$holder2 = [];
-	// 	$query2 = $this->db->select('CONCAT(c.courseDesc," (",c.courseCode,")") AS description,p.effectivity')->get_where('course c,prospectus p', 'p.courseID = c.courseID AND p.prosID = '.$prosID, 1);
-	// 	$prospectus = $query2->row_array();
+	private function prepare_subject(&$subjects){
+		$container = [];
+		foreach($subjects as $s){
+			$insert = true;
+			$i = 0;
+			foreach($container as $c){
+				//die(var_dump($s));
+				if($c['subject']->id == $s['subject']->id){
+					if($s['subject']->type == 'lec'){
+						$container[$i]['lec'] = $s['subject']->units;	
+					}else{
+						$container[$i]['lab'] = $s['subject']->units;	
+					}
+					$insert = false;
+					break;
+				}
+				++$i;
+			}
+			if($insert){
+				$container[] = $s;
+			}
+		}
 
-	// 	$query3 = $this->db->select('y.yearID')->group_by('y.duration')->order_by('y.duration','ASC')->get_where('subject s, year y', 's.yearID=y.yearID AND s.prosID='.$prosID);
+		$subjects = $container;
+	}
 
-	// 	foreach($query3->result_array() as $row3){
-	// 		$query4 = $this->db->select('sem.semID,sem.semDesc,y.yearDesc')->group_by('sem.semID')->order_by('sem.semOrder','ASC')->get_where('subject s, semester sem, year y','s.yearID=y.yearID AND s.semID=sem.semID AND s.prosID = '.$prosID.' AND s.yearID = '.$row3['yearID']);
-	// 		foreach($query4->result_array() as $row4){
+	function get_subjects2($prosID, $val = NULL){
+		$holder2 = [];
+		$data['prospectus'] = $this->db->query("
+			SELECT CONCAT(c.courseDesc,' (',c.courseCode,')') AS description,p.effectivity 
+			FROM prospectus p  
+			INNER JOIN course c ON p.courseID=c.courseID 
+			WHERE p.prosID = $prosID LIMIT 1
+		")->row();
 
-	// 			$term =  $row4['yearDesc'].' - '.$row4['semDesc'];
+		$data['specializations'] = $this->db->get_where('specialization', "prosID = $prosID")->result();
 
-	// 			$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,s.type,s.units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req')->get_where('subject s','s.prosID = '.$prosID.' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
-	// 			$row5 = $query5->result_array();
+		$years = $this->db->query("SELECT y.yearID, y.yearDesc FROM subject s INNER JOIN year y ON s.yearID = y.yearID WHERE s.prosID = $prosID GROUP BY y.yearID ORDER BY y.duration ASC")->result();
 
-	// 			foreach($row5 as $val){
+		foreach($years as $y){
+			$sems = $this->db->query("
+				SELECT sem.semID, sem.semDesc FROM subject s 
+				INNER JOIN semester sem ON s.semID=sem.semID 
+				WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID."
+				GROUP BY sem.semID
+				ORDER BY sem.semOrder ASC
+			")->result();
 
-	// 				$query6 = $this->db->select('sr.req_subID,req_type, (SELECT subCode FROM subject WHERE subID = sr.req_subID) req_code')->get_where('subject s, subject_req sr','sr.subID=s.subID AND s.subID = '.$val['subID']);
-	// 				$row6 = $query6->result_array();
+			foreach($sems as $sem){
+				$term = $y->yearDesc.' - '.$sem->semDesc;
+				$holder = $last_added = [];
+				$tot_units = 0;
 
-	// 				$holder[] = ['subject'=>$val,'sub_req'=>$row6];
-	// 			}
+				$subjects = $this->db->query("
+					SELECT s.subID,s.id,sp.specID,s.subCode,s.subDesc,s.type,s.units,s.total_units,s.nonSub_pre,(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
+					FROM subject s
+					INNER JOIN specialization sp ON s.specID = sp.specID
+					WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID." AND s.semID = ".$sem->semID."
+				")->result();
+				//die($this->db->last_query());
+				foreach($subjects as $subject){
+					
+					$sub_req = $this->db->query("
+						SELECT sr.req_subID,req_type, (SELECT subCode FROM subject WHERE subID = sr.req_subID) req_code
+						FROM subject s 
+						INNER JOIN subject_req sr ON s.subID = sr.subID AND s.subID = ".$subject->subID."
+					")->result();
 
-	// 			$holder2[] = array(
-	// 								'term' => $term,
-	// 								'subjects' => $holder
-	// 							);
-	// 			$holder = [];
-	// 		}
-	// 	}
+					if($last_added){
+						if($last_added->id != $subject->id){
+							$tot_units += $subject->total_units;
+						}	
+					}else{
+						$tot_units = $subject->total_units;
+					}
+					
 
-	// 	$output = ['prospectus'=>$prospectus, 'subjects'=>$holder2];
-	// 	echo json_encode($output);
-	// }
+					$holder[] = ['subject'=>$subject,'sub_req'=>$sub_req];
+					$last_added = $subject;
+				}
+
+				$holder2[] = ['term' => $term, 'subjects' => $holder, 'tot_units'=>$tot_units];
+
+			}
+
+		}
+
+		$data['subjects'] = $holder2;
+
+		if($val == NULL){
+			echo json_encode($data);	
+		}else{
+			return $data;
+		}
+		
+
+	}
 
 }
 

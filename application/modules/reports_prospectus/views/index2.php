@@ -86,27 +86,17 @@
                      <table class="table is-fullwidth">
                         <thead>
                            <tr class="tbl-headers">
-                              <th width="20%">Course Code</th>
-                              <th width="30%">Description</th>
-                              <th width="30%" colspan="3" style="text-align: center">Units</th>
-                              <th width="20%">Pre-requisite / Remarks</th>   
-                           </tr>        
-                           <tr class="tbl-headers">
-                              <td></td>
-                              <td></td>
-                              <th style="text-align: center">lec</th>
-                              <th style="text-align: center">lab</th>
-                              <th style="text-align: center">total</th>
-                              <td></td>
-                           </tr>                   
+                              <th width="28%">Subject Code</th>
+                              <th width="32%">Description</th>
+                              <th width="12%" style="text-align: center" width="5%">Units</th>
+                              <th width="28%">Pre-requisite / Remarks</th>   
+                           </tr>                           
                         </thead>
                         <tbody>
-                           <tr :style="{color: row.subject.specColor}" v-for="row of subject.subjects">
+                           <tr v-for="row of subject.subjects">
                               <td> {{row.subject.subCode}} <span v-if="row.subject.type == 'lab'"><b>(lab)</b></span> </td>
                               <td> {{row.subject.subDesc}} </td>
-                              <td style="text-align: center"> {{row.lec}} </td>
-                              <td style="text-align: center"> {{row.lab}} </td>
-                              <td style="text-align: center"> {{row.subject.total_units}} </td>
+                              <td style="text-align: center"> {{row.subject.units}} </td>
                               <td>
                                  <span v-for="row2 of row.sub_req">
                                     <span v-if="row2.req_type == 2">
@@ -123,7 +113,7 @@
                            </tr>
                            <tr>
                               <td colspan="2"></td>
-                              <th colspan="3" style="text-align: center">Total units: {{subject.tot_units}}</th>
+                              <th style="text-align: center">{{subject.tot_units}}</th>
                               <td></td>
                            </tr>
                         </tbody>
@@ -151,7 +141,7 @@
                               </tr>
                            </thead>
                            <tbody>
-                              <tr :style="{color: sp.specColor}" v-for="sp of specializations">
+                              <tr v-for="sp of specializations">
                                  <td style="text-align: left"> {{sp.specDesc}} </td>
                                  <td> {{sp.total}} </td>
                                  <td>units</td>
@@ -307,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                for(let spec of specs){
                   if(spec.specID == s.subject.specID){
-                     spec.total += Number(s.subject.total_units)
+                     spec.total += Number(s.subject.units)
                      break
                   }
                }

@@ -1,4 +1,4 @@
-
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-swatches/vue-swatches.min.css">
 <section id="app" class="section" v-cloak>
 	<div class="container">
 		<h3 class="title is-3 my-title"> {{page_title}} </h3>
@@ -60,16 +60,18 @@
 				<thead>
 					<th>Specialization</th>
 					<th>Prospectus</th>
+					<th>Color</th>
 					<th>View</th>
 				</thead>
 
-				<td colspan="2" class="has-text-centered" v-show="loading">Loading please wait ...</td>
-				<td colspan="2" class="has-text-centered" v-show="msg">No record found</td>
+				<td colspan="4" class="has-text-centered" v-show="loading">Loading please wait ...</td>
+				<td colspan="4" class="has-text-centered" v-show="msg">No record found</td>
 
 				<tbody v-show="!loading">
 					<tr v-for="record, i in records">
 						<td>{{record.specDesc}}</td>
 						<td> {{record.prosCode}} </td>
+						<td> <swatches v-model="record.specColor" disabled></swatches> </td>
 						<td>
 							<a :href="page.show + '/' + record.specID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
 						</td>
@@ -101,7 +103,7 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
-
+	Vue.component('swatches', window.VueSwatches.default)	
 	Vue.component('paginate', VuejsPaginate);
 
 	new Vue({
@@ -199,3 +201,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-paginate/vue-paginate.js"></script>
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swatches/vue-swatches.min.js"></script>

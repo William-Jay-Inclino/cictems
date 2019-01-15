@@ -17,6 +17,7 @@ class mdl_Special extends CI_Model{
 		//print_r($_POST);
 		$exist = false;
 		$data['specDesc'] = $this->input->post('spec');
+		$data['specColor'] = $this->input->post('color');
 		$data['prosID'] = $this->input->post('pros')['prosID'];
 
 		$this->check_exist($data,$exist);
@@ -44,7 +45,7 @@ class mdl_Special extends CI_Model{
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT s.specID, p.prosCode, s.specDesc 
+				SELECT s.specID, p.prosCode, s.specDesc,s.specColor
 				FROM specialization s
 				INNER JOIN prospectus p ON s.prosID = p.prosID
 				ORDER BY p.prosType,p.prosCode ASC
@@ -53,7 +54,7 @@ class mdl_Special extends CI_Model{
 			$num_records = $this->count_all();
 		}else{
 			$query = $this->db->query("
-				SELECT s.specID, p.prosCode, s.specDesc 
+				SELECT s.specID, p.prosCode, s.specDesc,s.specColor
 				FROM specialization s
 				INNER JOIN prospectus p ON s.prosID = p.prosID
 				WHERE $option LIKE '%".$search_val."%' 
@@ -73,7 +74,7 @@ class mdl_Special extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT s.specID, s.specDesc, p.prosCode,s.prosID 
+			SELECT s.specID, s.specDesc, p.prosCode,s.prosID,s.specColor 
 			FROM specialization s 
 			INNER JOIN prospectus p ON s.prosID = p.prosID 
 			WHERE specID = $id LIMIT 1
@@ -84,6 +85,7 @@ class mdl_Special extends CI_Model{
 	function update(){
 		$exist = false;
 		$id = $this->input->post('id');
+		$data['specColor'] = $this->input->post('color');
 		$data['specDesc'] = $this->input->post('spec');
 		$data['prosID'] = $this->input->post('pros')['prosID'];
 		
