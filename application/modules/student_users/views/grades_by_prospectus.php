@@ -15,7 +15,7 @@
 	             </h6>
 	             <hr>
 	             <div class="table__wrapper">
-		             <table class="table is-fullwidth is-bordered">
+		             <table class="table is-fullwidth">
 		                <thead>
 		                   <th width="5%">Grade</th>
 		                   <th width="15%">Subject Code</th>
@@ -51,16 +51,17 @@
 										<td> <?php echo $row['subject']['units'] ?> </td>
 										<td>
 											<?php 
-												foreach($row['sub_req'] as $row2){
-													if($row2['req_type'] == 2){
-														echo 'Corequisite'.' '.$row2['req_code'];
+												foreach($row['sub_req'] as $sr){
+													if($sr['req_type'] == 2){
+														echo "Corequisite ";
 													}
+													echo $sr['req_code'];
 												}
-												echo $row['subject']['year_req'].' ';
 												if($row['subject']['year_req']){
-													echo "Standing";
-												}
-											?>
+													echo $row['subject']['year_req'].' Standing';
+												} 
+												echo $row['subject']['nonSub_pre'];
+										 	?>
 										</td>
 										<td> <?php echo $term[1] ?> </td>
 										<td> <?php echo $term[2] ?> </td>

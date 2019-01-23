@@ -9,7 +9,7 @@
 
 <section class="section" id="app" v-cloak>
 	<div class="container">
-		<h3 class="title is-3 my-title">Payment Transaction Logs</h3>
+		<h3 class="title is-3 my-title">Payment Logs</h3>
 		<div class="box">
 			<div class="columns">
 				<div class="column is-half">

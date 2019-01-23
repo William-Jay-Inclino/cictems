@@ -17,6 +17,9 @@
 		color: #d9534f;
 		font-weight: bold;
 	}
+	.table__wrapper {
+      overflow-x: auto;
+    }
 </style>
 <section id="app" class="section" v-cloak>
 	<div class="container" style="max-width: 600px">
@@ -26,160 +29,162 @@
 			  <img src="<?php echo base_url(); ?>assets/img/avatar.png">
 			</figure>
 			<hr>
-			<table class="table is-fullwidth">
-				<tr :class="{'active-input': editName}">
-					<td><b>Name</b></td>
-					<td>
-						<span v-if="editName">
-							<input type="text" v-model="form.fn" class="input" autofocus="true" placeholder="Firstname" @keyup.enter="save('name')"> 
-							<p class="help dang-msg"> {{error.fn}} </p>
-							<br>
-							<input type="text" v-model="form.mn" class="input" placeholder="Middlename" @keyup.enter="save('name')"> <br>
-							<p>&nbsp;</p>
-							<input type="text" v-model="form.ln" class="input" placeholder="Lastname" @keyup.enter="save('name')">
-							<p class="help dang-msg"> {{error.ln}} </p>
-							<hr>
-							<button class="button is-link is-small" @click="save('name')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{fullName}}
-						</span>
-					</td>
-					<td>
-						<?php if($roleID != 4): ?>
-						<span v-if="editName">
-							<button class="button is-small" @click="editName = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('name')"><i class="fa fa-pencil"></i></button>
-						</span>
-						<?php endif ?>
-					</td>
-				</tr>
-				<tr :class="{'active-input': editSex}">
-					<td><b>Sex</b></td>
-					<td>
-						<span v-if="editSex">
-							<div class="select">
-							  <select v-model="form.sex">
-							    <option value="Male">Male</option>
-							    <option value="Female">Female</option>
-							  </select>
-							</div>
-							<hr>
-							<button class="button is-link is-small" @click="save('sex')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{sex}}
-						</span>
-					</td>
-					<td>
-						<?php if($roleID != 4): ?>
-						<span v-if="editSex">
-							<button class="button is-small" @click="editSex = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('sex')"><i class="fa fa-pencil"></i></button>
-						</span>
-						<?php endif ?>
-					</td>
-				</tr>
-				<tr :class="{'active-input': editDob}">
-					<td><b>Date of birth</b></td>
-					<td>
-						<span v-if="editDob">
-							<input type="date" v-model="form.dob" class="input" autofocus="true" @keyup.enter="save('dob')">
-							<p class="help"><i>Month / Day / Year</i></p>
-							<p class="help dang-msg"> {{error.dob}} </p>
-							<hr>
-							<button class="button is-link is-small" @click="save('dob')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{dob}}
-						</span>
-					</td>
-					<td>
-						<?php if($roleID != 4): ?>
-						<span v-if="editDob">
-							<button class="button is-small" @click="editDob = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('dob')"><i class="fa fa-pencil"></i></button>
-						</span>
-						<?php endif ?>
-					</td>
-				</tr>
-				<tr :class="{'active-input': editCn}">
-					<td><b>Contact No.</b></td>
-					<td>
-						<span v-if="editCn">
-							<input type="text" class="input" v-model.trim="form.cn" onpaste="return false;" onKeyPress="if(this.value.length==11 && event.keyCode>47 && event.keyCode < 58)return false;" autofocus="true" maxlength="11" @keyup.enter="save('cn')">
-							<hr>
-							<button class="button is-link is-small" @click="save('cn')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{cn}}
-						</span>
-					</td>
-					<td>
-						<span v-if="editCn">
-							<button class="button is-small" @click="editCn = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('cn')"><i class="fa fa-pencil"></i></button>
-						</span>
-					</td>
-				</tr>
-				<tr :class="{'active-input': editAddress}">
-					<td><b>Address</b></td>
-					<td>
-						<span v-if="editAddress">
-							<input type="text" v-model="form.address" class="input" autofocus="true" @keyup.enter="save('address')">
-							<hr>
-							<button class="button is-link is-small" @click="save('address')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{address}}
-						</span>
-					</td>
-					<td>
-						<span v-if="editAddress">
-							<button class="button is-small" @click="editAddress = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('address')"><i class="fa fa-pencil"></i></button>
-						</span>
-					</td>
-				</tr>
-				<tr :class="{'active-input': editEmail}">
-					<td><b>Email</b></td>
-					<td>
-						<span v-if="editEmail">
-							<input type="email" v-model="form.email" class="input" autofocus="true" @keyup.enter="save('email')">
-							<p class="help dang-msg"> {{error.email}} </p>
-							<hr>
-							<button class="button is-link is-small" @click="save('email')">Save Changes</button>
-							<br><br>
-						</span>
-						<span v-else>
-							{{email}}
-						</span>
-					</td>
-					<td>
-						<span v-if="editEmail">
-							<button class="button is-small" @click="editEmail = false"><i class="fa fa-times has-text-danger"></i></button>
-						</span>
-						<span v-else>
-							<button class="button is-small" @click="focus('email')"><i class="fa fa-pencil"></i></button>
-						</span>
-					</td>
-				</tr>
-			</table>
+			<div class="table__wrapper">
+				<table class="table is-fullwidth">
+					<tr :class="{'active-input': editName}">
+						<td><b>Name</b></td>
+						<td>
+							<span v-if="editName">
+								<input type="text" v-model="form.fn" class="input" autofocus="true" placeholder="Firstname" @keyup.enter="save('name')"> 
+								<p class="help dang-msg"> {{error.fn}} </p>
+								<br>
+								<input type="text" v-model="form.mn" class="input" placeholder="Middlename" @keyup.enter="save('name')"> <br>
+								<p>&nbsp;</p>
+								<input type="text" v-model="form.ln" class="input" placeholder="Lastname" @keyup.enter="save('name')">
+								<p class="help dang-msg"> {{error.ln}} </p>
+								<hr>
+								<button class="button is-link is-small" @click="save('name')">Save Changes</button>
+								<br><br>
+							</span>
+							<span v-else>
+								{{fullName}}
+							</span>
+						</td>
+						<td>
+							<?php if($roleID != 4): ?>
+							<span v-if="editName">
+								<button class="button is-small" @click="editName = false"><i class="fa fa-times has-text-danger"></i></button>
+							</span>
+							<span v-else>
+								<button class="button is-small" @click="focus('name')"><i class="fa fa-pencil"></i></button>
+							</span>
+							<?php endif ?>
+						</td>
+					</tr>
+					<tr :class="{'active-input': editSex}">
+						<td><b>Sex</b></td>
+						<td>
+							<span v-if="editSex">
+								<div class="select">
+								  <select v-model="form.sex">
+								    <option value="Male">Male</option>
+								    <option value="Female">Female</option>
+								  </select>
+								</div>
+								<hr>
+								<button class="button is-link is-small" @click="save('sex')">Save Changes</button>
+								<br><br>
+							</span>
+							<span v-else>
+								{{sex}}
+							</span>
+						</td>
+						<td>
+							<?php if($roleID != 4): ?>
+							<span v-if="editSex">
+								<button class="button is-small" @click="editSex = false"><i class="fa fa-times has-text-danger"></i></button>
+							</span>
+							<span v-else>
+								<button class="button is-small" @click="focus('sex')"><i class="fa fa-pencil"></i></button>
+							</span>
+							<?php endif ?>
+						</td>
+					</tr>
+					<tr :class="{'active-input': editDob}">
+						<td><b>Date of birth</b></td>
+						<td>
+							<span v-if="editDob">
+								<input type="date" v-model="form.dob" class="input" autofocus="true" @keyup.enter="save('dob')">
+								<p class="help"><i>Month / Day / Year</i></p>
+								<p class="help dang-msg"> {{error.dob}} </p>
+								<hr>
+								<button class="button is-link is-small" @click="save('dob')">Save Changes</button>
+								<br><br>
+							</span>
+							<span v-else>
+								{{dob}}
+							</span>
+						</td>
+						<td>
+							<?php if($roleID != 4): ?>
+							<span v-if="editDob">
+								<button class="button is-small" @click="editDob = false"><i class="fa fa-times has-text-danger"></i></button>
+							</span>
+							<span v-else>
+								<button class="button is-small" @click="focus('dob')"><i class="fa fa-pencil"></i></button>
+							</span>
+							<?php endif ?>
+						</td>
+					</tr>
+					<tr :class="{'active-input': editCn}">
+						<td><b>Contact No.</b></td>
+						<td>
+							<span v-if="editCn">
+								<input type="tel" class="input" v-model.trim="form.cn" onpaste="return false;" onKeyPress="if(this.value.length==11 && event.keyCode>47 && event.keyCode < 58)return false;" autofocus="true" maxlength="11" @keyup.enter="save('cn')">
+								<hr>
+								<button class="button is-link is-small" @click="save('cn')">Save Changes</button>
+								<br><br>
+							</span>
+							<span v-else>
+								{{cn}}
+							</span>
+						</td>
+						<td>
+							<span v-if="editCn">
+								<button class="button is-small" @click="editCn = false"><i class="fa fa-times has-text-danger"></i></button>
+							</span>
+							<span v-else>
+								<button class="button is-small" @click="focus('cn')"><i class="fa fa-pencil"></i></button>
+							</span>
+						</td>
+					</tr>
+					<tr :class="{'active-input': editAddress}">
+						<td><b>Address</b></td>
+						<td>
+							<span v-if="editAddress">
+								<input type="text" v-model="form.address" class="input" autofocus="true" @keyup.enter="save('address')">
+								<hr>
+								<button class="button is-link is-small" @click="save('address')">Save Changes</button>
+								<br><br>
+							</span>
+							<span v-else>
+								{{address}}
+							</span>
+						</td>
+						<td>
+							<span v-if="editAddress">
+								<button class="button is-small" @click="editAddress = false"><i class="fa fa-times has-text-danger"></i></button>
+							</span>
+							<span v-else>
+								<button class="button is-small" @click="focus('address')"><i class="fa fa-pencil"></i></button>
+							</span>
+						</td>
+					</tr>
+					<tr :class="{'active-input': editEmail}">
+						<td><b>Email</b></td>
+						<td>
+							<span v-if="editEmail">
+								<input type="email" v-model="form.email" class="input" autofocus="true" @keyup.enter="save('email')">
+								<p class="help dang-msg"> {{error.email}} </p>
+								<hr>
+								<button class="button is-link is-small" @click="save('email')">Save Changes</button>
+								<br><br>
+							</span>
+							<span v-else>
+								{{email}}
+							</span>
+						</td>
+						<td>
+							<span v-if="editEmail">
+								<button class="button is-small" @click="editEmail = false"><i class="fa fa-times has-text-danger"></i></button>
+							</span>
+							<span v-else>
+								<button class="button is-small" @click="focus('email')"><i class="fa fa-pencil"></i></button>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 

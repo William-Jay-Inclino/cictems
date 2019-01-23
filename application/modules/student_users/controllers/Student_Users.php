@@ -66,6 +66,11 @@ class Student_Users extends MY_Controller{
 		$this->_data['module_view'] = 'payment_logs';
 		echo Modules::run($this->_template, $this->_data);
 	}
+	function prospectus(){
+		$this->_data['current_module'] = 8;
+		$this->_data['module_view'] = 'prospectus';
+		echo Modules::run($this->_template, $this->_data);
+	}
 
 	function enrolment_populate(){
 		$this->mdl_student_users->enrolment_populate($this->_data['current_term']->termID);
@@ -93,6 +98,10 @@ class Student_Users extends MY_Controller{
 
 	function populate_class_sched(){
 		$this->mdl_student_users->populate_class_sched();
+	}
+
+	function prospectus_populate(){
+		$this->mdl_student_users->prospectus_populate();	
 	}
 
 	function get_class_list($termID){

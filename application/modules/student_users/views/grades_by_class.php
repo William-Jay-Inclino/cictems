@@ -20,28 +20,47 @@
 						<div class="table__wrapper">
 							<table class="table is-fullwidth">
 								<tr class="tbl-headers">
-									<th width="15%" rowspan="5" style="text-align: center; vertical-align: middle; background-color: white">
+									<!-- <th width="15%" rowspan="5" style="text-align: center; vertical-align: middle; background-color: white">
 										<?php echo $cc['class']->classCode ?>
-									</th>
-				                    <th width="17%">Description</th>
-				                    <th width="17%">Day</th>
-				                    <th width="17%">Time</th>
-				                    <th width="17%">Room</th>
-				                    <th colspan="2" width="17%">Instructor</th>
+									</th> -->
+									<th width="16.66%">Course code</th>
+				                    <th width="16.66%">Description</th>
+				                    <th width="16.66%">Day</th>
+				                    <th width="16.66%">Time</th>
+				                    <th width="16.66%">Room</th>
+				                    <th width="16.66%">Instructor</th>
 								</tr>
 								<tr>
+									<td> <?php echo $cc['class']->classCode ?> </td>
 									<td> <?php echo $cc['class']->subDesc ?> </td>
 									<td> <?php echo $cc['class']->day ?> </td>
 									<td> <?php echo $cc['class']->class_time ?> </td>
-									<td> <?php echo $cc['class']->roomName ?> </td>
-									<td colspan="2"> <?php echo $cc['class']->faculty ?> </td>
+									<td> 
+										<?php 
+											if($cc['class']->roomID == 0){
+												echo "<span style='color: #ff3860;'>Unassigned<span>";
+											}else{
+												echo $cc['class']->roomName;	
+											}
+										?> 
+									</td>
+									<td> 
+										<?php 
+											if($cc['class']->facID == 0){
+												echo "<span style='color: #ff3860;'>Unassigned<span>";
+											}else{
+												echo $cc['class']->ln.', '.$cc['class']->fn; 	
+											}
+										?> 
+									</td>
 								</tr>
 								<tr class="tbl-headers">
 									<th>Prelim</th>
 				                     <th>Midterm</th>
 				                     <th>Prefi</th>
 				                     <th>Finals</th>
-				                     <th colspan="2">Final Grade</th>
+				                     <th>Final Grade</th>
+				                     <th>Remarks</th>
 								</tr>
 								<tr>
 									<td> <?php echo $cc['class']->prelim ?> &nbsp; </td>
@@ -50,9 +69,7 @@
 									<td> <?php echo $cc['class']->final ?> </td>
 									<td> <?php echo $cc['class']->finalgrade ?> </td>
 									<td> <?php echo $cc['equiv'] ?> </td>
-								</tr>
-								<tr>
-									<td colspan="6">Remark: <?php echo $cc['class']->remarks ?> </td>
+									<td> <?php echo $cc['class']->remarks ?> </td>
 								</tr>
 							</table>
 						</div>

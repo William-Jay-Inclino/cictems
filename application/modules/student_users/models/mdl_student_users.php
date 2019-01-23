@@ -27,7 +27,7 @@ class mdl_Student_Users extends CI_Model{
 
 	function get_student_classes($termID){
 		return $this->db->query("
-			SELECT s.subCode,s.subDesc,s.type,s.units,d.dayDesc,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) faculty
+			SELECT s.subCode,s.subDesc,s.type,s.units,d.dayDesc,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn,r.roomID,f.facID
 			FROM studclass sc
 			INNER JOIN class c ON sc.classID = c.classID 
 			INNER JOIN day d ON c.dayID = d.dayID 
@@ -93,7 +93,7 @@ class mdl_Student_Users extends CI_Model{
 
 				$term =  $row4['yearDesc'].' - '.$row4['semDesc'];
 
-				$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,s.units,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req,(SELECT sg.sgGrade FROM studgrade sg,student stud,subject sub WHERE sg.studID=stud.studID AND sg.subID=sub.subID AND sg.studID = '.$studID.' AND sg.subID = s.subID ORDER BY sg.sgGrade ASC LIMIT 1) grade,(SELECT CONCAT(sg.grade_type,"|",t.schoolYear,"|",sem.semDesc) FROM term t,semester sem,studgrade sg WHERE sg.termID = t.termID AND t.semID=sem.semID AND sg.subID = s.subID AND sg.studID = '.$studID.') term')->get_where('subject s','s.prosID = '.$row['prosID'].' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
+				$query5 = $this->db->select('s.subID, s.subCode,s.subDesc,s.units,s.nonSub_pre,(SELECT y.yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req,(SELECT sg.sgGrade FROM studgrade sg,student stud,subject sub WHERE sg.studID=stud.studID AND sg.subID=sub.subID AND sg.studID = '.$studID.' AND sg.subID = s.subID ORDER BY sg.sgGrade ASC LIMIT 1) grade,(SELECT CONCAT(sg.grade_type,"|",t.schoolYear,"|",sem.semDesc) FROM term t,semester sem,studgrade sg WHERE sg.termID = t.termID AND t.semID=sem.semID AND sg.subID = s.subID AND sg.studID = '.$studID.') term')->get_where('subject s','s.prosID = '.$row['prosID'].' AND s.yearID = '.$row3['yearID'].' AND s.semID = '.$row4['semID']);
 				$row5 = $query5->result_array();
 
 				foreach($row5 as $val){
@@ -137,7 +137,7 @@ class mdl_Student_Users extends CI_Model{
 
 		foreach ($terms as $term) {
 			$sql2 = $this->db->query("
-				SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,CONCAT(u.ln,', ',u.fn,' ',u.mn) faculty,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
+				SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn,r.roomID,f.facID,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
 				FROM studclass sc  
 				INNER JOIN class c ON sc.classID = c.classID 
 				INNER JOIN subject s ON c.subID = s.subID  
@@ -313,6 +313,110 @@ class mdl_Student_Users extends CI_Model{
 
 	}
 
+	function prospectus_populate(){
+		$data['dean'] = $this->db->query("SELECT name, description FROM reports WHERE module = 'reports_prospectus' LIMIT 1")->row();
+		$prosID = $this->db->query("
+			SELECT prosID FROM studprospectus 
+			WHERE studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID').") LIMIT 1
+		")->row()->prosID;
+
+		$holder2 = [];
+		$data['prospectus'] = $this->db->query("
+			SELECT CONCAT(c.courseDesc,' (',c.courseCode,')') AS description,p.effectivity 
+			FROM prospectus p  
+			INNER JOIN course c ON p.courseID=c.courseID 
+			WHERE p.prosID = $prosID LIMIT 1
+		")->row();
+
+		$data['specializations'] = $this->db->get_where('specialization', "prosID = $prosID")->result();
+
+		$years = $this->db->query("SELECT y.yearID, y.yearDesc FROM subject s INNER JOIN year y ON s.yearID = y.yearID WHERE s.prosID = $prosID GROUP BY y.yearID ORDER BY y.duration ASC")->result();
+
+		foreach($years as $y){
+			$sems = $this->db->query("
+				SELECT sem.semID, sem.semDesc FROM subject s 
+				INNER JOIN semester sem ON s.semID=sem.semID 
+				WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID."
+				GROUP BY sem.semID
+				ORDER BY sem.semOrder ASC
+			")->result();
+
+			foreach($sems as $sem){
+				$term = $y->yearDesc.' - '.$sem->semDesc;
+				$holder = $last_added = [];
+				$tot_units = 0;
+
+				$subjects = $this->db->query("
+					SELECT s.subID,s.id,sp.specID,sp.specColor,s.subCode,s.subDesc,s.type,s.units,s.total_units,s.total_units,s.nonSub_pre,(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
+					FROM subject s
+					INNER JOIN specialization sp ON s.specID = sp.specID
+					WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID." AND s.semID = ".$sem->semID."
+				")->result();
+
+				foreach($subjects as $subject){
+
+					$sub_req = $this->db->query("
+						SELECT sr.req_subID,req_type, (SELECT subCode FROM subject WHERE subID = sr.req_subID) req_code
+						FROM subject s 
+						INNER JOIN subject_req sr ON s.subID = sr.subID AND s.subID = ".$subject->subID."
+					")->result();
+
+					if($last_added){
+						if($last_added->id != $subject->id){
+							$tot_units += $subject->total_units;
+						}
+					}else{
+						$tot_units = $subject->total_units;
+					}
+
+					$lec = $lab = 0;
+
+					if($subject->type == 'lec'){
+						$lec = $subject->units;
+					}else if($subject->type == 'lab'){
+						$lab = $subject->units;
+					}
+
+					$holder[] = ['subject'=>$subject,'sub_req'=>$sub_req, 'lec'=>$lec,'lab'=>$lab];	
+					$last_added = $subject;
+				}
+				$this->prepare_subject($holder);
+				$holder2[] = ['term' => $term, 'subjects' => $holder, 'tot_units'=>$tot_units];
+
+			}
+
+		}
+
+		$data['subjects'] = $holder2;
+
+		echo json_encode($data);	
+	}
+
+	private function prepare_subject(&$subjects){
+		$container = [];
+		foreach($subjects as $s){
+			$insert = true;
+			$i = 0;
+			foreach($container as $c){
+				//die(var_dump($s));
+				if($c['subject']->id == $s['subject']->id){
+					if($s['subject']->type == 'lec'){
+						$container[$i]['lec'] = $s['subject']->units;	
+					}else{
+						$container[$i]['lab'] = $s['subject']->units;	
+					}
+					$insert = false;
+					break;
+				}
+				++$i;
+			}
+			if($insert){
+				$container[] = $s;
+			}
+		}
+
+		$subjects = $container;
+	}
 
 }
 

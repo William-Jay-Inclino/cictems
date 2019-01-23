@@ -98,6 +98,7 @@
                                  <span v-if="row.subject.year_req">
                                     Standing
                                  </span>
+                                 {{row.subject.nonSub_pre}}
                               </td>
                               <td>{{row.subject.sy}}</td>
                               <td>{{row.subject.sem}}</td>

@@ -36,9 +36,14 @@
               <a class="navbar-item" href="https://bulma.io">
                 <img src="<?php echo base_url() ?>assets/img/cictelogo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
               </a>
+              <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+              </a>
             </div>
 
-           <div id="navbarExampleTransparentExample" class="navbar-menu">
+           <div id="navMenu" class="navbar-menu">
              <div class="navbar-start">
               <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/dashboard">
                  Dashboard
@@ -61,8 +66,11 @@
               <a class="navbar-item <?php if($current_module == 3){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/class-schedules">
                  Class Schedules
               </a>
+              <a class="navbar-item <?php if($current_module == 8){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/prospectus">
+                 Prospectus
+              </a>
               <div class="navbar-item has-dropdown is-hoverable">
-                 <a class="navbar-link <?php if($current_module == 4 || $current_module == 5){echo 'nav-active';} ?>" href="#">
+                 <a class="navbar-link <?php if($current_module == 4 || $current_module == 5){echo 'nav-active';} ?>" href="javascript:void(0)">
                    Grades
                  </a>
                  <div class="navbar-dropdown is-boxed">
@@ -75,7 +83,7 @@
                  </div>
                </div>
                <div class="navbar-item has-dropdown is-hoverable">
-                 <a class="navbar-link <?php if($current_module == 6 || $current_module == 7){echo 'nav-active';} ?>" href="#">
+                 <a class="navbar-link <?php if($current_module == 6 || $current_module == 7){echo 'nav-active';} ?>" href="javascript:void(0)">
                    Payments
                  </a>
                  <div class="navbar-dropdown is-boxed">
@@ -98,7 +106,7 @@
                  
                </span>
                <div class="navbar-item has-dropdown is-hoverable">
-                  <a class="navbar-link" href="/documentation/overview/start/">
+                  <a class="navbar-link" href="javascript:void(0)">
                     <?php echo $displayedName ?>
                   </a>
                   <div class="navbar-dropdown is-boxed is-right">
@@ -145,6 +153,7 @@
         </div>
       </footer>
       
+      <script src="<?php echo base_url(); ?>assets/js/navBurger.js"></script>
      <script src="<?php echo base_url(); ?>assets/vendor/headroom/headroom.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/vendor/headroom/headroom-config.js"></script>
   </body>

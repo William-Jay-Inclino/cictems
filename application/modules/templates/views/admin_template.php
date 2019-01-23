@@ -26,11 +26,6 @@
               <a class="navbar-item" href="https://bulma.io">
                 <img src="<?php echo base_url() ?>assets/img/cictelogo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
               </a>
-              <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-              </a>
             </div>
 
            <div id="navMenu" class="navbar-menu">
@@ -218,7 +213,7 @@
       </footer>
 
      <!-- <script src="<?php echo base_url(); ?>assets/vendor/axios/axios.min.js"></script> -->
-     <script src="<?php echo base_url(); ?>assets/js/navBurger.js"></script>
+    <!--  <script src="<?php echo base_url(); ?>assets/js/navBurger.js"></script> -->
      <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-resource.js"></script>
      <script src="<?php echo base_url(); ?>assets/vendor/headroom/headroom.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/vendor/headroom/headroom-config.js"></script>

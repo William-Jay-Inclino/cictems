@@ -3,6 +3,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Settings extends CI_Model{
 
+	//student user level
+	function shared_data($termID){
+		$data['stud_enrol_status'] = 'Unenrolled';
+		
+		$data['enrol_status'] = $this->db->select('some_value')->get_where('enrolment_settings', "name = 'status'", 1)->row()->some_value;
+		$stud_enrol_status = $this->db->query("SELECT sc.status FROM studclass sc INNER JOIN class c ON sc.classID = c.classID WHERE c.termID = $termID AND sc.studID = (SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1) LIMIT 1")->row();
+
+		if($stud_enrol_status){
+			$data['stud_enrol_status'] = $stud_enrol_status->status;
+		}
+		return $data;
+	}
+
 	function read(){
 		return $this->db->query("
 			SELECT userName,userPass,(SELECT some_value FROM enrolment_settings WHERE name = 'enrollment_pw' LIMIT 1) enrolPass 

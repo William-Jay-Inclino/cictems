@@ -29,8 +29,24 @@
 									<td> <?php echo $d->units ?> </td>
 									<td> <?php echo $d->dayDesc ?> </td>
 									<td> <?php echo $d->class_time ?> </td>
-									<td> <?php echo $d->roomName ?> </td>
-									<td> <?php echo $d->faculty ?> </td>
+									<td> 
+										<?php 
+											if($d->roomID == 0){
+												echo "<span style='color: #ff3860;'>Unassigned<span>";
+											}else{
+												echo $d->roomName;	
+											}
+										?> 
+									</td>
+									<td> 
+										<?php 
+											if($d->facID == 0){
+												echo "<span style='color: #ff3860;'>Unassigned<span>";
+											}else{
+												echo $d->ln.', '.$d->fn; 	
+											}
+										?> 
+									</td>
 								</tr>
 								<?php
 							}

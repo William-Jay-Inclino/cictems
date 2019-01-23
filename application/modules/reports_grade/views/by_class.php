@@ -25,7 +25,6 @@
    <section class="section">
       <div class="container">
          <h3 class="title is-3 my-title"> {{page_title}} </h3> <br>
-         {{btnGenerate_link}}
         <button :disabled="!selected_student" @click="generateReport" class="button is-primary is-pulled-right">Generate Report</button>
          <br><br>
          <div class="box">
@@ -75,7 +74,14 @@
                      <tr v-for="cc of c.class2">
                         <td style="text-align: left">{{cc.class.classCode}} <span v-if="cc.class.type == 'lab'"><b>(lab)</b></span> </td>
                         <td style="text-align: left"> {{cc.class.subDesc}} </td>
-                        <td style="text-align: left"> {{cc.class.faculty}} </td>
+                        <td style="text-align: left">
+                           <span v-if="cc.class.facID == 0" class="has-text-danger">
+                              Unassigned
+                           </span>
+                           <span v-else>
+                              {{cc.class.faculty}}
+                           </span>
+                        </td>
                         <td> {{cc.class.prelim}} </td>
                         <td> {{cc.class.midterm}} </td>
                         <td> {{cc.class.prefi}} </td>

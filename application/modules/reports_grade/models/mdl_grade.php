@@ -94,7 +94,7 @@ class mdl_Grade extends CI_Model{
 
 		foreach ($terms as $term) {
 			$sql2 = $this->db->query("
-				SELECT c.classID,s.type,c.classCode,s.subDesc,CONCAT(u.ln,', ',u.fn) faculty,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
+				SELECT c.classID,s.type,c.classCode,s.subDesc,f.facID,CONCAT(u.ln,', ',u.fn) faculty,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
 				FROM studclass sc  
 				INNER JOIN class c ON sc.classID = c.classID 
 				INNER JOIN subject s ON c.subID = s.subID  

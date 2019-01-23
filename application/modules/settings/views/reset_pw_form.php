@@ -1,3 +1,7 @@
+<?php if($roleID == 4): ?>
+		<script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
+<?php endif ?>
+
 <style>
 	.warn-msg{
 		color: #fbac00;
@@ -307,3 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
+<?php if($roleID == 4): ?>
+		<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-resource.js"></script>
+<?php endif ?>

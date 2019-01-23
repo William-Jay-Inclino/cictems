@@ -24,6 +24,9 @@ class Settings extends MY_Controller{
 			$view = 'faculty_index';
 		}else if($this->_data['roleID'] == 3){
 			$view = 'staff_index';
+		}else if($this->_data['roleID'] == 4){
+			$view = 'student_index';
+			$this->_data['shared_data'] = $this->mdl_settings->shared_data($this->_data['current_term']->termID);
 		}
 		$this->_data['module_view'] = $view;
 		$this->_data['record'] = $this->mdl_settings->read();
@@ -39,6 +42,10 @@ class Settings extends MY_Controller{
 	}
 
 	function reset_pw_form(){
+		if($this->_data['roleID'] == 4){
+			$this->_data['shared_data'] = $this->mdl_settings->shared_data($this->_data['current_term']->termID);
+		}
+
 		$this->_data['module_view'] = 'reset_pw_form';
 		$this->_data['record'] = $this->mdl_settings->populate_form();
 		echo Modules::run($this->_template, $this->_data);
