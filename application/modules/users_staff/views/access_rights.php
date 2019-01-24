@@ -59,7 +59,7 @@
 						</div>
 					</td>
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td width="50%">Grade</td>
 					<td width="50%">
 						<div class="field">
@@ -67,7 +67,7 @@
 						  <label for="switchGrade"></label>
 						</div>
 					</td>
-				</tr>
+				</tr> -->
 				<tr>
 					<td width="50%">Payment</td>
 					<td width="50%">
@@ -134,7 +134,7 @@
 						</div>
 					</td>
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td width="50%">Class</td>
 					<td width="50%">
 						<div class="field">
@@ -142,7 +142,7 @@
 						  <label for="switchClass"></label>
 						</div>
 					</td>
-				</tr>
+				</tr> -->
 				<tr>
 					<td width="50%">Grade Formula</td>
 					<td width="50%">
@@ -153,7 +153,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="50%">Fees</td>
+					<td width="50%">Departmental Fees</td>
 					<td width="50%">
 						<div class="field">
 						  <input id="switchFees" type="checkbox" name="switchRoundedDefault" class="switch is-rounded" @change="updateAccess(13)" <?php if(in_array("13", $record['modules'])){echo 'checked="checked"';} ?>>
@@ -191,7 +191,7 @@
 						</div>
 					</td>
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td width="50%">Guardian</td>
 					<td width="50%">
 						<div class="field">
@@ -199,7 +199,7 @@
 						  <label for="switchGuard"></label>
 						</div>
 					</td>
-				</tr>
+				</tr> -->
 			</table>
 			<div class="is-divider" data-content="REPORTS"></div>
 			<table class="table is-fullwidth">
@@ -240,7 +240,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="50%">Class Schedules</td>
+					<td width="50%">Schedules</td>
 					<td width="50%">
 						<div class="field">
 						  <input id="switchRsched" type="checkbox" name="switchRoundedDefault" class="switch is-rounded" @change="updateAccess(22)" <?php if(in_array("22", $record['modules'])){echo 'checked="checked"';} ?>>
