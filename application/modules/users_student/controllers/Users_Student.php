@@ -96,7 +96,7 @@ class Users_Student extends MY_Controller{
 	}
 
 	function add_credit(){
-		$this->mdl_student->add_credit($this->_data['current_term']->termID);	
+		$this->mdl_student->add_credit();	
 	}
 
 	function remove_credit(){

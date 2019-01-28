@@ -73,6 +73,10 @@ class Maintenance_Room extends MY_Controller{
 		$this->mdl_room->is_safe_delete($id[0]);
 	}
 
+	function changeStatus(){
+		$this->mdl_room->changeStatus();	
+	}
+	
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

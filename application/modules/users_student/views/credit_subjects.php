@@ -18,14 +18,18 @@
 			</nav>
 
 			<div class="box">
-				<div class="field has-addons">
-					<div class="control" style="width: 100%">
-						  <multiselect v-model="subjects" label="subCode" track-by="id" placeholder="Enter subject code" :options="searched_subjects" :multiple="true" :searchable="true" :loading="isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :show-no-results="false" :hide-selected="true" @search-change="searchSubjects" :max-height="600">
+				<div class="columns">
+					<div class="column">
+						<label class="label">Term</label>
+						<multiselect v-model="term" label="term" track-by="termID" :options="terms" :allow-empty="false"></multiselect>
 					</div>
-					<div class="control">
-						<button @click="add_credit" :class="{'button is-primary btn-height': true, 'is-loading': is_loading_btnAdd}" :disabled="is_disabled_btnAdd">Credit</button>
+					<div class="column">
+						<label class="label">Subjects</label>
+						<multiselect v-model="subjects" label="subCode" track-by="id" placeholder="Enter subject code" :options="searched_subjects" :multiple="true" :searchable="true" :loading="isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :show-no-results="false" :hide-selected="true" @search-change="searchSubjects" :max-height="600">
+						</multiselect>
 					</div>
 				</div>
+				<button @click="add_credit" :class="{'button is-primary btn-height': true, 'is-loading': is_loading_btnAdd}" :disabled="is_disabled_btnAdd">Credit</button>
 			</div>
 
 			<div class="box">
@@ -64,6 +68,7 @@
 		new Vue({
 		    el: '#app',
 		    data: {
+		    	term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
 		    	is_loading_btnAdd: false,
 		    	studID: '<?php echo $studID ?>',
 		    	page:{
@@ -73,9 +78,11 @@
 		    	subjects: null,
 		    	searched_subjects: [],
 		    	credited_subjects: [],
+		    	terms: [],
 		    	isLoading: false,
 		    },
 		    created(){
+		    	this.get_terms()
 		    	this.get_credited_subjects()
 		    },
 		    computed: {
@@ -88,10 +95,19 @@
 		    	}
 		    },
 		    methods: {
+		    	get_terms(){
+		    		this.$http.get('<?php echo base_url() ?>reusable/get_all_term')
+		    		.then(res => {
+		    			this.terms = res.body
+		    		}, e => {
+		    			console.log(e.body)
+		    		})
+		    	},
+
 		    	get_credited_subjects(){
 		    		this.$http.get('<?php echo base_url() ?>users_student/get_credited_subjects/' + this.studID)
 		    		.then(res => {
-		    			console.log(res.body)
+		    			// console.log(res.body)
 		    			this.credited_subjects = res.body
 		    		}, e => {
 		    			console.log(e.body)
@@ -101,7 +117,7 @@
 		    		this.isLoading = true
 		    		this.$http.post('<?php echo base_url() ?>users_student/searchSubjects', {studID: this.studID, value: val})
 		    		.then(res => {
-		    			console.log(res.body)
+		    			// console.log(res.body)
 		    			this.isLoading = false
 		    			this.searched_subjects = res.body
 		    		}, e => {
@@ -111,9 +127,9 @@
 
 		    	add_credit(){
 		    		this.is_loading_btnAdd = true
-		    		this.$http.post('<?php echo base_url() ?>users_student/add_credit', {studID: this.studID, subjects: this.subjects})
+		    		this.$http.post('<?php echo base_url() ?>users_student/add_credit', {studID: this.studID, termID: this.term.termID, subjects: this.subjects})
 		    		.then(res => {
-		    			console.log(res.body)
+		    			// console.log(res.body)
 		    			swal('Success', 'Subjects successfully credited!', 'success')
 		    			this.subjects = null
 		    			this.searched_subjects = []
@@ -128,7 +144,7 @@
 		    		const sub = this.credited_subjects[i]
 		    		this.$http.post('<?php echo base_url() ?>users_student/remove_credit', {studID: this.studID, subject: sub})
 		    		.then(res => {
-		    			console.log(res.body)
+		    			// console.log(res.body)
 		    			this.credited_subjects.splice(i, 1)
 		    		}, e => {
 		    			console.log(e.body)

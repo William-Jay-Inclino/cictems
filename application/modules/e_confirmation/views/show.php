@@ -31,43 +31,30 @@
                    <tr>
                       <th style="text-align: left">Class Code</th>
                       <th style="text-align: left">Description</th>
-                      <th colspan="3" class="has-text-centered">Units</th>
+                      <th>Units</th>
                       <th>Days</th>
                       <th>Time</th>
-                   </tr>
-                   <tr>
-                      <th colspan="2"></th>
-                      <th>Lec</th>
-                      <th>Lab</th>
-                      <th>Total</th>
-                      <th colspan="2"></th>
                    </tr>
                 </thead>
                 <tbody>
                 	<?php
-                		$tot_lec = 0;
-                		$tot_lab = 0; 
+                		$tot = 0;
                 		foreach($records as $record){ ?>
 							<tr>
 								<td style="text-align: left"> <?php echo $record->classCode ?> </td>
 								<td style="text-align: left"> <?php echo $record->subDesc ?> </td>
-								<td> <?php echo $record->lec ?> </td>
-								<td> <?php echo $record->lab ?> </td>
 								<td> <?php echo $record->units ?> </td>
 								<td> <?php echo $record->day ?> </td>
 								<td> <?php echo $record->class_time ?> </td>
 							</tr>
 							<?php
-							$tot_lec += $record->lec;
-							$tot_lab += $record->lab;
+							$tot += $record->units;
                 		}
                 	?>
                    <tr>
                       <th></th>
                       <th>Total number of units: </th>
-                      <th> <?php echo $tot_lec ?> </th>
-                      <th> <?php echo $tot_lab ?> </th>
-                      <th> <?php echo $tot_lec + $tot_lab ?> </th>
+                      <th> <?php echo $tot; ?> </th>
                       <th></th>
                       <th colspan="2"></th>
                    </tr>

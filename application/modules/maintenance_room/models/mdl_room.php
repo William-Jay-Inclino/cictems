@@ -183,6 +183,12 @@ class mdl_Room extends CI_Model{
 		);
 	}
 
+	function changeStatus(){
+		$roomID = $this->input->post('roomID');
+		$data['status'] = $this->input->post('status');
+		$this->db->update('room', $data, "roomID = $roomID");
+	}
+
 }
 
 ?>

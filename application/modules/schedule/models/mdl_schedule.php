@@ -271,7 +271,19 @@ class mdl_Schedule extends CI_Model{
 		$data = $this->input->post("data");
 		$classID = $this->input->post("classID");
 
+		$c = $this->db->query("SELECT termID, secID FROM class WHERE classID = $classID LIMIT 1")->row();
+
+		$is_conflict = $this->db->query("
+			SELECT 1 FROM class WHERE termID = ".$c->termID." AND secID = ".$c->secID." AND dayID = ".$data['dayID']." AND 
+			'".$data['timeOut']."' > timeIn AND timeOut > '".$data['timeIn']."' AND classID <> $classID LIMIT 1
+		")->row();
+
+		if($is_conflict){
+			die("Unable to merge. Schedule has conflict in this section!");
+		}
+
 		$this->db->update('class', $data, "classID = $classID");
+		echo "success";
 	}
 
 	function splitClass($classID){

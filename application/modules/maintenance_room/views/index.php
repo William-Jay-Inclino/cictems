@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma_switch/bulma-switch.min.css">
 <section id="app" class="section" v-cloak>
 	<div class="container">
 		<h3 class="title is-3 my-title"> {{page_title}} </h3>
@@ -73,12 +74,8 @@
 						<td>{{record.roomLoc}}</td>
 						<td>{{record.capacity}}</td>
 						<td>
-							<span v-if="record.status == 'active'">
-								<span class="tag is-success">Active</span>
-							</span>
-							<span v-else>
-								<span class="tag is-danger">Inactive</span>
-							</span>
+							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.status == 'active'" @change="changeStatus(i)">
+						 	<label :for="i"></label>
 						</td>
 						<td>
 							<a :href="page.show + '/' + record.roomID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>
@@ -200,9 +197,35 @@ document.addEventListener('DOMContentLoaded', function() {
 	        			this.pagination = true
 	        		}
 				 })
-	        }
+	        },
+	        changeStatus(i){
+		    	const record = this.records[i]
+		    	let new_stat = ''
+		    	let msg = ''
+		    	if(record.status == 'active'){
+		    		new_stat = 'inactive'
+		    		msg = 'Status successfully deactivated!'
+		    	}else{
+		    		new_stat = 'active'
+		    		msg = 'Status successfully activated!'
+		    	}
+		    	record.status = new_stat
+		    	swal('Success', msg, 'success')
+		    	this.$http.post('<?php echo base_url() ?>maintenance_room/changeStatus', {roomID: record.roomID,status: new_stat})
+	        	.then(response => {
+	        		console.log(response.body);
+				 }, e => {
+				 	this.changeStatus(i)
+				 })
 
-	    }
+	    	},
+
+	    },
+
+		   http: {
+            emulateJSON: true,
+            emulateHTTP: true
+    		}
 	})
 
 }, false)
@@ -212,3 +235,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-paginate/vue-paginate.js"></script>
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

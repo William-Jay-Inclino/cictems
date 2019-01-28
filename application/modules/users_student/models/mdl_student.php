@@ -290,8 +290,10 @@ class mdl_Student extends CI_Model{
 
 	}
 
-	function add_credit($termID){
+	function add_credit(){
 		$studID = $this->input->post("studID");
+		$termID = $this->input->post("termID");
+
 		$subjects = $this->input->post("subjects");
 		$this->db->trans_start();
 

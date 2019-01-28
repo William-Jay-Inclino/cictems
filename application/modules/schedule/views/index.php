@@ -656,7 +656,56 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		
 
 	    	},
+	    	afterMerge(c, class_merge){
+    			c.error = false
+	    		c.timeIn = class_merge.timeIn
+	    		c.timeOut = class_merge.timeOut
+	    		c.day = {dayID: class_merge.dayID, dayDesc: class_merge.dayDesc, dayCount: class_merge.dayCount}
+	    		c.room = {roomID: class_merge.roomID, roomName: class_merge.roomName}
+	    		c.faculty = {facID: class_merge.facID, faculty: class_merge.ln + ', ' + class_merge.fn}
+	    		c.merge_to = {section: this.active_section.secName, class: class_merge.codelabel, classID: class_merge.classID}
+	    		c.msg = null
+	    		this.close_classModal()
+	    	},
 	    	mergeClass(){
+	    		const c = (this.current_sec) ? this.classes2[this.selected_index] : this.classes[this.selected_index]
+	    		const class_merge = this.selected_class
+
+	    		if(c.units != class_merge.units){
+	    			swal('Error', 'Both classes should have equal units!', 'error')
+	    		}else if(class_merge.merge_with != 0){
+	    			swal('Error', 'Unable to merge. Selected class is merged with another class!', 'error')
+	    		}else{
+		    		if(this.current_sec){
+		    			k = {
+		    				roomID: class_merge.roomID,
+		    				facID: class_merge.facID,
+		    				dayID: class_merge.dayID,
+		    				timeIn: class_merge.timeIn,
+		    				timeOut: class_merge.timeOut,
+		    				merge_with: class_merge.classID
+		    			}
+		    			//console.log(class_merge)
+		    			this.$http.post('<?php echo base_url() ?>schedule/mergeClass/', {data: k, classID: c.classID})
+		    			.then(res => {
+		    				console.log(res.body)
+		    				if(res.body == 'success'){
+		    					swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName,'success')
+		    					this.afterMerge(c, class_merge)	
+		    				}else{
+		    					swal('Error', res.body, 'error')
+		    				}
+		    				
+		    			}, e => {
+		    				console.log(e.body)
+		    			})
+		    		}else{
+		    			swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName + '(Pending)','success')
+		    			this.afterMerge(c, class_merge)
+		    		}
+	    		}
+	    	},
+	    	mergeClass2(){
 	    		const c = (this.current_sec) ? this.classes2[this.selected_index] : this.classes[this.selected_index]
 	    		const pendMsg = (this.current_sec) ? '' : ' (Pending)'
 	    		const class_merge = this.selected_class
