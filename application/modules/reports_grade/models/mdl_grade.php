@@ -125,14 +125,17 @@ class mdl_Grade extends CI_Model{
 
 	function populate($studID = NULL){
 		$sql = $this->db->query("SELECT name, description FROM reports WHERE module = 'reports_prospectus'")->row();
-		$specs = $this->db->get('specialization')->result();
 		$prosID = $this->db->select('prosID')->get_where('studprospectus', "studID = $studID", 1)->row()->prosID;
-
+		$specs = $this->db->get_where('specialization', "prosID = $prosID")->result();
+		
+		$i = 0;
 		foreach($specs as $s){
 			$total = $this->db->query("SELECT SUM(units) total FROM subject WHERE prosID = $prosID AND specID = ".$s->specID)->row()->total;
-			$holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'total'=>$total];
+			// $holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'total'=>$total];
+			$specs[$i]->total = $total;
+			++$i;
 		}
-		return ['populate'=>$sql, 'specializations'=>$holder];
+		return ['populate'=>$sql, 'specializations'=>$specs];
 	}
 
 	function get_student($studID, $val = NULL){

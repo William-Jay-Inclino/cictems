@@ -24,12 +24,6 @@
 				</p>
 			</div>
 			<div class="field">
-			  <label class="label">Description</label>
-			  <div class="control">
-				  	<textarea class="textarea" v-model.trim="form.desc" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces."></textarea>
-			  </div>
-			</div>
-			<div class="field">
 			  	<label class="label">Course</label>
 			  	<div class="control">
 				  	<multiselect v-model="form.course" track-by="courseID" label="courseCode" :options="courses"></multiselect>
@@ -39,13 +33,10 @@
 				</p>
 			</div>
 			<div class="field">
-			  <label class="label">Duration</label>
+			  <label class="label">CM0 #</label>
 			  <div class="control">
-				  	<input type="number" class="input" v-model.number.trim="form.duration" onpaste="return false;" onKeyPress="if(this.value.length==3 && event.keyCode>47 && event.keyCode < 58)return false;">
+			  		<input class="input" type="text" v-model.trim="form.desc" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
 			  </div>
-			  	<p class="help has-text-danger">
-					{{error.duration}}
-				</p>
 			</div>
 			<div class="field">
 			  <label class="label">Effectivity</label>
@@ -54,6 +45,15 @@
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.effect}}
+				</p>
+			</div>
+			<div class="field">
+			  <label class="label">Duration</label>
+			  <div class="control">
+				  	<input type="number" class="input" v-model.number.trim="form.duration" onpaste="return false;" onKeyPress="if(this.value.length==3 && event.keyCode>47 && event.keyCode < 58)return false;">
+			  </div>
+			  	<p class="help has-text-danger">
+					{{error.duration}}
 				</p>
 			</div>
 			<div class="field">

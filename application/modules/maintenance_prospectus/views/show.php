@@ -23,12 +23,12 @@
 					<td> {{pc}} </td>
 				</tr>
 				<tr>
-					<td><b>Description:</b> </td>
-					<td> {{desc}} </td>
-				</tr>
-				<tr>
 					<td><b>Course:</b> </td>
 					<td> {{course}} </td>
+				</tr>
+				<tr>
+					<td><b>CMO #:</b> </td>
+					<td> {{desc}} </td>
 				</tr>
 				<tr>
 					<td><b>Effectivity:</b> </td>

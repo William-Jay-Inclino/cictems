@@ -64,18 +64,21 @@
          <div v-show="!loader && ready">
             <div class="hero-body has-text-centered">
                 <div class="container">
-                  <h1 class="title">
+                  <h4 class="title is-4">
                     {{titlePros.description}}
-                  </h1>
-                  <h2 class="subtitle">
-                    Effectivity {{titlePros.effectivity}}
-                  </h2>
+                  </h4>
+                  <h6 class="title is-6 has-text-grey">
+                    Effective School Year {{titlePros.effectivity}}
+                  </h6>
+                  <h6 class="title is-6 has-text-grey">
+                    Revised Curriculum  {{titlePros.prosDesc}}
+                  </h6>
                 </div>
               </div>
                
-               <h2 class="subtitle has-text-centered">
+               <h6 class="title is-6 has-text-grey has-text-centered">
                   Curriculum Structure
-               </h2>
+               </h6>
                
                <div v-for="subject of subjects">
                   <div class="box">
@@ -211,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.ready = false
          }else{
             this.get_subjects(value.prosID)
-            this.btnGenerate_link += this.selected_pros.prosID
          }
       }
    },
@@ -317,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
          }
       },
       generateReport(){
-         window.open(this.btnGenerate_link, '_blank')
+         window.open(this.btnGenerate_link + this.selected_pros.prosID, '_blank')
       }
    },
 

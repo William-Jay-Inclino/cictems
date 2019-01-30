@@ -82,6 +82,10 @@ class Schedule extends MY_Controller{
 		$this->mdl_schedule->splitClass($classID[0]);	
 	}
 
+	function copySchedule(){
+		$this->mdl_schedule->copySchedule();	
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

@@ -83,6 +83,7 @@
 					<multiselect v-model="searchSection" track-by="secID" label="secName" :options="added_sections"></multiselect>
 				</div>
 			</div>
+			<button @click="copyScheduleModal = true" class="button is-primary" v-if="added_sections.length == 0">Copy Schedule</button>
 		</div>
 	</section>
 	
@@ -97,7 +98,7 @@
 	    	</li>
 	  	</ul>
 	</div>
-			
+	
 	<section class="section">
 		<div class="container">
 
@@ -417,47 +418,64 @@
 	</section>
 
 	
-
+	<div class="modal is-active" v-if="copyScheduleModal">
+       <div class="modal-background"></div>
+       <div class="modal-card">
+        <header class="modal-card-head">
+           <p class="modal-card-title">Copy Schedule</p>
+           <button class="delete" aria-label="close" @click="close_scheduleModal"></button>
+        </header>
+        <section class="modal-card-body">
+			<div class="field">
+				<label class="label">Select Term to copy schedule</label>
+				<multiselect v-model="termSchedule" track-by="termID" label="term" :options="termSchedules"></multiselect>
+			</div>
+        </section>
+        <footer class="modal-card-foot pull-right">
+           <button @click="copySchedule" :disabled="!termSchedule" class="button is-primary is-fullwidth btn-height">Copy Schedule</button>
+        </footer>
+       </div>
+	</div>
 	
 	<div class="modal is-active" v-if="classModal">
-	       <div class="modal-background"></div>
-	       <div class="modal-card">
-	        <header class="modal-card-head">
-	           <p class="modal-card-title">Merge Class</p>
-	           <button class="delete" aria-label="close" @click="close_classModal"></button>
-	        </header>
-	        <section class="modal-card-body">
-	        	<div class="field">
-	        		<label class="label">Code</label>
-	        		<div class="control" style="font-size: 14px">
-	        			{{class_to_merge.subCode}}<span if="class_to_merge.type == 'lab'"> (lab)</span>
-	        		</div>
-	        	</div>
-	        	<div class="field">
-	        		<label class="label">Description</label>
-	        		<div class="control">
-	        			<p style="font-size: 14px">{{class_to_merge.subDesc}}</p>
-	        		</div>
-	        	</div>
-	           <div class="field">
-	              <label class="label">Select section</label>
-	              <div class="control">
-	                 <multiselect @input="get_classes" v-model="active_section" track-by="secID" label="secName" :options="added_sections2" placeholder=""></multiselect>   
-	              </div>
-	           </div>
-	           <div class="field">
-	              <label class="label">Select class code</label>
-	              <div class="control">
-	                 <multiselect open-direction="bottom" v-model="selected_class" label="codelabel" track-by="classID" placeholder="" :options="class_suggestions" :loading="isLoading2">
-	                 </multiselect>      
-	              </div>
-	           </div>
-	        </section>
-	        <footer class="modal-card-foot pull-right">
-	           <button :disabled="!selected_class" @click="mergeClass" class="button is-primary is-fullwidth btn-height"><b>Merge {{class_to_merge.subCode}} <span v-if="selected_class"> to {{selected_class.subCode}} in section <b>{{active_section.secName}}</b></span></b> </button>
-	        </footer>
-	       </div>
-	     </div>
+       <div class="modal-background"></div>
+       <div class="modal-card">
+        <header class="modal-card-head">
+           <p class="modal-card-title">Merge Class</p>
+           <button class="delete" aria-label="close" @click="close_classModal"></button>
+        </header>
+        <section class="modal-card-body">
+        	<div class="field">
+        		<label class="label">Code</label>
+        		<div class="control" style="font-size: 14px">
+        			{{class_to_merge.subCode}}<span if="class_to_merge.type == 'lab'"> (lab)</span>
+        		</div>
+        	</div>
+        	<div class="field">
+        		<label class="label">Description</label>
+        		<div class="control">
+        			<p style="font-size: 14px">{{class_to_merge.subDesc}}</p>
+        		</div>
+        	</div>
+           <div class="field">
+              <label class="label">Select section</label>
+              <div class="control">
+                 <multiselect @input="get_classes" v-model="active_section" track-by="secID" label="secName" :options="added_sections2" placeholder=""></multiselect>   
+              </div>
+           </div>
+           <div class="field">
+              <label class="label">Select class code</label>
+              <div class="control">
+                 <multiselect open-direction="bottom" v-model="selected_class" label="codelabel" track-by="classID" placeholder="" :options="class_suggestions" :loading="isLoading2">
+                 </multiselect>      
+              </div>
+           </div>
+        </section>
+        <footer class="modal-card-foot pull-right">
+           <button :disabled="!selected_class" @click="mergeClass" class="button is-primary is-fullwidth btn-height"><b>Merge {{class_to_merge.subCode}} <span v-if="selected_class"> to {{selected_class.subCode}} in section <b>{{active_section.secName}}</b></span></b> </button>
+        </footer>
+       </div>
+	</div>
 
 </div>
 
@@ -492,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	loader: false,
 	    	subloader: false,
 	    	current_sec: null,
-	    	current_term: {termID: '<?php echo $current_term->termID; ?>', term: '<?php echo $current_term->term; ?>'},
+	    	current_term: {termID: '<?php echo $current_term->termID; ?>', term: '<?php echo $current_term->term; ?>', semID: '<?php echo $current_term->semID; ?>'},
 	    	subjects: [],
 	    	terms: [],
 	    	prospectuses: [],
@@ -531,6 +549,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	        selected_class: null,
 	        class_suggestions: [],
 	        isLoading2: false,
+
+	        copyScheduleModal: false,
+	        termSchedule: null,
 	    },
 	    created() {
 	    	this.populate()
@@ -569,6 +590,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	}
 	    },
 	    computed: {
+	    	termSchedules(){
+	    		return this.terms.filter(x => x.termID != this.current_term.termID && x.semID == this.current_term.semID)
+	    	},
 	    	added_sections2(){
 	    		if(this.current_sec){
 	    			return this.added_sections.filter(x => x.secID != this.current_sec)
@@ -635,6 +659,43 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 	    },
 	    methods: {
+	    	close_scheduleModal(){
+	    		this.copyScheduleModal = false
+	    		this.termSchedule = null
+	    	},
+	    	copySchedule(){
+	    		swal({
+				  title: "Confirmation",
+				  text: "Do you really want to copy schedule from "+this.termSchedule.term+"?",
+				  icon: "info",
+				  buttons: {
+				  	cancel: true,
+				  	confirm: {
+				  		closeModal: false
+				  	}
+				  },
+				  dangerMode: true
+				})
+				.then((willCopy) => {
+				  if (willCopy) {
+				    this.$http.post('<?php echo base_url() ?>schedule/copySchedule/', {current_term: this.current_term.termID, term_to_copy: this.termSchedule.termID})
+	    			.then(res => {
+	    				console.log(res.body)
+	    				if(res.body == 'empty'){
+	    					swal('Error', 'No classes in this term!', 'error')
+	    				}else{
+	    					swal('Success', 'Schedule successfully copied from '+ this.termSchedule.term + '!', 'success')
+		    				this.added_sections = res.body
+		    				this.close_scheduleModal()	
+	    				}
+	    				
+	    			}, e => {
+	    				console.log(e.body)
+	    			})
+				  }
+				})
+	    	},
+
 	    	splitClass(i){
 	    		const c = (this.current_sec) ? this.classes2[i] : this.classes[i]
 	    		c.open_action = false
@@ -702,45 +763,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		    		}else{
 		    			swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName + '(Pending)','success')
 		    			this.afterMerge(c, class_merge)
-		    		}
-	    		}
-	    	},
-	    	mergeClass2(){
-	    		const c = (this.current_sec) ? this.classes2[this.selected_index] : this.classes[this.selected_index]
-	    		const pendMsg = (this.current_sec) ? '' : ' (Pending)'
-	    		const class_merge = this.selected_class
-
-	    		if(c.units != class_merge.units){
-	    			swal('Error', 'Both classes should have equal units!', 'error')
-	    		}else if(class_merge.merge_with != 0){
-	    			swal('Error', 'Unable to merge. Selected class is merged with another class!', 'error')
-	    		}else{
-	    			swal('Success', c.subCode+' successfully merge to '+class_merge.subCode+' in section '+this.active_section.secName+pendMsg, 'success')
-	    			c.error = false
-		    		c.timeIn = class_merge.timeIn
-		    		c.timeOut = class_merge.timeOut
-		    		c.day = {dayID: class_merge.dayID, dayDesc: class_merge.dayDesc, dayCount: class_merge.dayCount}
-		    		c.room = {roomID: class_merge.roomID, roomName: class_merge.roomName}
-		    		c.faculty = {facID: class_merge.facID, faculty: class_merge.ln + ', ' + class_merge.fn}
-		    		c.merge_to = {section: this.active_section.secName, class: class_merge.codelabel, classID: class_merge.classID}
-		    		c.msg = null
-		    		this.close_classModal()
-
-		    		if(this.current_sec){
-		    			k = {
-		    				roomID: c.room.roomID,
-		    				facID: c.faculty.facID,
-		    				dayID: c.day.dayID,
-		    				timeIn: c.timeIn,
-		    				timeOut: c.timeOut,
-		    				merge_with: class_merge.classID
-		    			}
-		    			this.$http.post('<?php echo base_url() ?>schedule/mergeClass/', {data: k, classID: c.classID})
-		    			.then(res => {
-		    				console.log(res.body)
-		    			}, e => {
-		    				console.log(e.body)
-		    			})
 		    		}
 	    		}
 	    	},

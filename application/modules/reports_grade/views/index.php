@@ -151,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function() {
          if(val === null){
             this.ready = false
          }else{
-            this.btnGenerate_link += this.selected_student.studID
             this.get_grade()
          }
       }
@@ -214,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
          }
       },
       generateReport(){
-         window.open(this.btnGenerate_link, '_blank')
+         window.open(this.btnGenerate_link + this.selected_student.studID, '_blank')
       }
    },
 

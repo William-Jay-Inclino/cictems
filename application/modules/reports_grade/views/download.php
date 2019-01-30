@@ -158,11 +158,11 @@
 						$g = $total_units = 0;
 						foreach($data2['specializations'] as $spec){ ?>
 							<tr>
-								<td> <?php echo $spec['specDesc'] ?> </td>
+								<td> <?php echo $spec->specDesc ?> </td>
 								<td> 
 									<?php 
-										if($spec['total']){
-											echo $spec['total']; 
+										if($spec->total){
+											echo $spec->total; 
 										}else{
 											echo "0";
 										}
@@ -170,7 +170,7 @@
 								</td>
 								<td>units</td>
 							</tr>
-							<?php ++$g; $total_units += $spec['total'];
+							<?php ++$g; $total_units += $spec->total;
 						}
 					?>
 					<tr style="border: 1px solid black">

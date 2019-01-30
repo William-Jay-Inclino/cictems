@@ -56,15 +56,15 @@
 				</div>
 			</div>
 			<br>
-			<table class="table is-fullwidth is-centered">
+			<table class="table is-fullwidth">
 				<thead>
-					<th width="20%">Prospectus Code</th>
-					<th width="20%">Description</th>
-					<th width="15%">Course</th>
-					<th width="15%">Effectivity</th>
-					<th width="10%">Duration</th>
-					<th width="10%">Type</th>
-					<th width="10%">View</th>
+					<th>Prospectus Code</th>
+					<th>Course</th>
+					<th>CMO #</th>
+					<th>Effectivity</th>
+					<th>Duration</th>
+					<th>Type</th>
+					<th>View</th>
 				</thead>
 
 				<td colspan="9" class="has-text-centered" v-show="loading">Loading please wait ...</td>
@@ -73,8 +73,8 @@
 				<tbody v-show="!loading">
 					<tr v-for="record, i in records">
 						<td>{{record.prosCode}}</td>
-						<td>{{record.prosDesc}}</td>
 						<td>{{record.courseCode}}</td>
+						<td>{{record.prosDesc}}</td>
 						<td>{{record.effectivity}}</td>
 						<td>{{record.duration}}</td>
 						<td>{{record.prosType}}</td>

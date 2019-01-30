@@ -51,7 +51,7 @@ class mdl_Prospectus extends CI_Model{
 				SELECT p.prosID,p.prosCode,p.prosDesc,c.courseCode,p.effectivity,p.duration,p.prosType
 				FROM prospectus p
 				INNER JOIN course c ON p.courseID=c.courseID 
-				ORDER BY p.prosCode ASC
+				ORDER BY p.prosType ASC
 				LIMIT $start, $per_page
 			");
 			$num_records = $this->count_all();
@@ -61,7 +61,7 @@ class mdl_Prospectus extends CI_Model{
 				FROM prospectus p
 				INNER JOIN course c ON p.courseID=c.courseID
 				WHERE $option LIKE '%".$search_val."%' 
-				ORDER BY p.prosCode ASC
+				ORDER BY p.prosType ASC
 				LIMIT $start, $per_page"
 			);
 			$num_records = $query->num_rows();

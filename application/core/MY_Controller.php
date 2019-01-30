@@ -73,7 +73,7 @@ class MY_Controller extends MX_Controller{
 	} 
 
 	private function get_current_term(){
-		$query = $this->db->query("SELECT t.termID,CONCAT(t.schoolYear,' ',s.semDesc) AS term FROM term t INNER JOIN semester s ON t.semID = s.semID WHERE t.termStat = 'active'");
+		$query = $this->db->query("SELECT t.termID,s.semID,CONCAT(t.schoolYear,' ',s.semDesc) AS term FROM term t INNER JOIN semester s ON t.semID = s.semID WHERE t.termStat = 'active'");
 		$this->_data['current_term'] = $query->row();
 	}
 
