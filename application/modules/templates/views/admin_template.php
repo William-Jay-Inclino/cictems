@@ -119,9 +119,6 @@
                    <a class="navbar-item <?php if($current_module == 16){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>users/staff">
                      Staff
                    </a>
-                   <a class="navbar-item <?php if($current_module == 17){echo 'nav-active2';} ?>" href="https://bulma.io/documentation/elements/box/">
-                     Guardian &nbsp; <span class="tag is-primary is-rounded">soon</span>
-                   </a>
                    <hr class="navbar-divider">
                    <a class="navbar-item <?php if($current_module == 16.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>users/registration">
                      Registration

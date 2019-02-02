@@ -19,6 +19,7 @@ class Dashboard extends MY_Controller{
 	function index(){
 		if($this->_data['roleID'] == 1){
 			$view = 'admin';
+			$this->_data['data'] = $this->mdl_dashboard->populate($this->_data['current_term']->termID);
 		}else if($this->_data['roleID'] == 2){
 			$view = 'faculty';
 		}else if($this->_data['roleID'] == 3){
