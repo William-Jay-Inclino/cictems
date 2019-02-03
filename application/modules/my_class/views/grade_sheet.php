@@ -49,7 +49,8 @@
 			</tr>
 		</table>
 		<br><br>
-
+		<b>SECTION: </b> <?php echo $data['class']->secName ?> 
+		<br><br>
 		<table border="1">
 			<tr class="tbl-headers">
 				<th>No.</th>

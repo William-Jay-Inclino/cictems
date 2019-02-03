@@ -29,13 +29,14 @@ class Classes extends MY_Controller{
 		$this->_data['termID'] = $id[1];
 		$this->_data['id'] = $id[2];
 		$this->_data['prosID'] = $id[3];
+		$this->_data['secID'] = $id[4];
 		echo Modules::run($this->_template, $this->_data);
 	}
 
 	function grade_sheet($id){
 		// require_once __DIR__ . '/vendor/autoload.php';
 		$this->_data['facID'] = $id[0];
-		$this->_data['data'] = $this->mdl_classes->grade_sheet($id[0],$id[1],$id[2],$id[3]);
+		$this->_data['data'] = $this->mdl_classes->grade_sheet($id[0],$id[1],$id[2],$id[3],$id[4]);
 
 		$mpdf = new \Mpdf\Mpdf();
 
@@ -60,7 +61,7 @@ class Classes extends MY_Controller{
 	}
 
 	function populate_class_sel($ids){
-		$this->mdl_classes->populate_class_sel($ids[0],$ids[1],$ids[2],$ids[3]);
+		$this->mdl_classes->populate_class_sel($ids[0],$ids[1],$ids[2],$ids[3],$ids[4]);
 	}
 
 	// function fetch_Students($classID){

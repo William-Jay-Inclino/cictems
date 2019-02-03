@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
+
 <style>
 	.my-size{
 		font-size: 20px;
@@ -177,7 +179,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="box">
 			<h4 class="title is-4">
 				<span class="icon has-text-primary">
@@ -191,6 +192,38 @@
 				</a>
 			</h4>
 			<hr>
+			<div v-show="is_s_active">
+				<div v-if="subjects.length > 0">
+					<multiselect v-model="searched_sub" track-by="subID" label="subLabel" :options="subjects2" :options-limit="10" placeholder="Enter Subject"></multiselect>
+					<br>
+					<table class="table is-fullwidth">
+						<thead>
+							<th>Subject Code</th>
+							<th>Description</th>
+							<th>Students</th>
+							<th>Passed</th>
+							<th>Failed</th>
+							<th>Incomplete</th>
+							<th>Dropped</th>
+						</thead>
+						<tbody>
+							<tr v-for="subject of subjects2">
+								<td> {{subject.subCode}} </td>
+								<td> {{subject.subDesc}} </td>
+								<td> {{subject.total_students}} </td>
+								<th width="10%" class="has-text-success"> {{subject.passed_per}} </th>
+								<th width="10%" class="has-text-danger"> {{subject.failed_per}} </th>
+								<th width="10%" class="has-text-link"> {{subject.inc_per}} </th>
+								<th width="10%" style="color: #fbac00"> {{subject.dropped_per}} </th>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div v-else>
+					<span class="has-text-centered">No class have been submitted</span>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 </section>
@@ -200,7 +233,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-	
+	Vue.component('multiselect', window.VueMultiselect.default) 
 
 	new Vue({
 	    el: '#app',
@@ -209,19 +242,58 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	is_user_active: false,
 	       	is_m_active: false,
 	       	is_s_active: false,
+	       	subjects: [],
+
+	       	searched_sub: null
 	    },
 	    created() {
-	        
+	        this.get_subjects()
 	    },
 	    watch: {
 
 	    },
 	    computed: {
+	    	// subjects1(){
+	    	// 	if(this.searched_sub){
+	    	// 		return this.subjects.filter(s => s.subID == this.searched_sub.subID)
+	    	// 	}
+	    	// 	return this.subjects
+	    	// },
+	    	subjects2(){
+	    		let subjects = this.subjects
+	    		if(this.searched_sub){
+	    			subjects = this.subjects.filter(s => s.subID == this.searched_sub.subID)
+	    		}
 
+	    		// const subjects = this.subjects1 
+	    		const arr = []
+	    		let last_inserted = null
+	    		for(let s of subjects){
+	    			if(s.id != last_inserted){
+	    				arr.push(s)
+	    				last_inserted = s.id
+	    			}
+	    			
+	    		}
+	    		return arr
+	    	}
 	    },
 	    methods: {
+	    	get_subjects(){
+	    		this.$http.get('<?php echo base_url() ?>dashboard/get_subjects')
+		         .then(res => {
+		          	console.log(res.body)
+		          	this.subjects = res.body
+		          }, e => {
+		          	console.log(e.body)
 
-	    }
+		          })
+	    	}
+	    },
+	   	http: {
+	      emulateJSON: true,
+	      emulateHTTP: true
+		}
 	})
 
 }, false)
@@ -229,3 +301,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 </script>
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>

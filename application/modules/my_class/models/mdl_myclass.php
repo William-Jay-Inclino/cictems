@@ -3,19 +3,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_myclass extends CI_Model{
 
-	function grade_sheet($termID, $id, $prosID){
+	function grade_sheet($termID, $id, $prosID, $secID){
 
 		$term = $this->db->query("SELECT s.semDesc, t.schoolYear FROM term t INNER JOIN semester s ON t.semID = s.semID WHERE termID = $termID LIMIT 1")->row();
 		$data['sem'] = $term->semDesc;
 		$data['sy'] = $term->schoolYear;
 
 		$data['class'] = $this->db->query("
-			SELECT c.classID,CONCAT(u.ln,', ',u.fn) as faculty,s.subCode,s.subDesc,c.status
+			SELECT c.classID,CONCAT(u.ln,', ',u.fn) as faculty,s.subCode,s.subDesc,c.status,sec.secName
 			FROM class c 
 			INNER JOIN faculty f ON c.facID = f.facID
 			INNER JOIN users u ON f.uID = u.uID
 			INNER JOIN subject s ON c.subID = s.subID
-			WHERE c.facID = (SELECT facID FROM faculty WHERE uID = ".$this->session->userdata('uID').") AND c.termID = $termID AND s.id = $id AND s.prosID = $prosID LIMIT 1
+			INNER JOIN section sec ON c.secID = sec.secID
+			WHERE c.facID = (SELECT facID FROM faculty WHERE uID = ".$this->session->userdata('uID').") AND c.termID = $termID AND s.id = $id AND s.prosID = $prosID AND c.secID = $secID LIMIT 1
 			"
 		)->row();
 
@@ -179,7 +180,7 @@ class mdl_myclass extends CI_Model{
 	function get_classes($termID){
 		echo json_encode(
 			$this->db->query("
-				SELECT DISTINCT c.termID,s.id,s.prosID,s.subCode,s.id,s.subDesc,sec.secName,c.status
+				SELECT DISTINCT c.termID,s.id,s.prosID,s.subCode,s.id,s.subDesc,sec.secName,c.status,c.secID
 				FROM class c 
 				INNER JOIN subject s ON c.subID = s.subID
 				INNER JOIN section sec ON c.secID = sec.secID
@@ -189,7 +190,7 @@ class mdl_myclass extends CI_Model{
 		);
 	}
 
-	function populate_class_sel($termID, $id, $prosID){
+	function populate_class_sel($termID, $id, $prosID,$secID){
 		$data['class'] = $this->db->query("
 			SELECT c.classID,CONCAT(u.ln,', ',u.fn) as faculty,s.type,s.subCode,s.subDesc,d.dayDesc,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, c.status,r.roomName,sec.secName,c.date_submitted
 			FROM class c 
@@ -199,7 +200,7 @@ class mdl_myclass extends CI_Model{
 			INNER JOIN room r ON c.roomID = r.roomID
 			INNER JOIN day d ON c.dayID = d.dayID
 			INNER JOIN section sec ON c.secID = sec.secID
-			WHERE c.facID = (SELECT facID FROM faculty WHERE uID = ".$this->session->userdata('uID').") AND c.termID = $termID AND s.id = $id AND s.prosID = $prosID
+			WHERE c.facID = (SELECT facID FROM faculty WHERE uID = ".$this->session->userdata('uID').") AND c.termID = $termID AND s.id = $id AND s.prosID = $prosID AND c.secID = $secID
 			"
 		)->result();
 

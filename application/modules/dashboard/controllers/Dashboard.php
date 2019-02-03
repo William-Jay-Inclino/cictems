@@ -32,6 +32,10 @@ class Dashboard extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
+	function get_subjects(){
+		$this->mdl_dashboard->get_subjects($this->_data['current_term']->termID);
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

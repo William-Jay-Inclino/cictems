@@ -1,5 +1,5 @@
 <?php 
-	$report_link = base_url().'my-class/grade-sheet/'.$termID.'/'.$id.'/'.$prosID;
+	$report_link = base_url().'my-class/grade-sheet/'.$termID.'/'.$id.'/'.$prosID.'/'.$secID;
 ?>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	termID: '<?php echo $termID ?>',
 	    	id: '<?php echo $id ?>',
 	    	prosID: '<?php echo $prosID ?>',
+	    	secID: '<?php echo $secID ?>',
 	    	status: '',
 	    	date_submitted: '',
 	    	students: [],
@@ -196,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    },
 	    methods: {
 	    	populate(){
-	    		this.$http.get('<?php echo base_url() ?>my_class/populate_class_sel/'+this.termID+'/'+this.id+'/'+this.prosID)
+	    		this.$http.get('<?php echo base_url() ?>my_class/populate_class_sel/'+this.termID+'/'+this.id+'/'+this.prosID+'/'+this.secID)
 	            .then(response => {
 	            	const c = response.body 
 	               	this.classes = c.class 

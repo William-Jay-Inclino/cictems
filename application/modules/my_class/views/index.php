@@ -40,7 +40,7 @@
 						<td> {{c.subDesc}} </td>
 						<td> {{c.secName}} </td>
 						<td>
-							<a :href="selected_link + c.termID + '/' + c.id + '/' + c.prosID" class="button is-outlined is-primary">
+							<a :href="selected_link + c.termID + '/' + c.id + '/' + c.prosID + '/' + c.secID" class="button is-outlined is-primary">
 								<i class="fa fa-angle-double-right fa-lg"></i>
 							</a>
 						</td>

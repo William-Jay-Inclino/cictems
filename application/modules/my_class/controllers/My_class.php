@@ -30,7 +30,7 @@ class My_Class extends MY_Controller{
 	}
 
 	function grade_sheet($id){
-		$this->_data['data'] = $this->mdl_myclass->grade_sheet($id[0],$id[1],$id[2]);
+		$this->_data['data'] = $this->mdl_myclass->grade_sheet($id[0],$id[1],$id[2],$id[3]);
 
 		$mpdf = new \Mpdf\Mpdf();
 
@@ -50,6 +50,7 @@ class My_Class extends MY_Controller{
 		$this->_data['termID'] = $id[0];
 		$this->_data['id'] = $id[1];
 		$this->_data['prosID'] = $id[2];
+		$this->_data['secID'] = $id[3];
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -59,7 +60,7 @@ class My_Class extends MY_Controller{
 
 
 	function populate_class_sel($id){
-		$this->mdl_myclass->populate_class_sel($id[0],$id[1],$id[2]);
+		$this->mdl_myclass->populate_class_sel($id[0],$id[1],$id[2],$id[3]);
 	}
 
 	function fetch_Students($classID){

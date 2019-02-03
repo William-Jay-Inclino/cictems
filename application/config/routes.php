@@ -18,8 +18,8 @@ $route['e-confirmation/show/(:num)'] = 'e_confirmation/show/$1';
 
 // -------------------------CLASS---------------------------------
 
-$route['class-selected/(:num)/(:num)/(:num)/(:num)'] = 'classes/class_selected/$1/$2/$3/$4';
-$route['grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$3/$4';
+$route['class-selected/(:num)/(:num)/(:num)/(:num)/(:num)'] = 'classes/class_selected/$1/$2/$3/$4/$5';
+$route['grade-sheet/(:num)/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$3/$4/$5';
 // $route['student-grade/(:num)/(:num)'] = 'classes/student_grade/$1/$2';
 // $route['update-grade/(:any)/(:num)'] = 'classes/update_grade/$1/$2';
 
@@ -28,8 +28,8 @@ $route['grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'classes/grade_sheet/$1/$2/$
 // -------------------------FACULTY ONLY---------------------------------
 
 $route['my-class'] = 'my_class';
-$route['my-class/class-selected/(:num)/(:num)/(:num)'] = 'my_class/class_selected/$1/$2/$3';
-$route['my-class/grade-sheet/(:num)/(:num)/(:num)'] = 'my_class/grade_sheet/$1/$2/$3';
+$route['my-class/class-selected/(:num)/(:num)/(:num)/(:num)'] = 'my_class/class_selected/$1/$2/$3/$4';
+$route['my-class/grade-sheet/(:num)/(:num)/(:num)/(:num)'] = 'my_class/grade_sheet/$1/$2/$3/$4';
 $route['inc-grades'] = 'faculty_inc';
 $route['inc-grades/classes/(:num)'] = 'faculty_inc/classes/$1';
 $route['inc-grades/completion/(:num)/(:num)/(:num)'] = 'faculty_inc/completion/$1/$2/$3';
