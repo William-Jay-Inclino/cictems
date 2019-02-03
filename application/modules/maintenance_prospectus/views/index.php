@@ -60,23 +60,17 @@
 				<thead>
 					<th>Prospectus Code</th>
 					<th>Course</th>
-					<th>CMO #</th>
-					<th>Effectivity</th>
-					<th>Duration</th>
 					<th>Type</th>
 					<th>View</th>
 				</thead>
 
-				<td colspan="9" class="has-text-centered" v-show="loading">Loading please wait ...</td>
-				<td colspan="9" class="has-text-centered" v-show="msg">No record found</td>
+				<td colspan="4" class="has-text-centered" v-show="loading">Loading please wait ...</td>
+				<td colspan="4" class="has-text-centered" v-show="msg">No record found</td>
 
 				<tbody v-show="!loading">
 					<tr v-for="record, i in records">
 						<td>{{record.prosCode}}</td>
 						<td>{{record.courseCode}}</td>
-						<td>{{record.prosDesc}}</td>
-						<td>{{record.effectivity}}</td>
-						<td>{{record.duration}}</td>
 						<td>{{record.prosType}}</td>
 						<td>
 							<a :href="page.show + '/' + record.prosID" class="button is-outlined is-primary"><i class="fa fa-angle-double-right fa-lg"></i></a>

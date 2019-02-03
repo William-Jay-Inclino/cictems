@@ -64,14 +64,14 @@
          <div v-show="!loader && ready">
             <div class="hero-body has-text-centered">
                 <div class="container">
-                  <h4 class="title is-4">
-                    {{titlePros.description}}
-                  </h4>
+                  <h5 class="title is-5">
+                    {{titlePros.description}} <span v-if="titlePros.prosDesc">with {{titlePros.prosDesc}}</span>
+                  </h5>
                   <h6 class="title is-6 has-text-grey">
                     Effective School Year {{titlePros.effectivity}}
                   </h6>
                   <h6 class="title is-6 has-text-grey">
-                    Revised Curriculum  {{titlePros.prosDesc}}
+                    Revised Curriculum  {{titlePros.prosDesc2}}
                   </h6>
                 </div>
               </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 03, 2019 at 04:16 AM
+-- Generation Time: Feb 03, 2019 at 09:06 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -603,6 +603,7 @@ CREATE TABLE `prospectus` (
   `duration` int(11) NOT NULL,
   `prosCode` varchar(20) NOT NULL,
   `prosDesc` varchar(50) NOT NULL,
+  `prosDesc2` varchar(50) NOT NULL,
   `effectivity` varchar(30) NOT NULL,
   `prosType` enum('New','Old') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -611,14 +612,14 @@ CREATE TABLE `prospectus` (
 -- Dumping data for table `prospectus`
 --
 
-INSERT INTO `prospectus` (`prosID`, `courseID`, `duration`, `prosCode`, `prosDesc`, `effectivity`, `prosType`) VALUES
-(1, 132, 2, 'ACT 2016-2017', '', '2016-2017', 'Old'),
-(3, 374, 4, 'BSIT 2011-2012', '', '2011-2012', 'Old'),
-(4, 376, 4, 'BSCS 2016-2017', '', '2016-2017', 'Old'),
-(5, 377, 5, 'BSCPE 2014-2015', '', '2014-2015', 'Old'),
-(6, 374, 4, 'BSIT 2018-2019', 'No. 25 Series of 2015', '2018-2019 (K+12 Compliant)', 'New'),
-(7, 376, 4, 'BSCS 2018-2019', 'No. 25 Series of 2015', '2018-2019 [K + 12] Compliant', 'New'),
-(8, 377, 4, 'BSCpE 2018-2019', 'No. 25 Series of 2015', '2018-2019 (K+12 Compliant)', 'New');
+INSERT INTO `prospectus` (`prosID`, `courseID`, `duration`, `prosCode`, `prosDesc`, `prosDesc2`, `effectivity`, `prosType`) VALUES
+(1, 132, 2, 'ACT 2016-2017', 'G.R. # 03 series of 2015', 'No. 87 Series of 2017', '2016-2017', 'Old'),
+(3, 374, 4, 'BSIT 2011-2012', '', '', '2011-2012', 'Old'),
+(4, 376, 4, 'BSCS 2016-2017', '', '', '2016-2017', 'Old'),
+(5, 377, 5, 'BSCPE 2014-2015', '', '', '2014-2015', 'Old'),
+(6, 374, 4, 'BSIT 2018-2019', 'G.R. # 03 series of 2015', 'No. 25 Series of 2015', '2018-2019 (K+12 Compliant)', 'New'),
+(7, 376, 4, 'BSCS 2018-2019', 'G.R. # 03 series of 2015', 'No. 87 Series of 2017', '2018-2019 [K + 12] Compliant', 'New'),
+(8, 377, 4, 'BSCpE 2018-2019', 'G.R. # 03 series of 2015', 'No. 87 Series of 2017', '2018-2019 (K+12 Compliant)', 'New');
 
 -- --------------------------------------------------------
 
@@ -2386,7 +2387,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `prospectus`
 --
 ALTER TABLE `prospectus`
-  MODIFY `prosID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `prosID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `registration`

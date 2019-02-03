@@ -39,6 +39,12 @@
 			  </div>
 			</div>
 			<div class="field">
+			  <label class="label">CM02 #</label>
+			  <div class="control">
+			  		<input class="input" type="text" v-model.trim="form.desc2" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
+			  </div>
+			</div>
+			<div class="field">
 			  <label class="label">Effectivity</label>
 			  <div class="control">
 				  	<input class="input" type="text" v-model.trim="form.effect" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
@@ -93,6 +99,7 @@
 		    		id: '<?php echo $record->prosID ?>',
 		    		pc: '<?php echo $record->prosCode ?>',
 		    		desc: '<?php echo $record->prosDesc ?>',
+		    		desc2: '<?php echo $record->prosDesc2 ?>',
 		    		course: {courseID: '<?php echo $record->courseID ?>',courseCode: '<?php echo $record->courseCode ?>'},
 		    		duration: '<?php echo $record->duration ?>',
 		    		effect: '<?php echo $record->effectivity ?>',

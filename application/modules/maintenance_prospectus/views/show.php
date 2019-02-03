@@ -31,6 +31,10 @@
 					<td> {{desc}} </td>
 				</tr>
 				<tr>
+					<td><b>CMO2 #:</b> </td>
+					<td> {{desc2}} </td>
+				</tr>
+				<tr>
 					<td><b>Effectivity:</b> </td>
 					<td> {{effect}} </td>
 				</tr>
@@ -60,6 +64,7 @@
 		    	id: '<?php echo $record->prosID ?>',
 		    	pc: '<?php echo $record->prosCode ?>',
 		    	desc: '<?php echo $record->prosDesc ?>',
+		    	desc2: '<?php echo $record->prosDesc2 ?>',
 		    	course: '<?php echo $record->courseCode ?>',
 		    	effect: '<?php echo $record->effectivity ?>',
 		    	duration: '<?php echo $record->duration ?>',

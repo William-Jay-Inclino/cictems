@@ -11,12 +11,16 @@
 					<td> <?php echo $record->prosCode ?> </td>
 				</tr>
 				<tr>
-					<td><b>Description:</b> </td>
+					<td><b>Course Code:</b> </td>
+					<td> <?php echo $record->courseCode ?> </td>
+				</tr>
+				<tr>
+					<td><b>CMO #:</b> </td>
 					<td> <?php echo $record->prosDesc ?> </td>
 				</tr>
 				<tr>
-					<td><b>Course Code:</b> </td>
-					<td> <?php echo $record->courseCode ?> </td>
+					<td><b>CMO2 #:</b> </td>
+					<td> <?php echo $record->prosDesc2 ?> </td>
 				</tr>
 				<tr>
 					<td><b>Duration:</b> </td>

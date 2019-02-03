@@ -211,10 +211,10 @@
 								<td> {{subject.subCode}} </td>
 								<td> {{subject.subDesc}} </td>
 								<td> {{subject.total_students}} </td>
-								<th width="10%" class="has-text-success"> {{subject.passed_per}} </th>
-								<th width="10%" class="has-text-danger"> {{subject.failed_per}} </th>
-								<th width="10%" class="has-text-link"> {{subject.inc_per}} </th>
-								<th width="10%" style="color: #fbac00"> {{subject.dropped_per}} </th>
+								<th width="10%" class="has-text-success"> <span v-if="subject.passed_per != '0.00%'">{{subject.passed_per}}</span> </th>
+								<th width="10%" class="has-text-danger"> <span v-if="subject.failed_per != '0.00%'">{{subject.failed_per}}</span> </th>
+								<th width="10%" class="has-text-link"> <span v-if="subject.inc_per != '0.00%'">{{subject.inc_per}}</span> </th>
+								<th width="10%" style="color: #fbac00"> <span v-if="subject.dropped_per != '0.00%'">{{subject.dropped_per}}</span> </th>
 							</tr>
 						</tbody>
 					</table>

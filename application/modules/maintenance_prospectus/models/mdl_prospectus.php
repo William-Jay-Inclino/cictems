@@ -18,6 +18,7 @@ class mdl_Prospectus extends CI_Model{
 		$exist = false;
 		$data['prosCode'] = $this->input->post('pc');
 		$data['prosDesc'] = $this->input->post('desc');
+		$data['prosDesc2'] = $this->input->post('desc2');
 		$data['courseID'] = $this->input->post('course')['courseID'];
 		$data['duration'] = $this->input->post('duration');
 		$data['effectivity'] = $this->input->post('effect');
@@ -77,7 +78,7 @@ class mdl_Prospectus extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT p.prosID,c.courseID,p.prosCode,p.prosDesc,c.courseCode,p.effectivity,p.duration,p.prosType
+			SELECT p.prosID,c.courseID,p.prosCode,p.prosDesc,p.prosDesc2,c.courseCode,p.effectivity,p.duration,p.prosType
 			FROM prospectus p
 			INNER JOIN course c ON p.courseID=c.courseID 
 			WHERE prosID = $id LIMIT 1
@@ -90,6 +91,7 @@ class mdl_Prospectus extends CI_Model{
 		$id = $this->input->post('id');
 		$data['prosCode'] = $this->input->post('pc');
 		$data['prosDesc'] = $this->input->post('desc');
+		$data['prosDesc2'] = $this->input->post('desc2');
 		$data['courseID'] = $this->input->post('course')['courseID'];
 		$data['duration'] = $this->input->post('duration');
 		$data['effectivity'] = $this->input->post('effect');

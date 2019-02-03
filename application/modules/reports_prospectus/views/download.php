@@ -28,11 +28,15 @@
 
 	<div style="text-align: center;">
 		<?php 
+			$with = '';
+			if($data['prospectus']->prosDesc){
+				$with = ' with ';
+			}
 			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
 			echo "<b>COLLEGE OF ICT & ENGINEERING</b><br><br>";
-			echo '<b>'.$data['prospectus']->description.' with G.R. #04 series of 2005'.'</b><br>'; 
+			echo '<b>'.$data['prospectus']->description.$with.$data['prospectus']->prosDesc.'</b><br>'; 
 			echo "Effective School Year ".$data['prospectus']->effectivity.' [K + 12] Compliant <br>';
-			echo "Revised Curriculum No. 25 Series of 2015";
+			echo "Revised Curriculum ".$data['prospectus']->prosDesc2;
 		?>
 	</div>
 	<br><br>

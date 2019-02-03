@@ -39,6 +39,12 @@
 			  </div>
 			</div>
 			<div class="field">
+			  <label class="label">CMO2 #</label>
+			  <div class="control">
+			  	<input class="input" type="text" v-model.trim="form.desc2" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
+			  </div>
+			</div>
+			<div class="field">
 			  <label class="label">Effectivity</label>
 			  <div class="control">
 				  	<input class="input" type="text" v-model.trim="form.effect" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces.">
@@ -94,6 +100,7 @@
 		    	form: {
 		    		pc: '',
 		    		desc: '',
+		    		desc2: '',
 		    		course: null,
 		    		duration: '',
 		    		effect: '',
