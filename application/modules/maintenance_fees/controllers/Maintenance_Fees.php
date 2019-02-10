@@ -11,7 +11,7 @@ class Maintenance_Fees extends MY_Controller{
 	}
 
 	function _remap($method, $params = []){
-        if ($method != 'index' && $method != 'form' && $method != 'show' && $method != 'success_page' && $method != 'involved_page' && $method != 'transfer_fee'){
+        if ($method != 'index' && $method != 'form' && $method != 'show' && $method != 'success_page' && $method != 'involved_page' && $method != 'transfer_fee' && $method != 'tshirt'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -54,6 +54,12 @@ class Maintenance_Fees extends MY_Controller{
 	function transfer_fee($id){
 		$this->_data['module_view'] = 'transfer_fee';
 		$this->_data['record'] = $this->mdl_fees->read_one($id[0]);
+		echo Modules::run($this->_template, $this->_data);
+	}
+
+	function tshirt($id){
+		$this->_data['module_view'] = 'tshirt';
+		$this->_data['feeID'] = $id[0];
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -111,6 +117,14 @@ class Maintenance_Fees extends MY_Controller{
 
 	function transferFee(){
 		$this->mdl_fees->transferFee();					
+	}
+
+	function get_tshirt_size($id){
+		$this->mdl_fees->get_tshirt_size($id[0]);					
+	}
+
+	function update_tsize(){
+		$this->mdl_fees->update_tsize();	
 	}
 
 	private function prevent_url_access(){

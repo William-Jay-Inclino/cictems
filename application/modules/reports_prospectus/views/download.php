@@ -25,14 +25,13 @@
 	</style>
 </head>
 <body>
-
+	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 	<div style="text-align: center;">
 		<?php 
 			$with = '';
 			if($data['prospectus']->prosDesc){
 				$with = ' with ';
 			}
-			echo "WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
 			echo "<b>COLLEGE OF ICT & ENGINEERING</b><br><br>";
 			echo '<b>'.$data['prospectus']->description.$with.$data['prospectus']->prosDesc.'</b><br>'; 
 			echo "Effective School Year ".$data['prospectus']->effectivity.' [K + 12] Compliant <br>';
@@ -57,18 +56,11 @@
 					$total_sub = count($subjects['subjects']) - 1;
 					$ctr = 0;
 					foreach($subjects['subjects'] as $subject){  ?>
-						<tr <?php if($ctr == $total_sub){echo 'style="border: 1px solid black"';} ?>>
-							<td>
-								<?php 
-									echo $subject['subject']->subCode; 
-									if($subject['subject']->type == 'lab'){
-										echo "<b>(lab)</b>";
-									}
-								?>
-							</td>
-							<td><?php echo $subject['subject']->subDesc; ?></td>
-							<td style="text-align: center"><?php echo $subject['subject']->units; ?></td>
-							<td>
+						<tr>
+							<td style="color: <?php echo $subject['subject']->specColor ?>"><?php echo $subject['subject']->subCode; ?></td>
+							<td style="color: <?php echo $subject['subject']->specColor ?>"><?php echo $subject['subject']->subDesc; ?></td>
+							<td style="color: <?php echo $subject['subject']->specColor ?>; text-align: center"><?php echo $subject['subject']->units; ?></td>
+							<td style="color: <?php echo $subject['subject']->specColor ?>">
 								<?php 
 									foreach($subject['sub_req'] as $sr){
 										if($sr->req_type == 2){
@@ -134,8 +126,8 @@
 						$g = $total_units = 0;
 						foreach($data2['specializations'] as $spec){ ?>
 							<tr>
-								<td> <?php echo $spec['specDesc'] ?> </td>
-								<td> 
+								<td style="color: <?php echo $spec['specColor'] ?>"> <?php echo $spec['specDesc'] ?> </td>
+								<td style="color: <?php echo $spec['specColor'] ?>"> 
 									<?php 
 										if($spec['total']){
 											echo $spec['total']; 
@@ -144,7 +136,7 @@
 										}
 									?> 
 								</td>
-								<td>units</td>
+								<td style="color: <?php echo $spec['specColor'] ?>">units</td>
 							</tr>
 							<?php ++$g; $total_units += $spec['total'];
 						}

@@ -45,9 +45,9 @@
 
            <div id="navMenu" class="navbar-menu">
              <div class="navbar-start">
-              <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/dashboard">
+              <!-- <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/dashboard">
                  Dashboard
-              </a>
+              </a> -->
               <?php 
                 if($shared_data['enrol_status'] == 'active'){ ?>
                   <a class="navbar-item <?php if($current_module == 1){echo 'nav-active';} ?>" href="<?php echo base_url() ?>student/enrolment">

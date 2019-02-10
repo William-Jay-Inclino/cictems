@@ -35,7 +35,7 @@ class mdl_Inc extends CI_Model{
 					INNER JOIN prospectus p ON sp.prosID = p.prosID 
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID 
-					WHERE class.status = 'locked' AND sc.remarks = 'Incomplete' AND c.termID = $termID AND class.facID = (SELECT facID FROM faculty WHERE uID = ".$this->session->userdata('uID')." LIMIT 1)
+					WHERE class.status = 'locked' AND sc.remarks = 'Incomplete' AND class.termID = $termID AND class.facID = (SELECT facID FROM faculty WHERE uID = ".$this->session->userdata('uID')." LIMIT 1)
 					ORDER BY name ASC 
 					LIMIT $start, $per_page
 				");

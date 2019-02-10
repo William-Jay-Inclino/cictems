@@ -65,6 +65,7 @@
 					<th>Year level & courses involved</th>
 					<th>Contribution each student</th>
 					<th>Deadline of payment</th>
+					<th>T-shirt</th>
 					<th>Status</th>
 					<th>View</th>
 				</thead>
@@ -78,6 +79,9 @@
 						<td>{{record.feeDesc}}</td>
 						<td>{{record.amount}}</td>
 						<td>{{record.dueDate}}</td>
+						<td>
+							<span :class="{'has-text-danger': record.tshirt == 'unavailable', 'has-text-success': record.tshirt == 'available'}"> {{record.tshirt}} </span>
+						</td>
 						<td>
 							<span v-if="record.termID != termID && record.feeStatus != 'cancelled'">
 								<span class="tag is-success tag-width">Done</span>

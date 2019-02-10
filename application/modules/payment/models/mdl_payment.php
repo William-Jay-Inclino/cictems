@@ -8,7 +8,7 @@ class mdl_Payment extends CI_Model{
 		$data['course'] = $query->courseCode;
 		$data['year'] = $query->yearDesc;
 
-		$data['fees'] = $this->db->select('f.feeID,f.amount,f.feeName,sf.payable,sf.receivable')->join('fees f', 'sf.feeID = f.feeID')->get_where('stud_fee sf', "studID = $studID AND (sf.payable > 0 OR sf.receivable > 0)")->result();
+		$data['fees'] = $this->db->select('f.feeID,f.tshirt,f.amount,f.feeName,sf.payable,sf.receivable,sf.tsize')->join('fees f', 'sf.feeID = f.feeID')->get_where('stud_fee sf', "studID = $studID AND (sf.payable > 0 OR sf.receivable > 0)")->result();
 
 		echo json_encode($data);
 	}
@@ -24,10 +24,12 @@ class mdl_Payment extends CI_Model{
 	}
 
 	function collectPayment(){
+		//die(print_r($_POST));
 		$response = [];
 		$feeID = $this->input->post('feeID');
 		$studID = $this->input->post('studID');
 		$amount = $this->input->post('amount');
+		$tsize = $this->input->post('tsize');
 		$or_number = $this->input->post('or_number');
 
 		$is_or_number_exist = $this->db->select('1')->get_where('payments', "or_number = '$or_number'", 1)->row();
@@ -52,7 +54,7 @@ class mdl_Payment extends CI_Model{
 				$response['status'] = 'partial';
 				$payable = $fee->payable - $amount;
 			}
-			$this->db->update('stud_fee',['payable'=>$payable], "sfID = ".$fee->sfID);
+			$this->db->update('stud_fee',['payable'=>$payable, 'tsize'=>$tsize], "sfID = ".$fee->sfID);
 			$this->db->insert('payments', $logs);
 			$this->increment_logs();
 

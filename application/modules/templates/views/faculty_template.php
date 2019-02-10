@@ -29,9 +29,9 @@
 
            <div id="navbarExampleTransparentExample" class="navbar-menu">
              <div class="navbar-start">
-              <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>dashboard">
+              <!-- <a class="navbar-item <?php if($current_module == 0){echo 'nav-active';} ?>" href="<?php echo base_url() ?>dashboard">
                  Dashboard
-               </a>
+               </a> -->
                <a class="navbar-item <?php if($current_module == 24){echo 'nav-active';} ?>" href="<?php echo base_url() ?>my-class">
                  My Class
                </a>

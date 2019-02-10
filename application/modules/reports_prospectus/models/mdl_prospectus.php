@@ -15,7 +15,7 @@ class mdl_Prospectus extends CI_Model{
 		if($prosID){
 			foreach($specs as $s){
 				$total = $this->db->query("SELECT SUM(units) total FROM subject WHERE prosID = $prosID AND specID = ".$s->specID)->row()->total;
-				$holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'total'=>$total];
+				$holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'specColor'=>$s->specColor,'total'=>$total];
 			}
 			return ['populate'=>$sql, 'specializations'=>$holder];
 		}else{

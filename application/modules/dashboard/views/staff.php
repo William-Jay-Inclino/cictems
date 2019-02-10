@@ -1,9 +1,9 @@
 <section id="app" class="section" v-cloak>
 	<div class="container">
-		<h3 class="title is-3 my-title"> {{page_title}} </h3>
+		<!-- <h3 class="title is-3 my-title"> {{page_title}} </h3>
 		<div class="box">
 
-		</div>
+		</div> -->
 	</div>
 
 </section>

@@ -84,7 +84,7 @@
 								<i class="fa fa-circle fa-sm"></i> Password must use atleast three of the four available character types: <b> lowercase letters, uppercase letters, numbers, and symbols. </b> 
 							</p>
 							<br>
-							<a :href="pw_reset_link" v-if="editPw" class="help">Forgotten your password?</a>
+							<!-- <a :href="pw_reset_link" v-if="editPw" class="help">Forgotten your password?</a> -->
 							<hr>
 							<button class="button is-link is-small" @click="save('pw')" :disabled="pw_has_error">Save Changes</button>
 							<br><br>

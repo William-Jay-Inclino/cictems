@@ -34,6 +34,7 @@ class Users_Student extends MY_Controller{
 	}
 
 	function show($id){
+		//die(phpinfo());
 		$this->_data['module_view'] = 'show';
 		$this->_data['record'] = $this->mdl_student->read_one($id[0]);
 		echo Modules::run($this->_template, $this->_data);
@@ -103,6 +104,11 @@ class Users_Student extends MY_Controller{
 		$this->mdl_student->remove_credit();	
 	}
 	
+	function sendPass(){
+		$this->mdl_student->sendPass();	
+		
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

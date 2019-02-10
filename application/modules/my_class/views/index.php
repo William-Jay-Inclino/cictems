@@ -20,14 +20,17 @@
 			<hr>
 			<table class="table is-fullwidth">
 				<thead>
-					<th class="has-text-centered">Done</th>
 					<th>Subject Code</th>
 					<th>Description</th>
 					<th>Section</th>
+					<th class="has-text-centered">Status</th>
 					<th>Select</th>
 				</thead>
 				<tbody>
 					<tr v-for="c in classes">
+						<td> {{c.subCode}} </td>
+						<td> {{c.subDesc}} </td>
+						<td> {{c.secName}} </td>
 						<td class="has-text-primary has-text-centered">
 							<span v-if="c.status == 'unlocked'">
 								---
@@ -36,9 +39,6 @@
 								<i class="fa fa-check"></i>
 							</span>
 						</td>
-						<td> {{c.subCode}} </td>
-						<td> {{c.subDesc}} </td>
-						<td> {{c.secName}} </td>
 						<td>
 							<a :href="selected_link + c.termID + '/' + c.id + '/' + c.prosID + '/' + c.secID" class="button is-outlined is-primary">
 								<i class="fa fa-angle-double-right fa-lg"></i>

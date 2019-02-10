@@ -89,15 +89,6 @@ $route['maintenance/specialization/form'] = 'maintenance_specialization/form';
 $route['maintenance/specialization/form/(:num)'] = 'maintenance_specialization/form/$1';
 $route['maintenance/specialization/show/(:num)'] = 'maintenance_specialization/show/$1';
 $route['maintenance/specialization/form-success/(:num)'] = 'maintenance_specialization/success_page/$1';
-// $route['maintenance/class'] = 'maintenance_class';
-// $route['maintenance/class/(:num)'] = 'maintenance_class/index/$1';
-// $route['maintenance/class/form'] = 'maintenance_class/form';
-// $route['maintenance/class/form/(:num)'] = 'maintenance_class/form/$1';
-// $route['maintenance/class/form-batch'] = 'maintenance_class/form_batch';
-// $route['maintenance/class/form-batch/(:num)/(:num)'] = 'maintenance_class/form_batch/$1/$2';
-// $route['maintenance/class/show/(:num)'] = 'maintenance_class/show/$1';
-// $route['maintenance/class/form-success/(:num)'] = 'maintenance_class/success_page/$1';
-// $route['maintenance/class/success/(:num)/(:num)'] = 'maintenance_class/batch_success_page/$1/$2';
 
 $route['maintenance/grade-formula'] = 'maintenance_formula';
 
@@ -105,6 +96,7 @@ $route['maintenance/fees'] = 'maintenance_fees';
 $route['maintenance/fees/form'] = 'maintenance_fees/form';
 $route['maintenance/fees/form/(:num)'] = 'maintenance_fees/form/$1';
 $route['maintenance/fees/show/(:num)'] = 'maintenance_fees/show/$1';
+$route['maintenance/fees/tshirt-sizes/(:num)'] = 'maintenance_fees/tshirt/$1';
 $route['maintenance/fees/form-success/(:num)'] = 'maintenance_fees/success_page/$1';
 $route['maintenance/fees/transfer-fee/(:num)'] = 'maintenance_fees/transfer_fee/$1';
 $route['maintenance/fees/involved-students/(:num)'] = 'maintenance_fees/involved_page/$1';

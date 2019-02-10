@@ -37,9 +37,10 @@
 				<table class="table is-fullwidth">
 					<thead>
 						<th width="20%">Name of fee</th>
-						<th width="20%">Fee amount</th>
-						<th width="20%">Payable</th>
-						<th width="20%">Receivable</th>
+						<th width="15%">Fee amount</th>
+						<th width="15%">Payable</th>
+						<th width="15%">Receivable</th>
+						<th width="15%">T-shirt</th>
 						<th width="20%">Action</th>
 					</thead>
 					<tbody>
@@ -48,6 +49,9 @@
 							<td> {{fee.feeAmount}} </td>
 							<td> {{fee.payable}} </td>
 							<td> {{fee.receivable}} </td>
+							<td>
+								<span :class="{'has-text-danger': fee.tshirt == 'unavailable', 'has-text-success': fee.tshirt == 'available'}"> {{fee.tshirt}} </span>
+							</td>
 							<td>
 								<div v-if="fee.collect || fee.refund">
 									<form @submit.prevent="transactPayment(i)">
@@ -58,6 +62,12 @@
 												<input type="text" :class="{input: true, 'not-allowed': fee.refund}" v-model.trim.number="fee.amount" autofocus="true" :readonly="fee.refund">
 											</div>
 											<p class="help has-text-danger"> {{fee.error_amount}} </p>
+										</div>
+										<div v-if="fee.tshirt == 'available'" class="field">
+											<label class="label">T-shirt size</label>
+											<div class="control">
+												<multiselect v-model="fee.tsize" track-by="tsize" label="tsize" :options="tsizes" placeholder="Select size" :allow-empty="false"></multiselect>
+											</div>
 										</div>
 										<div class="field" v-if="fee.collect">
 											<label class="label">OR #</label>
@@ -112,7 +122,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	ready: false,
 	       	course: '',
 	       	year: '',
-	       	fees: []
+	       	fees: [],
+	    	tsizes: [
+	    		{tsize: 'XXL'},
+	    		{tsize: 'XL'},
+	    		{tsize: 'L'},
+	    		{tsize: 'M'},
+	    		{tsize: 'S'},
+	    		{tsize: '20'},
+	    		{tsize: '18'},
+	    		{tsize: '16'}
+	    	]
 	    },
 	    created() {
 	        
@@ -160,12 +180,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	prepareForm(fees){
 	    		const fees2 = []
 	    		for(let f of fees){
+	    			if(f.tsize == '') f.tsize = 'M'
 	    			fees2.push({
 	    				feeID: f.feeID,
 	    				feeName: f.feeName,
 	    				feeAmount: f.amount,
 	    				payable: f.payable,
 	    				receivable: f.receivable,
+	    				tshirt: f.tshirt,
+	    				tsize: {tsize: f.tsize},
 	    				collect: false,
 	    				refund: false,
 	    				amount: null,
@@ -235,10 +258,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		    				feeID: fee.feeID,
 		    				studID: this.student.studID,
 		    				amount: fee.amount,
+		    				tsize: fee.tsize.tsize,
 		    				or_number: fee.or_number
 		    			})
 			            .then(response => {
 			            	const r = response.body
+			            	console.log(r);
 			            	if(r == '_error0'){
 			            		swal('Error', 'OR # number already exist!', 'error')
 			            	}else{

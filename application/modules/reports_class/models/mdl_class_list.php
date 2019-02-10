@@ -28,9 +28,11 @@ class mdl_Class_List extends CI_Model{
 
 		foreach($faculties as $faculty){
 			$classes = $this->db->query("
-				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName
+				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,section.secName,
+				(SELECT CONCAT('Merge with ',cc.classCode,' in section ',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID WHERE cc.classID = c.merge_with) mergeClass
 				FROM class c 
-				INNER JOIN subject s ON c.subID = s.subID 
+				INNER JOIN subject s ON c.subID = s.subID
+				INNER JOIN section ON c.secID = section.secID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN room r ON c.roomID = r.roomID 
 				WHERE c.facID = ".$faculty->facID." AND c.termID = $termID
@@ -54,9 +56,11 @@ class mdl_Class_List extends CI_Model{
 
 		foreach($rooms as $room){
 			$classes = $this->db->query("
-				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,u.ln,u.fn
+				SELECT c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,u.ln,u.fn,section.secName, 
+				(SELECT CONCAT('Merge with ',cc.classCode,' in section ',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID WHERE cc.classID = c.merge_with) mergeClass
 				FROM class c 
 				INNER JOIN subject s ON c.subID = s.subID 
+				INNER JOIN section ON c.secID = section.secID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 
 				INNER JOIN users u ON f.uID = u.uID 
@@ -86,9 +90,11 @@ class mdl_Class_List extends CI_Model{
 		
 		foreach($sections as $section){
 			$classes = $this->db->query("
-				SELECT c.classCode,c.roomID,c.facID,s.subDesc,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn
+				SELECT c.classCode,c.roomID,c.facID,s.subDesc,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn,sec.secName, 
+				(SELECT CONCAT('Merge with ',cc.classCode,' in section ',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID WHERE cc.classID = c.merge_with) mergeClass
 				FROM class c 
 				INNER JOIN subject s ON c.subID = s.subID 
+				INNER JOIN section sec ON c.secID = sec.secID 
 				INNER JOIN room r ON c.roomID = r.roomID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 

@@ -56,9 +56,10 @@
                     <th>Days</th>
                     <th>Time</th>
                     <th>Room</th>
+                    <th>Section</th>
                   </thead>
-                  <tbody>
-                    <tr v-for="x of class_schedules">
+                  <tbody v-for="x of class_schedules">
+                    <tr>
                        <td> {{x.classCode}} <span v-if="x.type == 'lab'"><b>(lab)</b></span> </td>
                        <td> {{x.subDesc}} </td>
                        <td> {{x.day}} </td>
@@ -71,6 +72,10 @@
                            {{x.roomName}}
                          </span>
                        </td>
+                       <td> {{x.secName}} </td>
+                    </tr>
+                    <tr>
+                      <td colspan="6" v-if="x.mergeClass" class="has-text-primary"> {{x.mergeClass}} </td>
                     </tr>
                   </tbody>
                 </table>
@@ -87,9 +92,10 @@
                     <th>Days</th>
                     <th>Time</th>
                     <th>Instructor</th>
+                    <th>Section</th>
                   </thead>
-                  <tbody>
-                    <tr v-for="x of class_schedules">
+                  <tbody v-for="x of class_schedules">
+                    <tr>
                        <td> {{x.classCode}} <span v-if="x.type == 'lab'"><b>(lab)</b></span> </td>
                        <td> {{x.subDesc}} </td>
                        <td> {{x.day}} </td>
@@ -102,6 +108,10 @@
                            {{x.ln + ',' + x.fn}}
                          </span>
                         </td>
+                        <td> {{x.secName}} </td>
+                    </tr>
+                    <tr>
+                      <td colspan="6" v-if="x.mergeClass" class="has-text-primary"> {{x.mergeClass}} </td>
                     </tr>
                   </tbody>
                 </table>
@@ -121,10 +131,15 @@
                         <th width="15%">Room</th>
                         <th width="20%">Instructor</th>
                      </thead>
-                     <tbody>
-                        <tr v-for="x of c.classes">
-                           <td> {{x.classCode}} <span v-if="x.type == 'lab'"><b>(lab)</b></span> </td>
-                           <td> {{x.subDesc}} </td>
+                     <tbody v-for="x of c.classes">
+                        <tr>
+                           <td> 
+                            {{x.classCode}} 
+                            <span v-if="x.type == 'lab'">
+                              <b>(lab)</b>
+                            </span> 
+                            </td>
+                            <td>  {{x.subDesc}} </td>
                            <td> {{x.day}} </td>
                            <td> {{x.class_time}} </td>
                            <td>
@@ -143,6 +158,9 @@
                                {{x.ln + ',' + x.fn}}
                              </span>
                            </td>
+                        </tr>
+                        <tr>
+                          <td colspan="6" v-if="x.mergeClass" class="has-text-primary"> {{x.mergeClass}} </td>
                         </tr>
                      </tbody>
                   </table>

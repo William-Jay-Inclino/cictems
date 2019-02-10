@@ -57,6 +57,12 @@
 					{{error.dueDate}}
 				</p>
 			</div>
+			<div class="field">
+			  <label class="label">T-shirt</label>
+			  <div class="control">
+				  	<multiselect v-model="form.tshirt" track-by="tshirt" label="tshirt" :options="tshirts" :allow-empty="false"></multiselect>
+			  </div>
+			</div>
 			<br>
 			<button type="submit" class="button is-link is-pulled-right">Submit</button>
 			<br><br>
@@ -83,11 +89,12 @@
 		    	},
 		    	id: '<?php echo $record->feeID ?>',
 		    	form: {
-		    		termID: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
+		    		termID: {termID: '<?php echo $record->termID ?>', term: '<?php echo $record->term ?>'},
 		    		feeName: '<?php echo $record->feeName ?>',
 		    		feeDesc: '<?php echo $record->feeDesc ?>',
 		    		amount: '<?php echo $record->amount ?>',
-		    		dueDate: '<?php echo $record->dueDate ?>'
+		    		dueDate: '<?php echo $record->dueDate ?>',
+		    		tshirt: {tshirt: '<?php echo $record->tshirt ?>'},
 		    	},
 		    	error: {
 		    		feeName: '',
@@ -95,7 +102,11 @@
 		    		amount: '',
 		    		dueDate: ''
 		    	},
-		    	terms: []
+		    	terms: [],
+		    	tshirts: [
+		    		{tshirt: 'available'},
+		    		{tshirt: 'unavailable'},
+		    	]
 		    },
 		    created(){
 		    	this.fetchTerm()

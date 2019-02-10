@@ -7,7 +7,7 @@
 	<div class="container">
 		<nav class="breadcrumb has-bullet-separator" aria-label="breadcrumbs">
 		  <ul>
-		    <li><a href="<?php echo base_url() ?>incomplete">List</a></li>
+		    <li><a href="<?php echo base_url() ?>inc-grades">List</a></li>
 		    <li class="is-active"><a href="#" aria-current="page">Classes</a></li>
 		  </ul>
 		</nav>

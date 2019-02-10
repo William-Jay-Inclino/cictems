@@ -78,7 +78,7 @@ class mdl_Student extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT s.studID,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,
+			SELECT s.studID,s.has_user,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,
 			CONCAT(YEAR(u.dob), '-', LPAD(MONTH(u.dob), 2, '0'), '-' ,LPAD(DAY(u.dob), 2, '0')) dob,u.sex,u.address,u.cn,u.email
 			FROM student s 
 			INNER JOIN year y ON s.yearID = y.yearID 
@@ -330,6 +330,53 @@ class mdl_Student extends CI_Model{
 
 		$this->db->trans_complete();
 		
+	}
+
+	function rand_pw(){
+		return substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"), 0, 8);
+	}
+
+	function sendPass(){
+		//print_r($_POST);
+		$id = $this->input->post("id");
+		$headers = '';
+		$mail = $this->db->query("SELECT email FROM users WHERE uID = (SELECT studID FROM student WHERE studID = $id LIMIT 1) LIMIT 1")->row()->email;
+		//echo $mail;
+
+		$msg = "Password: ".$this->rand_pw();
+		
+		//Create a new PHPMailer instance
+		$mail = new PHPMailer\PHPMailer\PHPMailer(TRUE);
+		try {
+		   /* Set the mail sender. */
+		   	$mail->isSMTP();
+			$mail->Host = "smtp.example.com";
+			$mail->SMTPAuth = true;
+$mail->Username = 'smtp_username';
+$mail->Password = 'smtp_password';
+		   	$mail->setFrom('nightfury102497@gmail.com', 'Night Fury');
+
+		   /* Add a recipient. */
+		   $mail->addAddress('wjay.inclino@gmail.com', 'William Jay Inclino');
+
+		   /* Set the subject. */
+		   $mail->Subject = 'Force';
+
+		   /* Set the mail message body. */
+		   $mail->Body = 'There is a great disturbance in the Force.';
+
+		   /* Finally send the mail. */
+		   $mail->send();
+		   echo "send";
+		}
+		catch (Exception $e)
+		{
+		   /* PHPMailer exception. */
+		  echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+		}
+
+
+
 	}
 
 	private function send_mail($data){

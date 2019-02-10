@@ -14,12 +14,12 @@ class mdl_Fees extends CI_Model{
 	}
 
 	function create(){
-		//print_r($_POST);
+		//print_r($_POST); die();
 		$exist = false;
 		$data = $this->input->post('data');
 		$data['termID'] = $data['termID']['termID'];
+		$data['tshirt'] = $data['tshirt']['tshirt'];
 		$this->check_exist($data,$exist);
-
 		if($exist){
 			$output = ['status' => 0];
 		}else{
@@ -43,14 +43,14 @@ class mdl_Fees extends CI_Model{
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT feeID,termID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
+				SELECT * FROM fees
 				WHERE termID = $termID
 				LIMIT $start, $per_page
 			");
 			$num_records = $this->count_all($termID);
 		}else{
 			$query = $this->db->query("
-				SELECT feeID,termID,feeName,feeDesc,dueDate,feeStatus,amount FROM fees
+				SELECT * FROM fees
 				WHERE feeName LIKE '%".$search_val."%' AND termID = $termID
 				LIMIT $start, $per_page"
 			);
@@ -67,7 +67,7 @@ class mdl_Fees extends CI_Model{
 		$this->check_form_id($id);
 
 		return $this->db->query("
-			SELECT CONCAT(t.schoolYear,' ',s.semDesc) term,t.termID,f.feeID,f.feeName,f.feeDesc,f.dueDate,f.feeStatus,f.amount 
+			SELECT CONCAT(t.schoolYear,' ',s.semDesc) term,t.termID,f.feeID,f.feeName,f.feeDesc,f.dueDate,f.feeStatus,f.amount,f.tshirt 
 			FROM fees f 
 			INNER JOIN term t on f.termID = t.termID 
 			INNER JOIN semester s on t.semID = s.semID 
@@ -80,6 +80,7 @@ class mdl_Fees extends CI_Model{
 		$data = $this->input->post('data');
 		$id = $this->input->post('id');
 		$data['termID'] = $data['termID']['termID'];
+		$data['tshirt'] = $data['tshirt']['tshirt'];
 
 		$this->db->trans_start();
 		$this->check_exist($data,$exist,$id);
@@ -443,6 +444,27 @@ class mdl_Fees extends CI_Model{
 
 		echo json_encode($affected_students);
 
+	}
+
+	function get_tshirt_size($id){
+		$feeAmount = $this->db->select('amount')->get_where('fees', "feeID = $id", 1)->row()->amount;
+		echo json_encode(
+			$this->db->query("
+				SELECT sf.sfID, CONCAT(u.ln,', ',u.fn) name, sf.tsize
+				FROM stud_fee sf 
+				INNER JOIN student s ON sf.studID = s.studID
+				INNER JOIN users u ON s.uID = u.uID 
+				WHERE sf.feeID = $id AND (sf.payable < $feeAmount OR sf.receivable > 0)
+				ORDER BY name ASC
+			")->result()
+		);
+	}
+
+	function update_tsize(){
+		//die(var_dump($_POST));
+		$sfID = $this->input->post('sfID');
+		$data['tsize'] = $this->input->post('tsize')['tsize'];
+		$this->db->update('stud_fee', $data, "sfID = $sfID");
 	}
 
 }

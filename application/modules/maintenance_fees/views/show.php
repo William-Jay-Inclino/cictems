@@ -25,6 +25,11 @@
 			</div>
 			<table class="table is-fullwidth">
 				<tr>
+					<td colspan="2">
+						<a v-if="tshirt == 'available'" :href="page.tshirt">view student's t-shirt sizes</a>
+					</td>
+				</tr>
+				<tr>
 					<td><b>Term:</b> </td>
 					<td> {{term.term}} </td>
 				</tr>
@@ -43,6 +48,14 @@
 				<tr>
 					<td><b>Deadline of payment:</b> </td>
 					<td> {{dueDate}} </td>
+				</tr>
+				<tr>
+					<td>
+						<b>T-shirt:</b> 
+					</td>
+					<td> 
+						<span :class="{'has-text-danger': tshirt == 'unavailable', 'has-text-success': tshirt == 'available'}"> {{tshirt}} </span>
+					</td>
 				</tr>
 				<tr>
 					<td><b>Status:</b> </td>
@@ -80,11 +93,13 @@
 		    	feeDesc: '<?php echo $record->feeDesc ?>',
 		    	amount: '<?php echo $record->amount ?>',
 		    	dueDate: '<?php echo $record->dueDate ?>',
+		    	tshirt: '<?php echo $record->tshirt ?>',
 		    	feeStatus: '<?php echo $record->feeStatus ?>',
 		    	page:{
 		    		edit: '<?php echo base_url()."maintenance/fees/form/".$record->feeID ?>',
 		    		list: '<?php echo base_url() ?>maintenance/fees',
-		    		involved: '<?php echo base_url()."maintenance/fees/involved-students/".$record->feeID ?>'
+		    		involved: '<?php echo base_url()."maintenance/fees/involved-students/".$record->feeID ?>',
+		    		tshirt: '<?php echo base_url()."maintenance/fees/tshirt-sizes/".$record->feeID ?>'
 		    	},
 		    },
 		    methods: {

@@ -137,7 +137,7 @@ class mdl_Student_Users extends CI_Model{
 
 		foreach ($terms as $term) {
 			$sql2 = $this->db->query("
-				SELECT c.classID,c.classCode,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn,r.roomID,f.facID,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
+				SELECT c.classID,c.classCode,s.type,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time,r.roomName,u.ln,u.fn,r.roomID,f.facID,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
 				FROM studclass sc  
 				INNER JOIN class c ON sc.classID = c.classID 
 				INNER JOIN subject s ON c.subID = s.subID  

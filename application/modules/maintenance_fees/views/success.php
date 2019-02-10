@@ -33,6 +33,18 @@
 					<td> <?php echo $record->dueDate ?> </td>
 				</tr>
 				<tr>
+					<td><b>T-shirt:</b> </td>
+					<td>
+						<?php 
+							if($record->tshirt == 'unavailable'){
+								echo "<span class='has-text-danger'>unavailable</span>";
+							}else if($record->tshirt == 'available'){
+								echo "<span class='has-text-success'>available</span>";
+							}
+						?> 
+					</td>
+				</tr>
+				<tr>
 					<td><b>Status:</b> </td>
 					<td> 
 						<?php 

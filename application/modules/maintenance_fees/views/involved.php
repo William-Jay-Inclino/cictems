@@ -28,6 +28,7 @@
 					<th>Year level & courses involved</th>
 					<th>Contribution each student</th>
 					<th>Deadline of payment</th>
+					<th>T-shirt</th>
 					<th>Status</th>
 				</thead>
 				<tbody>
@@ -35,6 +36,15 @@
 					<td> <?php echo $record->feeDesc ?> </td>
 					<td> <?php echo $record->amount ?> </td>
 					<td> <?php echo $record->dueDate ?> </td>
+					<td>
+						<?php 
+							if($record->tshirt == 'unavailable'){
+								echo "<span class='has-text-danger'>unavailable</span>";
+							}else if($record->tshirt == 'available'){
+								echo "<span class='has-text-success'>available</span>";
+							}
+						?> 
+					</td>
 					<td> 
 						<?php 
 							if($record->feeStatus == 'ongoing'){

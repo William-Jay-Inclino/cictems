@@ -58,10 +58,11 @@
 				</tr>
 				<tr class="tbl-headers">
 					<th style="color: #ff3860; width: 20%">Course Code</th>
-					<th style="color: #ff3860; width: 30%">Course Description</th>
+					<th style="color: #ff3860; width: 25%">Course Description</th>
 					<th style="color: #ff3860; width: 10%;">Days</th>
-					<th style="color: #ff3860; width: 20%;">Time</th>
-					<th style="color: #ff3860; width: 20%;">Room</th>
+					<th style="color: #ff3860; width: 15%;">Time</th>
+					<th style="color: #ff3860; width: 15%;">Room</th>
+					<th style="color: #ff3860; width: 15%;">Section</th>
 				</tr>
 				<?php 
 					foreach($d['classes'] as $class){ ?>
@@ -80,9 +81,15 @@
 									}
 								?> 
 							</td>
+							<td style="color: #3273dc;"> <?php echo $class->secName ?> </td>
 						</tr>
-
 						<?php
+						if($class->mergeClass){ ?>
+							<tr>
+								<td colspan="6" style="color: #ff3860; text-align: left"> <?php echo $class->mergeClass ?> </td>
+							</tr>
+							<?php
+						}
 					}
 				?>
 			</table>

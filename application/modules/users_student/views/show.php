@@ -72,6 +72,10 @@
 					<td> {{email}} </td>
 				</tr>
 			</table>
+			<?php if($record->has_user == 'yes'){ ?>
+				<a @click="sendPass" href="javascript:void(0)">Send new password</a>
+				<?php
+			} ?>
 		</div>
 	</div>
 </section>
@@ -106,6 +110,20 @@
 		    	},
 		    },
 		    methods: {
+		    	sendPass(){
+		    		swal('Info', "New password will be send to "+this.email, 'info')
+		    		.then(send => {
+		    			if(send){
+		    				this.$http.post('<?php echo base_url() ?>users_student/sendPass', {id: this.id})
+				        	.then(res => {
+				        		console.log(res.body)	
+							 }, e => {
+							 	console.log(e.body)
+
+							 })
+		    			}
+		    		})
+		    	},
 		    	is_safe_delete(){
 		    		const id = this.id
 
@@ -147,7 +165,12 @@
 						})
 					 });
 		    	}
-		    }
+		    },
+
+		   http: {
+            emulateJSON: true,
+            emulateHTTP: true
+    		}
 
 
 		});

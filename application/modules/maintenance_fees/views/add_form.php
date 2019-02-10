@@ -56,6 +56,12 @@
 					{{error.dueDate}}
 				</p>
 			</div>
+			<div class="field">
+			  <label class="label">T-shirt</label>
+			  <div class="control">
+				  	<multiselect v-model="form.tshirt" track-by="tshirt" label="tshirt" :options="tshirts" :allow-empty="false"></multiselect>
+			  </div>
+			</div>
 			<br>
 			<button type="submit" class="button is-link is-pulled-right">Submit</button>
 			<br><br>
@@ -86,7 +92,8 @@
 		    		feeName: null,
 		    		feeDesc: null,
 		    		amount: null,
-		    		dueDate: null
+		    		dueDate: null,
+		    		tshirt: {tshirt: 'available'}
 		    	},
 		    	error: {
 		    		feeName: '',
@@ -94,7 +101,11 @@
 		    		amount: '',
 		    		dueDate: ''
 		    	},
-		    	terms: []
+		    	terms: [],
+		    	tshirts: [
+		    		{tshirt: 'available'},
+		    		{tshirt: 'unavailable'},
+		    	]
 		    },
 		    created(){
 		    	this.fetchTerm()

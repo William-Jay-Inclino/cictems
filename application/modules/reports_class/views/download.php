@@ -83,8 +83,13 @@
 								?> 
 							</td>
 						</tr>
-
 						<?php
+						if($class->mergeClass){ ?>
+							<tr>
+								<td colspan="6" style="color: #ff3860; text-align: left"> <?php echo $class->mergeClass ?> </td>
+							</tr>
+							<?php
+						}
 					}
 				?>
 			</table>
