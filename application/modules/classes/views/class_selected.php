@@ -425,16 +425,27 @@ document.addEventListener('DOMContentLoaded', function() {
 			            			classIDs: this.classIDs,
 			            			value: value
 			            		}
+			            		swal('Submitting please wait ...',
+					      		{
+					      			button: false,
+					      			closeOnClickOutside: false
+					      		})
 			            		this.$http.post('<?php echo base_url() ?>classes/finalized_grade', j)
 				                  .then(response => {
 				                  	const cc = response.body
-				                    if(cc.status == 'success'){
-				                    	swal('Grades successfully finalized!', {icon: 'success'})
+				                  	console.log(cc);
+				                    if(cc.status == 'error'){
+				                    	swal('Password is incorrect!', {icon: 'error'})
+				                    }else if(cc.status == 'success'){
+				                   		swal('Grades successfully finalized!', {icon: 'success'})
 				                    	this.status = 'locked'
 				                    	this.date_submitted = cc.date_submitted
 				                    }else{
-				                   		swal('Password is incorrect!', {icon: 'error'})
+				                    	window.location.href = '<?php echo base_url()."class-selected/".$facID."/".$termID."/".$id."/".$prosID."/".$secID ?>';
 				                    }
+				                 }, e => {
+				                 	console.log(e.body);
+				                 	
 				                 })
 			            	}
 			            	

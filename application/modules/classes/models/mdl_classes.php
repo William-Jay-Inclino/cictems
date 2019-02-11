@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+use Twilio\Rest\Client;
 class mdl_Classes extends CI_Model{
 
 	function grade_sheet($facID, $termID, $id, $prosID, $secID){
@@ -300,13 +300,16 @@ class mdl_Classes extends CI_Model{
 	}
 	
 	function finalized_grade(){
+		$basic  = new \Nexmo\Client\Credentials\Basic('40a92841', 'shf74GcIMk3uvizb');
+		$client = new \Nexmo\Client($basic);
+
 		$ids = $this->input->post('classIDs');
 		$id = $ids[0];
 
 		$value = $this->input->post('value');
 		$classes = [];
 		$this->db->trans_start();
-
+		$msgData = $this->db->query("SELECT c.classCode, CONCAT(u.fn,' ',u.ln) faculty FROM class c INNER JOIN faculty f ON c.facID = f.facID INNER JOIN users u ON f.uID = u.uID WHERE c.classID = $id LIMIT 1")->row();
 		$password = $this->db->select('userPass')->get_where('users',"uID = ".$this->session->userdata('uID'), 1)->row()->userPass;
 
 		if($value == $password){
@@ -331,6 +334,8 @@ class mdl_Classes extends CI_Model{
 					$this->db->insert('studgrade',['studID'=>$student->studID, 'subID'=>$class->subID, 'uID'=>$class->uID, 'termID'=>$class->termID, 'sgGrade'=>$equiv, 'remarks'=>$student->remarks ,'grade_type'=>'Class']);
 				}
 
+				$this->send_sms($student, $equiv, $msgData, $client);
+
 			}
 
 			foreach($ids as $id){
@@ -339,6 +344,7 @@ class mdl_Classes extends CI_Model{
 			}
 
 			
+			
 			$output = ['status'=>'success','date_submitted'=>$ds];
 			
 		}else{
@@ -346,6 +352,27 @@ class mdl_Classes extends CI_Model{
 		}
 		$this->db->trans_complete();
 		echo json_encode($output);
+	}
+
+	function send_sms($student, $equiv, $msgData, $client){
+		$msg = '';
+		$cn = $this->db->query("
+			SELECT u.cn FROM student s INNER JOIN users u ON s.uID = u.uID WHERE s.studID = ".$student->studID." LIMIT 1
+		")->row()->cn;
+
+		$msg .= "Class ".$msgData->classCode." have been submitted by ".$msgData->faculty.". ";
+		if($student->remarks == 'Incomplete'){
+			$msg .= 'Your remark is INC';
+		}else{
+			$msg .= 'Your remark is '.$student->remarks.' and your grade is '.$equiv;
+		}
+		$msg .= "\n\nFrom the College of ICTE WLC.\n\n";
+		$msg .= '.';
+		$message = $client->message()->send([
+		    'to' => '63'.$cn,
+		    'from' => 'CICTE Dep. of WLC',
+		    'text' => $msg
+		]);
 	}
 
 }
