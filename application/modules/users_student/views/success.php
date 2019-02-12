@@ -48,7 +48,7 @@
 				</tr>
 				<tr>
 					<td><b>Contact number:</b> </td>
-					<td> <?php echo $record->cn ?> </td>
+					<td> <?php echo '+63'.$record->cn ?> </td>
 				</tr>
 				<tr>
 					<td><b>Email:</b> </td>

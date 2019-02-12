@@ -13,6 +13,11 @@
 	</div>
 	<div class="container" style="max-width: 600px;">
 		<div class="box">
+			<div class="columns">
+				<div class="column" v-for="tsize in tsizes2"> {{tsize.size}} - <b>{{tsize.total}}</b> </div>
+			</div>
+			<multiselect v-model="searchedStudent" track-by="sfID" label="name" :options="students" placeholder="Search student" :options-limit="5"></multiselect>
+			<hr>
 			<table class="table is-fullwidth">
 				<thead>
 					<th>#</th>
@@ -21,7 +26,7 @@
 					<th width="5%"></th>
 				</thead>
 				<tbody>
-					<tr v-for="student, i in students">
+					<tr v-for="student, i in students2">
 						<td> {{i + 1}} </td>
 						<td> {{student.name}} </td>
 						<td>
@@ -52,6 +57,7 @@
 		    		list: '<?php echo base_url() ?>maintenance/fees',
 		    	},
 		    	id: '<?php echo $feeID ?>',
+		    	searchedStudent: null,
 		    	students: [],
 		    	tsizes: [
 		    		{tsize: 'XXL'},
@@ -66,6 +72,34 @@
 		    },
 		    created(){
 		    	this.get_tshirt_size()
+		    },
+		    computed: {
+		    	students2(){
+		    		const students = this.students 
+		    		if(this.searchedStudent){
+		    			return students.filter(s => s.sfID == this.searchedStudent.sfID)
+		    		}else{
+		    			return students
+		    		}
+		    	},
+		    	tsizes2(){
+		    		const tsizes = this.tsizes
+		    		const students = this.students 
+		    		const arr = []
+		    		for(let tsize of tsizes){
+		    			tctr = 0
+		    			for(let student of students){
+		    				if(tsize.tsize == student.tsize.tsize){
+		    					tctr += 1
+		    				}
+		    			}
+		    			arr.push({
+	    					size: tsize.tsize,
+	    					total: tctr
+	    				})
+		    		}
+		    		return arr
+		    	}
 		    },
 		    methods: {
 		    	get_tshirt_size(){
@@ -83,7 +117,7 @@
 					 })
 		    	},
 		    	updateSize(i){
-		    		const student = this.students[i]
+		    		const student = this.students2[i]
 		    		student.updated = true
 		    		if(student.tsize == null) student.tsize = {tsize: ''}
 		    		this.$http.post('<?php echo base_url() ?>maintenance_fees/update_tsize', student)

@@ -65,7 +65,7 @@
 				</tr>
 				<tr>
 					<td><b>Contact number:</b> </td>
-					<td> {{cn}} </td>
+					<td> +63{{cn}} </td>
 				</tr>
 				<tr>
 					<td><b>Email:</b> </td>
