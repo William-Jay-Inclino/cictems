@@ -166,7 +166,7 @@
             <div class="field" v-if="form.role == 'Student'">
               <label class="label">Your name <p class="help is-note">Format: Lastname, Firstname Middlename</p> </label>
               <div class="control">
-                <multiselect v-model="form.student" label="name" track-by="uID" placeholder="Type your name here" :options="students" :loading="isLoading" :internal-search="false" @search-change="fetchStudents">
+                <multiselect :show-labels="false" v-model="form.student" label="name" track-by="uID" placeholder="Type your name here" :options="students" :loading="isLoading" :internal-search="false" @search-change="fetchStudents">
                </multiselect>
               </div>
               <p class="help has-text-danger"> {{error.student}} </p>
@@ -199,13 +199,13 @@
                   </div>
                 </div>
             </div>
-            <div class="field">
+            <!-- <div class="field">
               <label class="label">Date of Birth</label>
               <div class="control">
                 <input type="date" class="input" v-model="form.dob" @keyup.enter="nextStep">
               </div>
               <p class="help has-text-danger"> {{error.dob}} </p>
-            </div>
+            </div> -->
             <div class="field" v-if="form.role != 'Student'">
               <label class="label">Sex</label>
               <div class="control">
@@ -214,20 +214,20 @@
               </div>
               <p class="help has-text-danger"> {{error.sex}} </p>
             </div>
-            <div class="field">
+            <!-- <div class="field">
               <label class="label">Address</label>
               <div class="control">
                 <input type="text" class="input" v-model.trim="form.address" @keyup.enter="nextStep">
               </div>
               <p class="help has-text-danger"> {{error.address}} </p>
-            </div>
-            <div class="field">
+            </div> -->
+            <!-- <div class="field">
               <label class="label">Contact number</label>
               <div class="control">
                 <input type="text" class="input" v-model.trim="form.cn" @keyup.enter="nextStep">
               </div>
               <p class="help has-text-danger"> {{error.cn}} </p>
-            </div>
+            </div> -->
             <div class="field">
               <label class="label">Email</label>
               <div class="control">
@@ -288,22 +288,22 @@
                 <td><b>Name</b></td>
                 <td> {{fullName}} </td>
               </tr>
-              <tr>
+              <!-- <tr>
                 <td><b>Date of Birth</b></td>
                 <td> {{form.dob}} </td>
-              </tr>
+              </tr> -->
               <tr>
                 <td><b>Sex</b></td>
                 <td> {{form.sex}} </td>
               </tr>
-              <tr>
+              <!-- <tr>
                 <td><b>Address</b></td>
                 <td> {{form.address}} </td>
               </tr>
               <tr>
                 <td><b>Contact number</b></td>
                 <td> {{form.cn}} </td>
-              </tr>
+              </tr> -->
               <tr>
                 <td><b>Email</b></td>
                 <td> {{form.email}} </td>
@@ -371,10 +371,8 @@
                 fn: '',
                 mn: '',
                 ln: '',
-                dob: '',
                 sex: '',
                 address: '',
-                cn: '',
                 email: '',
                 userName: '',
                 userPass: '',
@@ -592,30 +590,30 @@
                     this.error.ln = '' 
                   }
                 }
-                if(!Date.parse(f.dob)){
-                  this.error.dob = 'Invalid date of birth'
-                  ok = false
-                }else{
-                  this.error.dob = ''
-                }
+                // if(!Date.parse(f.dob)){
+                //   this.error.dob = 'Invalid date of birth'
+                //   ok = false
+                // }else{
+                //   this.error.dob = ''
+                // }
                 if(!f.sex && f.role != 'Student'){
                   this.error.sex = msg 
                   ok = false
                 }else{
                   this.error.sex = '' 
                 }
-                if(!f.address){
-                  this.error.address = msg 
-                  ok = false
-                }else{
-                  this.error.address = '' 
-                }
-                if(!f.cn){
-                  this.error.cn = msg 
-                  ok = false
-                }else{
-                  this.error.cn = '' 
-                }
+                // if(!f.address){
+                //   this.error.address = msg 
+                //   ok = false
+                // }else{
+                //   this.error.address = '' 
+                // }
+                // if(!f.cn){
+                //   this.error.cn = msg 
+                //   ok = false
+                // }else{
+                //   this.error.cn = '' 
+                // }
                 if(!this.validEmail(f.email)){
                   this.error.email = 'Please enter valid email'
                   ok = false

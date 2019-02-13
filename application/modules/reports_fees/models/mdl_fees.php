@@ -13,7 +13,7 @@ class mdl_Fees extends CI_Model{
 					INNER JOIN student s ON sf.studID = s.studID 
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE f.termID = $termID AND f.feeStatus <> 'cancelled'
-					GROUP BY sf.sfID
+					GROUP BY s.studID
 					HAVING SUM(sf.payable) = 0
 					ORDER BY name ASC
 				")->result();
@@ -28,7 +28,7 @@ class mdl_Fees extends CI_Model{
 					INNER JOIN student s ON sf.studID = s.studID 
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE f.termID = $termID AND f.feeStatus <> 'cancelled'
-					GROUP BY sf.sfID
+					GROUP BY s.studID
 					HAVING amount > 0 AND SUM(sf.receivable) = 0
 					ORDER BY name ASC
 				")->result();
@@ -43,7 +43,7 @@ class mdl_Fees extends CI_Model{
 					INNER JOIN student s ON sf.studID = s.studID 
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE f.termID = $termID
-					GROUP BY sf.sfID
+					GROUP BY s.studID
 					HAVING SUM(sf.payable) = 0 AND amount > 0
 					ORDER BY name ASC
 				")->result();

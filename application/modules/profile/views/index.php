@@ -119,15 +119,18 @@
 					<tr :class="{'active-input': editCn}">
 						<td><b>Contact No.</b></td>
 						<td>
-							<span v-if="editCn">
-								<input type="tel" class="input" v-model.trim="form.cn" onpaste="return false;" onKeyPress="if(this.value.length==11 && event.keyCode>47 && event.keyCode < 58)return false;" autofocus="true" maxlength="11" @keyup.enter="save('cn')">
-								<hr>
-								<button class="button is-link is-small" @click="save('cn')">Save Changes</button>
-								<br><br>
-							</span>
-							<span v-else>
-								{{cn}}
-							</span>
+							<form @submit.prevent="save('cn')">
+								<span v-if="editCn">
+									<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" required maxlength="10">
+									<p class="help">format: 9038429187</p>
+									<hr>
+									<button type="submit" class="button is-link is-small">Save Changes</button>
+									<br><br>
+								</span>
+								<span v-else>
+									{{cn}}
+								</span>
+							</form>
 						</td>
 						<td>
 							<span v-if="editCn">

@@ -269,9 +269,9 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     watch: {
       selected_student(value){
+         this.section = null
          if(value == null){
             this.ready = false
-            this.section = null
          }else{
             this.ready = true
             this.classes = []

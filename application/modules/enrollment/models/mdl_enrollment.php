@@ -227,6 +227,8 @@ class mdl_Enrollment extends CI_Model{
 			}else{
 				$this->db->query("INSERT INTO counter(module,total) VALUES('enrol_studs','1')");
 			}
+			$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'enrol_requests'");
+			
 		}
 		else{
 			$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'enrol_requests'");

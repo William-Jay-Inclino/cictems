@@ -300,8 +300,8 @@ class mdl_Classes extends CI_Model{
 	}
 	
 	function finalized_grade(){
-		$basic  = new \Nexmo\Client\Credentials\Basic('40a92841', 'shf74GcIMk3uvizb');
-		$client = new \Nexmo\Client($basic);
+		// $basic  = new \Nexmo\Client\Credentials\Basic('40a92841', 'shf74GcIMk3uvizb');
+		// $client = new \Nexmo\Client($basic);
 
 		$ids = $this->input->post('classIDs');
 		$id = $ids[0];
@@ -309,7 +309,7 @@ class mdl_Classes extends CI_Model{
 		$value = $this->input->post('value');
 		$classes = [];
 		$this->db->trans_start();
-		$msgData = $this->db->query("SELECT c.classCode, CONCAT(u.fn,' ',u.ln) faculty FROM class c INNER JOIN faculty f ON c.facID = f.facID INNER JOIN users u ON f.uID = u.uID WHERE c.classID = $id LIMIT 1")->row();
+		// $msgData = $this->db->query("SELECT c.classCode, CONCAT(u.fn,' ',u.ln) faculty FROM class c INNER JOIN faculty f ON c.facID = f.facID INNER JOIN users u ON f.uID = u.uID WHERE c.classID = $id LIMIT 1")->row();
 		$password = $this->db->select('userPass')->get_where('users',"uID = ".$this->session->userdata('uID'), 1)->row()->userPass;
 
 		if($value == $password){
@@ -334,7 +334,7 @@ class mdl_Classes extends CI_Model{
 					$this->db->insert('studgrade',['studID'=>$student->studID, 'subID'=>$class->subID, 'uID'=>$class->uID, 'termID'=>$class->termID, 'sgGrade'=>$equiv, 'remarks'=>$student->remarks ,'grade_type'=>'Class']);
 				}
 
-				$this->send_sms($student, $equiv, $msgData, $client);
+				// $this->send_sms($student, $equiv, $msgData, $client);
 
 			}
 

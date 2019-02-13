@@ -37,22 +37,6 @@
 					<td> {{name}} </td>
 				</tr>
 				<tr>
-					<td><b>Date of Birth:</b> </td>
-					<td> {{dob}} </td>
-				</tr>
-				<tr>
-					<td><b>Sex:</b> </td>
-					<td> {{sex}} </td>
-				</tr>
-				<tr>
-					<td><b>Address:</b> </td>
-					<td> {{address}} </td>
-				</tr>
-				<tr>
-					<td><b>Contact number:</b> </td>
-					<td> {{cn}} </td>
-				</tr>
-				<tr>
 					<td><b>Email:</b> </td>
 					<td> {{email}} </td>
 				</tr>
@@ -83,10 +67,6 @@
 		    	roleID: '<?php echo $record->roleID ?>',
 		    	userName: '<?php echo $record->userName ?>',
 		    	name: '<?php echo $record->ln.", ".$record->fn." ".$record->mn ?>',
-		    	dob: '<?php echo $record->dob ?>',
-		    	sex: '<?php echo $record->sex ?>',
-		    	address: '<?php echo $record->address ?>',
-		    	cn: '<?php echo $record->cn ?>',
 		    	email: '<?php echo $record->email ?>',
 		    	page:{
 		    		list: '<?php echo base_url() ?>users/registration'
