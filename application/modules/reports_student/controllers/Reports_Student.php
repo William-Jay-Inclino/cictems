@@ -25,8 +25,9 @@ class Reports_Student extends MY_Controller{
 
 	function download($data){
 		$mpdf = new \Mpdf\Mpdf();
-		$this->_data['data'] = $this->mdl_student->download($data[0],$data[1],$data[2],$data[3], $this->_data['current_term']->termID);
+		$this->_data['data'] = $this->mdl_student->download($data[0],$data[1],$data[2],$data[3],$data[4], $this->_data['current_term']->termID);
 		$this->_data['course'] = $data[1];
+		$this->_data['year'] = $data[2];
 		$html = $this->load->view($this->_data['module'].'/download',$this->_data, true);
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();

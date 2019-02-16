@@ -84,7 +84,7 @@
                                     </span>
                                  </span>
                               </td>
-                              <td> {{row.subject.subCode}} <span v-if="row.subject.type == 'lab'"><b>(lab)</b></span> </td>
+                              <td> {{row.subject.subCode}}</td>
                               <td> {{row.subject.subDesc}} </td>
                               <td> {{row.subject.units}} </td>
                               <td>

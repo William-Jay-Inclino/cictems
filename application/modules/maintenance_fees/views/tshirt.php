@@ -13,9 +13,12 @@
 	</div>
 	<div class="container" style="max-width: 600px;">
 		<div class="box">
-			<div class="columns">
-				<div class="column" v-for="tsize in tsizes2"> {{tsize.size}} - <b>{{tsize.total}}</b> </div>
-			</div>
+			<table style="width: 100%; table-layout: fixed">
+				<tr>
+					<td v-for="tsize in tsizes2" style="width: 11.11%"><b>{{tsize.size}}</b>-{{tsize.total}}</td>
+				</tr>
+			</table>
+			<br>
 			<multiselect v-model="searchedStudent" track-by="sfID" label="name" :options="students" placeholder="Search student" :options-limit="5"></multiselect>
 			<hr>
 			<table class="table is-fullwidth">
@@ -65,6 +68,7 @@
 		    		{tsize: 'L'},
 		    		{tsize: 'M'},
 		    		{tsize: 'S'},
+		    		{tsize: 'XS'},
 		    		{tsize: '20'},
 		    		{tsize: '18'},
 		    		{tsize: '16'}

@@ -28,7 +28,25 @@
 	
 	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 	<div style="text-align: center">
-			<b>LIST OF ENROLLED STUDENTS <?php if($data['courseCode']){echo "(".$data['courseCode'].")";} ?> <br>
+			<b>LIST OF ENROLLED STUDENTS 
+			<?php 
+				$x = '';
+				if($data['courseCode'] || $data['yearDesc']){
+					$x .= '(';
+					if($data['courseCode']){
+						$x .= $data['courseCode'];
+					}
+					if($data['yearDesc']){
+						if($data['courseCode']){
+							$x .= ' - '.$data['yearDesc'];
+						}else{
+							$x .= $data['yearDesc'];
+						}
+					}
+					$x .= ')';
+					echo $x;
+				} 
+			?> <br> 
 			<?php 
 				if($data['faculty']){
 					echo "of ".$data['faculty']->name;
@@ -42,7 +60,6 @@
 			as of <?php echo date("F j, Y"); ?><br><br>
 	</div>
 	<br><br>
-	
 	<table class="table" style="width: 100%">
 		<tr>
 			<th>No.</th>
@@ -50,7 +67,9 @@
 			<?php if($course == 'all-courses'){
 				echo "<th>Course</th>";
 			} ?>
-			<th>Year</th>
+			<?php if($year == 'all-years'){
+				echo "<th>Year</th>";
+			} ?>
 		</tr>
 		<?php 
 			$ctr = 1;
@@ -63,7 +82,11 @@
 							echo "<td>".$student->courseCode."</td>";
 						}
 					?>
-					<td><?php echo $student->yearDesc; ?></td>
+					<?php  
+						if($year == 'all-years'){
+							echo "<td>".$student->yearDesc."</td>";
+						}
+					?>
 				</tr>
 
 				<?php ++$ctr;

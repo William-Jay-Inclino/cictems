@@ -50,13 +50,16 @@
          </div>
          
          <div v-show="loader" class="loader"></div>
-
          <div v-show="!loader && ready">
-            <div class="box" v-for="c of classes">
-               <h6 class="title is-6">
-                  {{ c.term }}
-               </h6>
-               <hr>
+            
+            <div class="columns">
+              <div class="column is-half">
+                <multiselect @input="get_class_grade" v-model="term" label="term" track-by="termID" :options="terms" :allow-empty="false">
+                </multiselect>
+              </div>
+            </div>
+
+            <div class="box">
                <div class="table__wrapper">
                   <table class="table is-fullwidth is-bordered is-centered">
                      <tr class="tbl-headers">
@@ -71,7 +74,7 @@
                           <th class="row-5">Equiv</th>
                           <th class="row-10">Remarks</th>
                      </tr>
-                     <tr v-for="cc of c.class2">
+                     <tr v-for="cc of classes">
                         <td style="text-align: left">{{cc.class.classCode}} <span v-if="cc.class.type == 'lab'"><b>(lab)</b></span> </td>
                         <td style="text-align: left"> {{cc.class.subDesc}} </td>
                         <td style="text-align: left">
@@ -126,11 +129,14 @@ document.addEventListener('DOMContentLoaded', function() {
       isLoading: false,
       selected_student: null,
       suggestions: [],
+      classes: [],
 
-      classes: []
+      term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
+      terms: []
    },
    created(){  
       this.get_student()
+      this.get_terms()
    },
 
 
@@ -163,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       get_class_grade(){
          this.loader = true
-         this.$http.get('<?php echo base_url() ?>reports_grade/get_grade_by_class/'+this.selected_student.studID)
+         this.$http.get('<?php echo base_url() ?>reports_grade/get_grade_by_class/'+this.selected_student.studID+'/'+this.term.termID)
          .then(response => {
             const c = response.body
             console.log(c);
@@ -177,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //       }
             //    }
             // }
-            this.classes = c
+            this.classes = c.class
             this.loader = false
             this.ready = true
          }, e => {
@@ -191,10 +197,35 @@ document.addEventListener('DOMContentLoaded', function() {
          .then(response => {
             this.isLoading = false
             this.selected_student = response.body
+         }, e => {
+          console.log(e.body);
+
+         })
+      },
+      get_terms(){
+         this.isLoading = true
+         this.$http.get('<?php echo base_url() ?>reusable/get_all_term')
+         .then(response => {
+            this.terms = response.body
          })
       },
       generateReport(){
-         window.open(this.btnGenerate_link + this.selected_student.studID, '_blank')
+        // window.open(this.btnGenerate_link + this.selected_student.studID, '_blank')
+         swal("Please select type of report", {
+           buttons: {
+             PR: true,
+             MD: true,
+             SF: true,
+             F: true,
+             RC: true,
+             TG: true
+           }
+         }).then(val => {
+           if(val){
+            window.open(this.btnGenerate_link + this.selected_student.studID + '/' + this.term.termID + '/' + val.toLowerCase(), '_blank')  
+           }
+           
+         })
       }
    },
 
@@ -212,4 +243,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

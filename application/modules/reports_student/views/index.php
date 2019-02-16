@@ -12,14 +12,16 @@
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
         <button @click="generateReport" class="button is-primary is-pulled-right" :disabled="!allow_generate">Generate Report</button>
         <br><br><br> 
+        <div class="columns">
+          <div class="column is-3">
+            <label class="label">Current Term</label>
+             <div class="control">
+                 <multiselect @input="changeTerm" v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
+             </div>   
+         </div>
+        </div>
          <div class="box">
             <div class="columns">
-               <div class="column">
-                  <label class="label">Current Term</label>
-                   <div class="control">
-                       <multiselect @input="changeTerm" v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
-                   </div>   
-               </div>
                <div class="column">
                   <label class="label">Filter</label>
                   <button @click="filter = 0" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 0}">All</button>
@@ -29,6 +31,10 @@
                <div class="column">
                 <label class="label">Course</label>
                  <multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" :allow-empty="false"></multiselect>
+               </div>
+               <div class="column">
+                <label class="label">Year</label>
+                 <multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :allow-empty="false"></multiselect>
                </div>
             </div>
          </div>
@@ -101,12 +107,14 @@ document.addEventListener('DOMContentLoaded', function() {
       ready: true,
       term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
       course: {courseID: 'all', courseCode: 'All'},
+      year: {yearID: 'all', yearDesc: 'All'},
       subject: null,
       faculty: null,
       terms: [],
       all_students: [],
       students: [],
       courses: [],
+      years: [],
       subjects: [],
       faculties: [],
       total_records: 0
@@ -151,21 +159,38 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     students2(){
       const c = this.course 
+      const y = this.year
       const s = (this.filter == 0) ? this.all_students : this.students 
 
-      let students = []
-
-      if(c.courseID == 'all'){
-        students = s
+      if(c.courseID == 'all' && y.yearID == 'all'){
+        return s
       }else{
-        for(let x of s){
-          if(x.courseID == c.courseID){
-            students.push(x)
-          }
+        if(c.courseID != 'all' && y.yearID == 'all'){
+          return s.filter(x => x.courseID == c.courseID)
+        }else if(c.courseID == 'all' && y.yearID != 'all'){
+          return s.filter(x => x.yearID == y.yearID)
+        }else{
+          return s.filter(x => x.yearID == y.yearID && x.courseID == c.courseID)
         }
       }
-      return students
     }
+    // students2(){
+    //   const c = this.course 
+    //   const s = (this.filter == 0) ? this.all_students : this.students 
+
+    //   let students = []
+
+    //   if(c.courseID == 'all'){
+    //     students = s
+    //   }else{
+    //     for(let x of s){
+    //       if(x.courseID == c.courseID){
+    //         students.push(x)
+    //       }
+    //     }
+    //   }
+    //   return students
+    // }
    },
    methods: {
       generateReport(){
@@ -174,14 +199,15 @@ document.addEventListener('DOMContentLoaded', function() {
           if(x){
             let action = 'all-students'
             let course = this.course.courseID 
+            let year = this.year.yearID 
             const subject = (this.subject) ? this.subject.subID : 'no-subject'
             const instructor = (this.faculty) ? this.faculty.facID : 'no-instructor'
 
             if(this.filter == 1) action = 'per-subject' 
             if(this.filter == 2) action = 'per-instructor' 
             if(this.course.courseID == 'all') course = 'all-courses'
-
-            const data = action + '/' + course + '/' + subject + '/' + instructor
+            if(this.year.yearID == 'all') year = 'all-years'
+            const data = action + '/' + course + '/' + year + '/' + subject + '/' + instructor
 
             window.open('<?php echo base_url() ?>reports/student/download/'+ data, '_blank')
           }
@@ -204,6 +230,8 @@ document.addEventListener('DOMContentLoaded', function() {
           this.all_students = c.students
           this.courses = c.courses
           this.courses.unshift({courseID: 'all', courseCode: 'All'})
+          this.years = c.years
+          this.years.unshift({yearID: 'all', yearDesc: 'All'})
           this.total_records = c.total_rows
         }, e => {
           console.log(e.body)

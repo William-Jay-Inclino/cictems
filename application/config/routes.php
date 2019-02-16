@@ -139,11 +139,12 @@ $route['reports/prospectus'] = 'reports_prospectus';
 $route['reports/prospectus/download/(:num)'] = 'reports_prospectus/download/$1';
 
 $route['reports/student'] = 'reports_student';
-$route['reports/student/download/(:any)/(:any)/(:any)/(:any)'] = 'reports_student/download/$1/$2/$3/$4';
+$route['reports/student/download/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'reports_student/download/$1/$2/$3/$4/$5';
 
 $route['reports/grade'] = 'reports_grade';
 $route['reports/grade/by-class/(:num)'] = 'reports_grade/by_class/$1';
-$route['reports/grade/(:any)/(:num)'] = 'reports_grade/download/$1/$2';
+$route['reports/grade/download-by-class/(:num)/(:num)/(:any)'] = 'reports_grade/download_by_class/$1/$2/$3';
+$route['reports/grade/download-by-prospectus/(:num)'] = 'reports_grade/download_by_prospectus/$1';
 $route['reports/grade/(:num)'] = 'reports_grade/index/$1';
 
 $route['reports/remark'] = 'reports_remark';

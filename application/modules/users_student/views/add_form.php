@@ -99,7 +99,7 @@
 				<div class="field">
 				  <label class="label">Address</label>
 				  <div class="control">
-					  	<textarea class="textarea" v-model.trim="form.address" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*"></textarea>
+					  	<textarea class="textarea" v-model.trim="form.address"></textarea>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.address}}
@@ -111,7 +111,7 @@
 				  	<input type="text" disabled class="input" readonly value="+63" style="width: 50px;">
 				  </div>
 				  <div class="control" style="width: 100%">
-					  	<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" required maxlength="10">
+					  	<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" maxlength="10">
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.cn}}

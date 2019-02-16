@@ -26,21 +26,36 @@
 	</style>
 </head>
 <body>
-	<?php 
-		echo "Name: ".$student->ln.', '.$student->fn.' '; if($student->mn){ echo $student->mn.'.';} 
-	?>
-	<br><br>
+	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 	<div style="text-align: center;">
 		<?php 
-			echo "<b>WESTERN LEYTE COLLEGE OF ORMOC CITY, INC. <br>";
-			echo "COLLEGE OF ICT & ENGINEERING</b><br><br>";
-			echo '<b>'.$data['prospectus']->description.' with G.R. #04 series of 2005'.'</b><br>'; 
+			echo "<b>COLLEGE OF ICT & ENGINEERING<br>";
+			echo $data['prospectus']->description.' with G.R. #04 series of 2005'.'<br>'; 
 			echo "Effective School Year ".$data['prospectus']->effectivity.' [K + 12] Compliant <br>';
-			echo "Revised Curriculum No. 25 Series of 2015";
+			echo "Revised Curriculum No. 25 Series of 2015</b>";
 		?>
 	</div>
 	<br><br>
-	
+	<table style="width: 65%">
+		<tr>
+			<td>
+				<?php 
+					echo '<b>Name:</b> '.$student->ln.', '.$student->fn.' '; if($student->mn){ echo $student->mn.'.';}
+				?>
+			</td>
+			<td>
+				<?php 
+					echo '<b>Course:</b> '.$student->courseCode;
+				?>
+			</td>
+			<td>
+				<?php 
+					echo '<b>Year:</b> '.$student->yearDesc;
+				?>
+			</td>
+		</tr>
+	</table>
+	<br>
 	<?php 
 		foreach($data['subjects'] as $subjects){ ?>
 			<table border="1">

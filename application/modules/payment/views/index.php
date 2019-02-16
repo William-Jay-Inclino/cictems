@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		{tsize: 'L'},
 	    		{tsize: 'M'},
 	    		{tsize: 'S'},
+	    		{tsize: 'XS'},
 	    		{tsize: '20'},
 	    		{tsize: '18'},
 	    		{tsize: '16'}

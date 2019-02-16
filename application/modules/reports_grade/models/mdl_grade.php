@@ -3,14 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Grade extends CI_Model{
 
-	function download($type, $studID){
-		if($type == 'download-by-prospectus'){
-			$this->report_by_pros($studID, $data);
-		}else if($type == 'download-by-class'){
-			$this->report_by_class($studID, $data);
-		}else{
-			show_404();
-		}
+	function download_by_prospectus($studID){
+		$this->report_by_pros($studID, $data);
+		return $data;
+	}
+
+	function download_by_class($studID, $termID, $selection){
+		$this->report_by_class($studID, $termID, $data);
 		return $data;
 	}
 
@@ -74,7 +73,46 @@ class mdl_Grade extends CI_Model{
 
 	}
 
-	function report_by_class($studID, &$data){
+	function report_by_class($studID, $termID, &$data){
+		$arr = $container = [];
+		$metric = '';
+		$m = $this->db->query("
+			SELECT prelim,midterm,prefi,final FROM grade_formula 
+		")->row();
+
+		$sql2 = $this->db->query("
+			SELECT c.classID,s.total_units units,s.id,c.classCode,s.subDesc,f.facID,CONCAT(u.ln,', ',u.fn) faculty,sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks
+			FROM studclass sc  
+			INNER JOIN class c ON sc.classID = c.classID 
+			INNER JOIN subject s ON c.subID = s.subID  
+			INNER JOIN faculty f ON c.facID=f.facID
+			INNER JOIN users u ON f.uID=u.uID
+			WHERE sc.studID = $studID AND sc.status = 'Enrolled' AND c.termID = ".$termID."
+		")->result();
+		foreach($sql2 as $s){
+			if(in_array($s->id, $container)){
+				continue;
+			}
+			if($s->prelim && $s->midterm && $s->prefi && $s->final){
+
+				if(is_numeric($s->prelim) && is_numeric($s->midterm) && is_numeric($s->prefi) && is_numeric($s->final)){
+					$fg = round(round(($s->prelim * $m->prelim) + ($s->midterm * $m->midterm) + ($s->prefi * $m->prefi) + ($s->final * $m->final), 2));
+					$metric = $this->db->query("SELECT metric FROM grade_metric WHERE grade = $fg LIMIT 1")->row();
+					$metric = ($metric) ? $metric->metric : '5.0';
+				}
+
+			}
+			
+			$arr[] = ['class' => $s, 'equiv' => $metric];
+			$metric = '';
+			$container[] = $s->id;
+		}
+		$data['class'] = $arr;
+		$data['term'] = $this->db->query("SELECT CONCAT(t.schoolYear,' ',s.semDesc) term FROM term t INNER JOIN semester s ON t.semID=s.semID WHERE t.termID = $termID LIMIT 1")->row()->term;
+		$data['releasedby'] = $this->db->query("SELECT CONCAT(fn,' ',LEFT(mn, 1),' ',ln) name FROM users WHERE uID = ".$this->session->userdata('uID')." LIMIT 1")->row()->name;
+	}
+
+	function report_by_class2($studID, &$data){
 		$arr = [];
 		$arr2 = [];
 		$metric = '';
@@ -139,12 +177,24 @@ class mdl_Grade extends CI_Model{
 	}
 
 	function get_student($studID, $val = NULL){
-		$query = $this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1);
+		// $query = $this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1);
+
+
 		
 		if($val == NULL){
 			echo json_encode($this->db->select('studID,CONCAT(u.fn," ",u.mn," ",u.ln," | ",s.controlNo) AS student')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row());	
 		}else{
-			return $this->db->select('LEFT(u.mn,1) mn,u.fn,u.ln')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row();
+			// return $this->db->select('LEFT(u.mn,1) mn,u.fn,u.ln')->get_where('student s,users u'," s.uID = u.uID AND s.studID = $studID",1)->row();
+
+			return $this->db->query("
+				SELECT LEFT(u.mn,1) mn,u.fn,u.ln, c.courseCode,y.yearDesc 
+				FROM student s 
+				INNER JOIN users u ON s.uID = u.uID 
+				INNER JOIN studprospectus sp ON s.studID = sp.studID  
+				INNER JOIN prospectus p ON sp.prosID = p.prosID  
+				INNER JOIN course c ON p.courseID = c.courseID  
+				INNER JOIN year y ON s.yearID = y.yearID 
+			")->row();
 		}
 	}
 
@@ -153,8 +203,8 @@ class mdl_Grade extends CI_Model{
 		echo json_encode($data);
 	}
 
-	function get_grade_by_class($studID){
-		$this->report_by_class($studID, $data);
+	function get_grade_by_class($studID, $termID){
+		$this->report_by_class($studID, $termID, $data);
 		echo json_encode($data);
 	}
 
