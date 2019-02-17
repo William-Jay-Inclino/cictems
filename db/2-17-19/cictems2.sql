@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2019 at 08:33 AM
+-- Generation Time: Feb 17, 2019 at 01:27 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -183,7 +183,7 @@ INSERT INTO `counter` (`countID`, `module`, `termID`, `total`) VALUES
 (17, 'enrol_studs', 59, 0),
 (18, 'enrol_studs', 60, 0),
 (19, 'enrol_studs', 61, 0),
-(20, 'fees', 53, 10);
+(20, 'fees', 53, 3);
 
 -- --------------------------------------------------------
 
@@ -414,7 +414,8 @@ CREATE TABLE `fees` (
 
 INSERT INTO `fees` (`feeID`, `termID`, `trans_feeID`, `feeName`, `feeDesc`, `amount`, `dueDate`, `feeStatus`, `tshirt`, `date_cancelled`) VALUES
 (1, 53, 2, 'Christmas Party', 'All CICTE Students', '2000.00', 'December 17, 2019', 'cancelled', 'available', '2019-02-17'),
-(2, 53, 0, 'CICTE Dayss', 'ALL', '8000.00', 'January 20, 2019', 'ongoing', 'available', '0000-00-00');
+(2, 53, 0, 'CICTE Dayss', 'ALL', '8000.00', 'January 20, 2019', 'ongoing', 'available', '0000-00-00'),
+(3, 53, 0, 'dsad', 'asda', '1000.00', 'asda', 'cancelled', 'available', '2019-02-17');
 
 -- --------------------------------------------------------
 
@@ -1294,7 +1295,15 @@ INSERT INTO `stud_fee` (`sfID`, `studID`, `feeID`, `payable`, `receivable`, `tsi
 (13, 5, 2, '8000.00', '0.00', ''),
 (14, 6, 2, '8000.00', '0.00', ''),
 (15, 9, 2, '8000.00', '0.00', ''),
-(16, 10, 2, '8000.00', '0.00', '');
+(16, 10, 2, '8000.00', '0.00', ''),
+(17, 1, 3, '0.00', '0.00', ''),
+(18, 2, 3, '0.00', '0.00', ''),
+(19, 3, 3, '0.00', '0.00', ''),
+(20, 4, 3, '0.00', '0.00', ''),
+(21, 5, 3, '0.00', '0.00', ''),
+(22, 6, 3, '0.00', '0.00', ''),
+(23, 9, 3, '0.00', '0.00', ''),
+(24, 10, 3, '0.00', '0.00', '');
 
 -- --------------------------------------------------------
 
@@ -2158,7 +2167,7 @@ ALTER TABLE `fac_spec`
 -- AUTO_INCREMENT for table `fees`
 --
 ALTER TABLE `fees`
-  MODIFY `feeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `feeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `grade_formula`
@@ -2278,7 +2287,7 @@ ALTER TABLE `studprospectus`
 -- AUTO_INCREMENT for table `stud_fee`
 --
 ALTER TABLE `stud_fee`
-  MODIFY `sfID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `sfID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `subject`

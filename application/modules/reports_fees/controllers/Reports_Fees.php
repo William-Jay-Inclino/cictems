@@ -24,10 +24,10 @@ class Reports_Fees extends MY_Controller{
 
 	function download($data){
 		$mpdf = new \Mpdf\Mpdf();
-		$this->_data['data'] = $this->mdl_fees->download($data[0],$data[1]);
+		$this->_data['data'] = $this->mdl_fees->download($data[0],$data[1], $view);
 		$this->_data['type'] = $data[1];
 		//die(print_r($this->_data['data']));
-		$html = $this->load->view($this->_data['module'].'/download',$this->_data, true);
+		$html = $this->load->view($this->_data['module'].'/'.$view,$this->_data, true);
 
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();

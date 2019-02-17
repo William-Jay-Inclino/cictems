@@ -245,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
           Paid: true,
           Unpaid: true,
           Refundable: true,
+          Cancelled: true,
         }
       }).then(val => {
         if(val){

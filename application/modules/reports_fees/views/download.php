@@ -30,7 +30,7 @@
 
 	<div style="text-align: center">
 			<b>LIST OF <?php echo strtoupper($type) ?> ACCOUNTS<br>
-			S.Y <?php echo $data['term'] ?> <br>
+			<?php echo $data['term'] ?> <br>
 			as of <?php echo date("F j, Y"); ?><br><br>
 	</div>
 	<br><br>
@@ -41,7 +41,9 @@
 			<table border="1">
 				<tr class="tbl-headers">
 					<th>No.</th>
-					<th>Name</th>
+					<th>Name of Student</th>
+					<th>Course</th>
+					<th>Year</th>
 					<th>Fees Paid</th>
 				</tr>
 				<?php 
@@ -52,6 +54,8 @@
 						echo "<tr>";
 							echo "<td style='width: 10%'>".$ctr."</td>";
 							echo "<td>".$student['student']->name."</td>";
+							echo "<td>".$student['student']->courseCode."</td>";
+							echo "<td>".$student['student']->yearDesc."</td>";
 							echo "<td>";
 								$total_fees = count($student['fees']) - 1;
 								$feeCtr = 0;
@@ -75,7 +79,9 @@
 			<table border="1">
 				<tr class="tbl-headers">
 					<th>No.</th>
-					<th>Name</th>
+					<th>Name of Student</th>
+					<th>Course</th>
+					<th>Year</th>
 					<th>
 						<?php if($type == 'unpaid'){echo "Balance";}else{echo "Amount";} ?>
 					</th>
@@ -88,6 +94,8 @@
 						<tr>
 							<td style="width: 10%"> <?php echo $ctr ?> </td>
 							<td> <?php echo $student['student']->name ?> </td>
+							<td> <?php echo $student['student']->courseCode ?> </td>
+							<td> <?php echo $student['student']->yearDesc ?> </td>
 							<td> <?php echo $student['student']->amount ?> </td>
 							<td>
 								<?php 
