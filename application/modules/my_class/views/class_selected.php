@@ -422,6 +422,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			            			classIDs: this.classIDs,
 			            			value: value
 			            		}
+			            		swal('Submitting please wait ...',
+					      		{
+					      			button: false,
+					      			closeOnClickOutside: false
+					      		})
 			            		this.$http.post('<?php echo base_url() ?>my_class/finalized_grade', j)
 				                  .then(response => {
 				                  	const cc = response.body

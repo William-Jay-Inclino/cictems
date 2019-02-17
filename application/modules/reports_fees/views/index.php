@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if(this.fee.feeStatus == 'cancelled' && s.payable == 0 && s.receivable == 0){
               status = ''
             }else if(s.payable > 0){
-              if(s.payable < this.fee.amount){
+              if(s.payable != this.fee.amount){
                 status = 'Partial'
               }else{
                 status = 'Unpaid'

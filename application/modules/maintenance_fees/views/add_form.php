@@ -23,7 +23,7 @@
 			<div class="field">
 			  <label class="label">Academic activity</label>
 			  <div class="control">
-				  	<input class="input" type="text" v-model="form.feeName" autofocus>
+				  	<input class="input" type="text" v-model="form.feeName" autofocus required>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.feeName}}
@@ -32,7 +32,7 @@
 			<div class="field">
 			  <label class="label">Year level & courses involved</label>
 			  <div class="control">
-				  	<textarea class="textarea" v-model.trim="form.feeDesc"></textarea>
+				  	<textarea class="textarea" v-model.trim="form.feeDesc" required></textarea>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.feeDesc}}
@@ -41,7 +41,7 @@
 			<div class="field">
 			  <label class="label">Contribution each student</label>
 			  <div class="control">
-				  	<input type="text" v-model.number="form.amount" class="input">
+				  	<input type="text" v-model.number="form.amount" class="input" pattern="^[0-9]+(\.[0-9]{1,2})?$" required>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.amount}}
@@ -50,7 +50,7 @@
 			<div class="field">
 			  <label class="label">Deadline of payment</label>
 			  <div class="control">
-				  	<input class="input" type="text" v-model="form.dueDate">
+				  	<input class="input" type="text" v-model="form.dueDate" required>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.dueDate}}

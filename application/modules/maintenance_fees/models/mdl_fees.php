@@ -344,7 +344,7 @@ class mdl_Fees extends CI_Model{
 		$amount = $this->db->select('amount')->get_where('fees', "feeID = $feeID", 1)->row()->amount;
 		$payers = $this->db->select('sfID,payable,receivable')->get_where('stud_fee', "feeID = $feeID AND payable < '$amount'")->result();
 
-		$this->db->update('fees', ['feeStatus'=>'cancelled'], "feeID = $feeID");
+		$this->db->update('fees', ['feeStatus'=>'cancelled', 'date_cancelled'=>date('Y-m-d')], "feeID = $feeID");
 		foreach($payers as $p){
 			if($p->receivable > 0){
 				$this->db->update('stud_fee', ['receivable'=>$amount + $p->receivable], "sfID = ".$p->sfID);
@@ -364,10 +364,11 @@ class mdl_Fees extends CI_Model{
 	}
 
 	function transferFee(){
+		$refundable = NULL;
 		$affected_students = [];
 		$current_fee = $this->input->post("current_fee");
 		$transferred_feeID = $this->input->post("transferred_fee");
-		$transferred_feeName = $this->db->select('feeName')->get_where('fees', "feeID = $transferred_feeID", 1)->row()->feeName;
+		// $transferred_feeName = $this->db->select('feeName')->get_where('fees', "feeID = $transferred_feeID", 1)->row()->feeName;
 
 		$this->db->trans_start();
 
@@ -406,7 +407,7 @@ class mdl_Fees extends CI_Model{
 					$refundable = $transferred_fee->receivable + $amount_refundable;
 				}
 
-				if($refundable){
+				if($refundable != NULL){
 					$this->db->update('stud_fee', ['payable'=>0.00, 'receivable'=>$refundable], "studID = ".$student->studID." AND feeID = $transferred_feeID");
 				}else{
 					$this->db->update('stud_fee', ['payable'=>$payable], "studID = ".$student->studID." AND feeID = $transferred_feeID");
@@ -416,12 +417,13 @@ class mdl_Fees extends CI_Model{
 				$logs['studID'] = $student->studID;
 				$logs['uID'] = $this->session->userdata('uID');
 				$logs['feeID'] = $current_fee;
-				if($refundable){
+				$logs['trans_feeID'] = $transferred_feeID;
+				if($refundable != NULL){
 					$logs['amount'] = $refundable;
 				}else{
-					$logs['amount'] = $payable;
+					$logs['amount'] = $amount_refundable; //$payable;
 				}
-				$logs['action'] = 'transfer debit to '.$transferred_feeName;
+				$logs['action'] = 'transfer debit';
 
 				$this->db->insert('payments', $logs);
 
@@ -436,7 +438,7 @@ class mdl_Fees extends CI_Model{
 			}
 
 		}
-		$this->db->update('fees', ['feeStatus'=>'cancelled'], "feeID = $current_fee");
+		$this->db->update('fees', ['feeStatus'=>'cancelled', 'trans_feeID'=>$transferred_feeID,'date_cancelled'=>date('Y-m-d')], "feeID = $current_fee");
 		$this->db->update('stud_fee', ['payable'=>0.00], "feeID = $current_fee");
 		//$this->cancelPayment($current_fee);
 

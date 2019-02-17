@@ -74,7 +74,7 @@
                 <td> {{record.faculty}} </td>
                 <td> {{record.feeName}} </td>
                 <td> {{record.amount}} </td>
-                <td> {{record.action}} </td>
+                <td> {{record.action}} <span v-if="record.action == 'transfer debit'">{{record.trans_feeName}}</span> </td>
                 
               </tr>
             </tbody>

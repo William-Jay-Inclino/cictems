@@ -30,7 +30,7 @@
 				  <div class="columns">
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" placeholder="Firstname">
+						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Firstname">
 					  	</div>
 					  	<p class="help has-text-danger">
 							{{error.fn}}
@@ -38,12 +38,12 @@
 				  	</div>
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" placeholder="Middlename">
+						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Middlename">
 					  	</div>
 				  	</div>
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" placeholder="Lastname">
+						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Lastname">
 					  	</div>
 					  	<p class="help has-text-danger">
 							{{error.ln}}

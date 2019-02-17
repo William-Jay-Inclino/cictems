@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			    		this.$http.post('<?php echo base_url() ?>maintenance_fees/transferFee', data)
 			    		.then(res => {
 			    			this.students = res.body
+			    			console.log(this.students);
 			    			swal('Success', "Successfully cancelled "+this.feeName+" and transferred debit to "+this.fee.feeName+"!", 'success')
 			    			this.feeStatus = 'cancelled'
 			    		}, e => {

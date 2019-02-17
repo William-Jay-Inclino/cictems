@@ -38,31 +38,48 @@
 	<?php 
 
 		if($type == 'paid'){ ?>
-			<table>
-				<tr>
+			<table border="1">
+				<tr class="tbl-headers">
 					<th>No.</th>
 					<th>Name</th>
+					<th>Fees Paid</th>
 				</tr>
 				<?php 
 					$ctr = 1;
+					$tot_amount = 0;
 					foreach($data['students'] as $student){
+						$tot_amount += $student['student']->amount;
 						echo "<tr>";
 							echo "<td style='width: 10%'>".$ctr."</td>";
-							echo "<td>".$student->name."</td>";
+							echo "<td>".$student['student']->name."</td>";
+							echo "<td>";
+								$total_fees = count($student['fees']) - 1;
+								$feeCtr = 0;
+								foreach($student['fees'] as $fee){ 
+									echo $fee->feeName.' ('.$fee->amount.')';
+									if($total_fees != $feeCtr){
+										echo ", ";
+									}
+									++$feeCtr;
+								}
+							echo "</td>";
 						echo "</tr>";
 						++$ctr;
 					}
 				?>
 			</table>
+			 <br>
+			<b>Total Amount: </b> <?php echo $tot_amount; ?>
 			<?php
 		}else{ ?>
-			<table style="width: 70%">
-				<tr>
+			<table border="1">
+				<tr class="tbl-headers">
 					<th>No.</th>
 					<th>Name</th>
 					<th>
 						<?php if($type == 'unpaid'){echo "Balance";}else{echo "Amount";} ?>
 					</th>
+					<th>Breakdown</th>
 				</tr>
 				<?php 
 					$ctr = 1;
@@ -70,20 +87,29 @@
 					foreach($data['students'] as $student){ ?>
 						<tr>
 							<td style="width: 10%"> <?php echo $ctr ?> </td>
-							<td> <?php echo $student->name ?> </td>
-							<td> <?php echo $student->amount ?> </td>
+							<td> <?php echo $student['student']->name ?> </td>
+							<td> <?php echo $student['student']->amount ?> </td>
+							<td>
+								<?php 
+									$total_fees = count($student['fees']) - 1;
+									$feeCtr = 0;
+									foreach($student['fees'] as $fee){ 
+										echo $fee->feeName.' ('.$fee->amount.')';
+										if($total_fees != $feeCtr){
+											echo ", ";
+										}
+										++$feeCtr;
+									}
+								?>
+							</td>
 						</tr>
 						<?php
-						$tot_amount += $student->amount;
+						$tot_amount += $student['student']->amount;
 						++$ctr;
 					}
 				?>
-				<tr>
-					<td></td>
-					<td><b>Total Amount:</b> </td>
-					<td> <b> <?php echo $tot_amount; ?></b></td>
-				</tr>
-			</table>
+			</table> <br>
+			<b>Total Amount: </b> <?php echo $tot_amount; ?>
 			<?php
 		}
 

@@ -6,8 +6,9 @@ class mdl_Fees extends CI_Model{
 	function download($termID, $type){
 		switch ($type) {
 			case 'paid':
-				$students = $this->db->query("
-					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name
+				$students = [];
+				$arr = $this->db->query("
+					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name, sf.studID,SUM(f.amount) amount
 					FROM fees f
 					INNER JOIN stud_fee sf ON f.feeID = sf.feeID 
 					INNER JOIN student s ON sf.studID = s.studID 
@@ -17,11 +18,19 @@ class mdl_Fees extends CI_Model{
 					HAVING SUM(sf.payable) = 0
 					ORDER BY name ASC
 				")->result();
+				foreach($arr as $stud){
+					$fees = $this->db->query("
+						SELECT f.feeName,f.amount FROM stud_fee sf INNER JOIN fees f ON sf.feeID = f.feeID 
+						WHERE sf.payable = 0 AND f.feeStatus <> 'cancelled' AND sf.studID = ".$stud->studID."
+					")->result();
+					$students[] = ['student'=>$stud,'fees'=>$fees];
+				}
 				break;
 			
 			case 'unpaid':
-				$students = $this->db->query("
-					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name, 
+				$students = [];
+				$arr = $this->db->query("
+					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name,sf.studID,
 					SUM(sf.payable) AS amount
 					FROM fees f
 					INNER JOIN stud_fee sf ON f.feeID = sf.feeID 
@@ -29,14 +38,22 @@ class mdl_Fees extends CI_Model{
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE f.termID = $termID AND f.feeStatus <> 'cancelled'
 					GROUP BY s.studID
-					HAVING amount > 0 AND SUM(sf.receivable) = 0
+					HAVING amount > 0
 					ORDER BY name ASC
 				")->result();
+				foreach($arr as $stud){
+					$fees = $this->db->query("
+						SELECT f.feeName,sf.payable amount FROM stud_fee sf INNER JOIN fees f ON sf.feeID = f.feeID 
+						WHERE sf.payable > 0 AND sf.studID = ".$stud->studID."
+					")->result();
+					$students[] = ['student'=>$stud,'fees'=>$fees];
+				}
 				break;
 
 			case 'refundable':
-				$students = $this->db->query("
-					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name, 
+				$students = [];
+				$arr = $this->db->query("
+					SELECT CONCAT(u.ln,', ',u.fn,' ',u.mn) name, sf.studID,
 					SUM(sf.receivable) AS amount
 					FROM fees f
 					INNER JOIN stud_fee sf ON f.feeID = sf.feeID 
@@ -44,9 +61,16 @@ class mdl_Fees extends CI_Model{
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE f.termID = $termID
 					GROUP BY s.studID
-					HAVING SUM(sf.payable) = 0 AND amount > 0
+					HAVING amount > 0
 					ORDER BY name ASC
 				")->result();
+				foreach($arr as $stud){
+					$fees = $this->db->query("
+						SELECT f.feeName,sf.receivable amount FROM stud_fee sf INNER JOIN fees f ON sf.feeID = f.feeID 
+						WHERE sf.receivable > 0 AND sf.studID = ".$stud->studID."
+					")->result();
+					$students[] = ['student'=>$stud,'fees'=>$fees];
+				}
 				break;
 				default:
 				show_404();

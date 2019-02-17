@@ -103,7 +103,7 @@ class mdl_Payment_Logs extends CI_Model{
 		}else{
 			$records = $this->db->query("
 				SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) student,CONCAT(uu.ln,', ',uu.fn,' ',LEFT(uu.mn,1)) faculty,
-				f.feeName,p.paidDate,p.amount,p.action,p.or_number
+				f.feeName,p.paidDate,p.amount,p.action,p.or_number,CONCAT(' to ',(SELECT feeName FROM fees WHERE feeID = f.trans_feeID LIMIT 1)) trans_feeName
 				FROM payments  p
 				INNER JOIN student s ON p.studID = s.studID 
 				INNER JOIN users u ON s.uID = u.uID 
