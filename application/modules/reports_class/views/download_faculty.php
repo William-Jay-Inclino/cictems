@@ -30,6 +30,7 @@
 	</style>
 </head>
 <body>
+	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 	<div style="font-size: 16px; text-align: center; color: #3273dc">
 		<b>
 		<?php 

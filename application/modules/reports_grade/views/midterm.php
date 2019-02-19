@@ -31,10 +31,13 @@
 <body>
 	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 		<div style="text-align: center">
-			<?php 
-			echo "<b>Midterm Grade in ".$data['term']."</b><br>"; 
-			echo "as of ".date("F j, Y");
-			?>
+			<b>
+				Midterm Grades <br>
+				<?php 
+				echo 'SY '.$data['term']."<br>"; 
+				echo "as of ".date("F j, Y");
+				?>
+			</b>
 		</div>
 	<br><br>
 	<table style="width: 65%">

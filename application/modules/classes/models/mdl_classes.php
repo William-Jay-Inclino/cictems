@@ -115,6 +115,8 @@ class mdl_Classes extends CI_Model{
 		}else{
 			$this->db->trans_start();
 
+			$classData = $this->db->select('status,termID')->get_where('class', "classID = $classID", 1)->row();
+
 			foreach($classIDs as $c){
 				$this->db->update('studclass', $data, "studID = $studID AND classID = ".$c);
 			}
@@ -163,6 +165,14 @@ class mdl_Classes extends CI_Model{
 
 			foreach($classIDs as $c){
 				$this->db->update('studclass',['finalgrade'=>$fg,'remarks'=>$remarks], "classID = ".$c." and studID = $studID");
+				if($classData->status == 'locked'){
+					$csubID = $this->db->select('subID')->get_where('class', "classID = ".$c, 1)->row()->subID;
+					$this->db->update(
+						'studgrade',
+						['sgGrade'=>$equiv, 'remarks'=>$remarks], 
+						"studID = $studID AND termID = ".$classData->termID." AND subID = ".$csubID
+					);
+				}
 			}
 
 
@@ -181,7 +191,7 @@ class mdl_Classes extends CI_Model{
 			SELECT f.facID,CONCAT(u.ln,', ',u.fn,' ',u.mn) as name 
 			FROM faculty f 
 			INNER JOIN users u ON f.uID = u.uID
-			WHERE f.facID <> 0
+			WHERE f.facID <> 0 AND u.status = 'active'
 			ORDER BY name ASC"
 		);
 		echo json_encode($query->result());
@@ -230,19 +240,6 @@ class mdl_Classes extends CI_Model{
 
 		echo json_encode($data);
 	}
-
-	// function fetch_Students($classID){
-	// 	$query = $this->db->query("
-	// 		SELECT s.studID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,
-	// 		sc.prelim,sc.midterm,sc.prefi,sc.final,sc.finalgrade,sc.remarks,
-	// 		(SELECT metric FROM grade_metric WHERE grade = ROUND(sc.finalgrade) LIMIT 1) equiv
-	// 		FROM studclass sc
-	// 		INNER JOIN student s ON sc.studID = s.studID
-	// 		INNER JOIN users u ON s.uID = u.uID
-	// 		AND sc.classID = $classID
-	// 	");
-	// 	echo json_encode($query->result());
-	// }
 
 	function add_student(){
 		$classIDs = $this->input->post('classIDs');

@@ -30,6 +30,8 @@
 </head>
 <body>
 	<div style="text-align: center;">
+		<img src="<?php echo base_url(); ?>assets/img/banner.png">
+		
 		<p style="font-size: 16px; font-weight: bold">Payment Logs</p>
 		<p>
 			<b>Date:</b>

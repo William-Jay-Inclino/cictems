@@ -31,7 +31,7 @@
 	<div style="text-align: center">
 		<b>
 			LIST OF CANCELLED ACADEMIC ACTIVITIES <br>
-			<?php echo $data['term']; ?> <br>
+			<?php echo 'SY '.$data['term']; ?> <br>
 			as of <?php echo date("F j, Y"); ?><br><br>
 		</b>
 	</div>

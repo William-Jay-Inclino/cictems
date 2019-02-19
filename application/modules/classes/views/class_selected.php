@@ -79,16 +79,16 @@
 					<tr v-for="student,i in students">
 						<td style="text-align: left"> {{ student.name }} </td>
 						<td>
-							<multiselect open-direction="bottom" :tabindex="1" :disabled="is_disabled(i, student.prelim)" :show-no-results="false" :options-limit="2" v-model="student.prelim" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'p')" :loading="student.prelim_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="1" :disabled="is_disabled(i, student.prelim)" :show-no-results="false" :options-limit="2" v-model="student.prelim" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'p')" :loading="student.prelim_loader" :allow-empty="status != 'locked'"></multiselect>
 						</td>
 						<td>
-							<multiselect open-direction="bottom" :tabindex="2" :disabled="is_disabled(i, student.midterm)" :show-no-results="false" :options-limit="2" v-model="student.midterm" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'m')" :loading="student.midterm_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="2" :disabled="is_disabled(i, student.midterm)" :show-no-results="false" :options-limit="2" v-model="student.midterm" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'m')" :loading="student.midterm_loader" :allow-empty="status != 'locked'"></multiselect>
 						</td>
 						<td>
-							<multiselect open-direction="bottom" :tabindex="3" :disabled="is_disabled(i, student.prefi)" :show-no-results="false" :options-limit="2" v-model="student.prefi" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'sf')" :loading="student.prefi_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="3" :disabled="is_disabled(i, student.prefi)" :show-no-results="false" :options-limit="2" v-model="student.prefi" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'sf')" :loading="student.prefi_loader" :allow-empty="status != 'locked'"></multiselect>
 						</td>
 						<td>
-							<multiselect open-direction="bottom" :tabindex="4" :disabled="is_disabled(i, student.final)" :show-no-results="false" :options-limit="2" v-model="student.final" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'f')" :loading="student.final_loader"></multiselect>
+							<multiselect open-direction="bottom" :tabindex="4" :disabled="is_disabled(i, student.final)" :show-no-results="false" :options-limit="2" v-model="student.final" track-by="grade" label="grade" :options="grades" placeholder="" @input="saveGrade(i,'f')" :loading="student.final_loader" :allow-empty="status != 'locked'"></multiselect>
 						</td>
 						<td> {{ student.finalgrade }} </td>
 						<td> {{ student.equiv }} </td>
@@ -266,39 +266,68 @@ document.addEventListener('DOMContentLoaded', function() {
 				})
 	    	},
 	    	is_disabled(i, tg){
-	    		let x = false
 	    		const s = this.students[i]
-	    		if(this.status == 'locked'){
-	    			x = true 
-	    		}else{
-	    			if(tg){
-	    				if(tg.grade != 'Dropped'){
-		    				if(s.prelim){
-		    					if(s.prelim.grade == 'Dropped'){
-		    						x = true
-		    					}
-		    				}
-		    				if(s.midterm){
-		    					if(s.midterm.grade == 'Dropped'){
-		    						x = true
-		    					}
-		    				}
-		    				if(s.prefi){
-		    					if(s.prefi.grade == 'Dropped'){
-		    						x = true
-		    					}
-		    				}
-		    				if(s.final){
-		    					if(s.final.grade == 'Dropped'){
-		    						x = true
-		    					}
-		    				}
-		    			}
+	    		if(tg){
+					if(tg.grade != 'Dropped'){
+	    				if(s.prelim){
+	    					if(s.prelim.grade == 'Dropped'){
+	    						return true
+	    					}
+	    				}
+	    				if(s.midterm){
+	    					if(s.midterm.grade == 'Dropped'){
+	    						return true
+	    					}
+	    				}
+	    				if(s.prefi){
+	    					if(s.prefi.grade == 'Dropped'){
+	    						return true
+	    					}
+	    				}
+	    				if(s.final){
+	    					if(s.final.grade == 'Dropped'){
+	    						return true
+	    					}
+	    				}
 	    			}
-	    		}
+				}
     			
-	    		return x
+	    		return false
 	    	},
+	    	// is_disabled(i, tg){
+	    	// 	let x = false
+	    	// 	const s = this.students[i]
+	    	// 	if(this.status == 'locked'){
+	    	// 		x = true 
+	    	// 	}else{
+	    	// 		if(tg){
+	    	// 			if(tg.grade != 'Dropped'){
+		    // 				if(s.prelim){
+		    // 					if(s.prelim.grade == 'Dropped'){
+		    // 						x = true
+		    // 					}
+		    // 				}
+		    // 				if(s.midterm){
+		    // 					if(s.midterm.grade == 'Dropped'){
+		    // 						x = true
+		    // 					}
+		    // 				}
+		    // 				if(s.prefi){
+		    // 					if(s.prefi.grade == 'Dropped'){
+		    // 						x = true
+		    // 					}
+		    // 				}
+		    // 				if(s.final){
+		    // 					if(s.final.grade == 'Dropped'){
+		    // 						x = true
+		    // 					}
+		    // 				}
+		    // 			}
+	    	// 		}
+	    	// 	}
+    			
+	    	// 	return x
+	    	// },
 	    	get_grade_data(s, x){
 	    		let gradeDesc = ''
 	    		let grade = ''
@@ -361,6 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			    			final: {grade: null},
 			    			finalgrade: '',
 			    			equiv: '',
+			    			remarks: '',
 			    			prelim_loader: false,
 			    			midterm_loader: false,
 			    			prefi_loader: false,
@@ -393,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	    	finGrade(){
 	    		const x = this.checkRemarks
+	    		console.log(x);
 	    		if(x.length == 0){
 	    			swal({
 					  title: "Are you sure?",

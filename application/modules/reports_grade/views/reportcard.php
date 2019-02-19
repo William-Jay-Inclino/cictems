@@ -31,10 +31,13 @@
 <body>
 	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 		<div style="text-align: center">
-			<?php 
-			echo "<b>Report Card ".$data['term']."</b><br>"; 
-			echo "as of ".date("F j, Y");
-			?>
+			<b>
+				Subject Grades <br>
+				<?php 
+				echo 'SY '.$data['term']."<br>"; 
+				echo "as of ".date("F j, Y");
+				?>
+			</b>
 		</div>
 	<br><br>
 	<table style="width: 65%">
@@ -61,33 +64,49 @@
 			
 	<table border="1" class="table">
 		<tr class="tbl-headers">
-           <th>Subject</th>
+           <th>Code</th>
+           <th>Description</th>
           <th>Instructor</th>
           <th>Final Grade</th>
           <th>Units Earned</th>
         </tr>
 		<?php 
 		//grade * unit then add tanan divide no. of units
+			$is_complete = true;
 			$gwa = 0;
 			$total_units = 0;
 			$arr = [];
 			foreach($data['class'] as $c){ ?>
 				<tr>
 					<td> <?php echo $c['class']->classCode;?> </td>
+					<td> <?php echo $c['class']->subDesc ?> </td>
 					<td> <?php echo $c['class']->faculty ?> </td>
 					<td> <?php echo $c['equiv'] ?> </td>
 					<td> <?php echo $c['class']->units ?> </td>
 				</tr>
 				<?php
+				if($c['equiv'] == ''){
+					$is_complete = false;
+				}
 				$total_units += $c['class']->units;
-				$x = $c['equiv'] * $c['class']->units;
+				if($is_complete){
+					$x = $c['equiv'] * $c['class']->units;	
+				}else{
+					$x = 0;
+				}
+				
 				$arr[] = $x;
 			}
 		?>	
 	</table>
 	<?php 
 		$y = array_sum($arr);
-		$gwa = $y / $total_units;
+		if($is_complete){
+			$gwa = round(($y / $total_units), 2);	
+		}else{
+			$gwa = '';
+		}
+		
 	?>
 	<br>
 	<b>GWA:</b> <?php echo $gwa; ?> 
