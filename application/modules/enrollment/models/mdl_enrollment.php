@@ -234,6 +234,7 @@ class mdl_Enrollment extends CI_Model{
 			$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'enrol_requests'");
 		}
 		$this->db->trans_complete();
+		echo "success";
 	}
 
 	function password(){
@@ -279,6 +280,16 @@ class mdl_Enrollment extends CI_Model{
 			WHERE c.termID = $termID AND c.secID = $secID
 		")->result();
 		echo json_encode($sql);
+	}
+
+	function student_is_updated($termID){
+		$studID = $this->input->post('studID');
+		$is_exist = $this->db->select("1")->get_where('studrec_per_term', "termID = $termID AND studID = $studID", 1)->row();
+		if($is_exist){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 }

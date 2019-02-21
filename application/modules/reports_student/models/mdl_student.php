@@ -32,7 +32,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND class.subID = $subID
+					WHERE class.termID = $termID AND class.subID = $subID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else if($courseID != 'all-courses' && $yearID == 'all-years'){
@@ -46,7 +46,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND class.subID = $subID AND c.courseID = $courseID
+					WHERE class.termID = $termID AND class.subID = $subID AND c.courseID = $courseID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else if($courseID == 'all-courses' && $yearID != 'all-years'){
@@ -60,7 +60,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND class.subID = $subID AND y.yearID = $yearID
+					WHERE class.termID = $termID AND class.subID = $subID AND y.yearID = $yearID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else{
@@ -77,7 +77,7 @@ class mdl_Student extends CI_Model{
 					WHERE class.termID = $termID AND 
 					class.subID = $subID AND 
 					y.yearID = $yearID AND 
-					c.courseID = $courseID
+					c.courseID = $courseID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}
@@ -100,7 +100,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND class.subID = $subID AND class.facID = $facID
+					WHERE class.termID = $termID AND class.subID = $subID AND class.facID = $facID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else if($courseID != 'all-courses' && $yearID == 'all-years'){
@@ -115,7 +115,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE class.termID = $termID AND class.subID = $subID AND class.facID = $facID AND 
-					c.courseID = $courseID
+					c.courseID = $courseID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else if($courseID == 'all-courses' && $yearID != 'all-years'){
@@ -130,7 +130,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE class.termID = $termID AND class.subID = $subID AND class.facID = $facID AND 
-					y.yearID = $yearID
+					y.yearID = $yearID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else{
@@ -145,7 +145,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
 					WHERE class.termID = $termID AND class.subID = $subID AND class.facID = $facID AND 
-					y.yearID = $yearID AND c.courseID = $courseID
+					y.yearID = $yearID AND c.courseID = $courseID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}
@@ -162,7 +162,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID
+					WHERE class.termID = $termID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else if($courseID != 'all-courses' && $yearID == 'all-years'){
@@ -176,7 +176,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND c.courseID = $courseID
+					WHERE class.termID = $termID AND c.courseID = $courseID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else if($courseID == 'all-courses' && $yearID != 'all-years'){
@@ -190,7 +190,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND y.yearID = $yearID
+					WHERE class.termID = $termID AND y.yearID = $yearID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}else{
@@ -204,7 +204,7 @@ class mdl_Student extends CI_Model{
 					INNER JOIN course c ON p.courseID = c.courseID 
 					INNER JOIN year y ON s.yearID = y.yearID
 					INNER JOIN users u ON s.uID = u.uID 
-					WHERE class.termID = $termID AND y.yearID = $yearID AND c.courseID = $courseID
+					WHERE class.termID = $termID AND y.yearID = $yearID AND c.courseID = $courseID AND sc.status = 'Enrolled'
 					ORDER BY c.courseCode,y.duration,name ASC
 				")->result();
 			}

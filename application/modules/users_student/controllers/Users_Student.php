@@ -61,7 +61,7 @@ class Users_Student extends MY_Controller{
 	}
 
 	function update(){ //parameter is an array since _remap method is used
-		$this->mdl_student->update();
+		$this->mdl_student->update($this->_data['current_term']->termID);
 	}
 
 	function delete($id){ //parameter is an array since _remap method is used

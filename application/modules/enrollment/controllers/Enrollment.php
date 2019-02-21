@@ -63,7 +63,12 @@ class Enrollment extends MY_Controller{
 	}
 
 	function set_enrolled(){
-		$this->mdl_enrollment->change_status('Enrolled', $this->_data['current_term']->termID);
+		if($this->mdl_enrollment->student_is_updated($this->_data['current_term']->termID)){
+			$this->mdl_enrollment->change_status('Enrolled', $this->_data['current_term']->termID);	
+		}else{
+			echo "You neded to update first the yearlevel of student.";
+		}
+		
 	}
 
 	function change_enrolStatus(){

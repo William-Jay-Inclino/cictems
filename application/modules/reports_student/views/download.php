@@ -96,7 +96,7 @@
 		<tr> <td>&nbsp;</td> </tr>
 		<tr>
 			<td colspan="6">
-				<b>Total no. of Enrolled Students: </b><?php echo $ctr; ?>
+				<b>Total no. of Enrolled Students: </b><?php echo $ctr - 1; ?>
 			</td>
 		</tr>
 	</table>

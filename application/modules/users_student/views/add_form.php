@@ -30,7 +30,7 @@
 				  <div class="columns">
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Firstname">
+						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Firstname" required>
 					  	</div>
 					  	<p class="help has-text-danger">
 							{{error.fn}}
@@ -38,12 +38,12 @@
 				  	</div>
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Middlename">
+						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Middlename">
 					  	</div>
 				  	</div>
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Lastname">
+						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Lastname" required>
 					  	</div>
 					  	<p class="help has-text-danger">
 							{{error.ln}}
@@ -54,7 +54,7 @@
 				<div class="field">
 				  <label class="label">Course</label>
 				  <div class="control">
-					  	<multiselect v-model="form.course" track-by="courseID" label="courseCode" :options="courses"></multiselect>
+					  	<multiselect v-model="form.course" track-by="courseID" label="courseCode" :options="courses" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.course}}
@@ -63,7 +63,7 @@
 				<div class="field">
 				  <label class="label">Prospectus</label>
 				  <div class="control">
-					  	<multiselect v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+					  	<multiselect v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.pros}}
@@ -72,7 +72,7 @@
 				<div class="field">
 				  <label class="label">Yearlevel</label>
 				  <div class="control">
-					  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
+					  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.year}}
@@ -81,7 +81,7 @@
 				<div class="field">
 				  <label class="label">Date of Birth</label>
 				  <div class="control">
-					  	<input class="input" type="date" v-model="form.dob">
+					  	<input class="input" type="date" v-model="form.dob" required>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.dob}}
@@ -90,7 +90,7 @@
 				<div class="field">
 				  <label class="label">Sex</label>
 				  <div class="control">
-					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
+					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.sex}}

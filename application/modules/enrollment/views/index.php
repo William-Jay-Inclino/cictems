@@ -489,14 +489,19 @@ document.addEventListener('DOMContentLoaded', function() {
          this.active_section = null
       },
       remove(classID,subCode,index){
+         this.classes.splice(index, 1)
+         if(this.classes.length === 0){
+            this.status = 'Empty'
+            this.sections = this.sections2
+            this.section = null
+         }
       	this.$http.get('<?php echo base_url() ?>enrollment/deleteClass/'+classID+'/'+this.selected_student.studID)
             .then(response => {
-               this.classes.splice(index, 1)
-               if(this.classes.length === 0){
-                  this.status = 'Empty'
-                  this.sections = this.sections2
-                  this.section = null
-               }
+               console.log(response.body);
+               
+            }, e => {
+               console.log(e.body);
+
             })
       },
       evaluate(){
@@ -595,10 +600,18 @@ document.addEventListener('DOMContentLoaded', function() {
            if(confirm) {
              this.$http.post('<?php echo base_url() ?>enrollment/set_enrolled', {studID: this.selected_student.studID})
             .then(response => {
-               swal("Succesfully enrolled student! ", {
-                  icon: "success",
-                });
-               this.status = 'Enrolled'
+               console.log(response.body)
+               if(response.body == 'success'){
+                  swal("Succesfully enrolled student! ", {
+                     icon: "success",
+                   });
+                  this.status = 'Enrolled'
+               }else{
+                  swal("Ooops!", response.body, 'error')
+               }
+            }, e => {
+               console.log(e.body);
+
             })
            }
          })

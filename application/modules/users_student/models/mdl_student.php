@@ -78,8 +78,7 @@ class mdl_Student extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT s.studID,s.has_user,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,
-			CONCAT(YEAR(u.dob), '-', LPAD(MONTH(u.dob), 2, '0'), '-' ,LPAD(DAY(u.dob), 2, '0')) dob,u.sex,u.address,u.cn,u.email
+			SELECT s.studID,s.has_user,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,u.dob,u.sex,u.address,u.cn,u.email
 			FROM student s 
 			INNER JOIN year y ON s.yearID = y.yearID 
 			INNER JOIN studprospectus sp ON s.studID = sp.studID 
@@ -91,16 +90,16 @@ class mdl_Student extends CI_Model{
 		return $query->row();
 	}
 
-	function update(){
+	function update($termID){
 		$id = $this->input->post('id');
 		$prosID = $this->input->post('pros')['prosID'];
-		$query = $this->db->query("
-			SELECT (SELECT 1 FROM studgrade WHERE studID = $id LIMIT 1) x, (SELECT prosID FROM studprospectus WHERE studID = $id LIMIT 1) w
-		")->row();
+		// $query = $this->db->query("
+		// 	SELECT (SELECT 1 FROM studgrade WHERE studID = $id LIMIT 1) x, (SELECT prosID FROM studprospectus WHERE studID = $id LIMIT 1) w
+		// ")->row();
 
-		if($query->x && $prosID != $query->w){
-			die('error');
-		}
+		// if($query->x && $prosID != $query->w){
+		// 	die('error');
+		// }
 
 		$data2['yearID'] = $this->input->post('year')['yearID'];
 		$data2['controlNo'] = $this->input->post('controlNo');
@@ -113,6 +112,14 @@ class mdl_Student extends CI_Model{
 		$this->db->update('student', $data2, "studID = $id");
 		$uID = $this->db->query("SELECT uID FROM student WHERE studID = $id LIMIT 1")->row()->uID;
 		$this->db->update('users', $data, "uID = $uID");
+
+		$is_exist_in_studrec_per_term = $this->db->select("id")->get_where('studrec_per_term', "termID = $termID AND studID = $id", 1)->row();
+		if($is_exist_in_studrec_per_term){
+			$this->db->update('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID']],"id = ".$is_exist_in_studrec_per_term->id);
+		}else{
+			$this->db->insert('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID'], 'studID'=>$id, 'termID'=>$termID]);
+		}
+
 		$this->db->trans_complete();
 		echo "success";
 	}

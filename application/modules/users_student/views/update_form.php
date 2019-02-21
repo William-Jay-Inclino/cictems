@@ -29,7 +29,7 @@
 				  <div class="columns">
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Firstname">
+						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Firstname" required>
 					  	</div>
 					  	<p class="help has-text-danger">
 							{{error.fn}}
@@ -37,12 +37,12 @@
 				  	</div>
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Middlename">
+						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Middlename">
 					  	</div>
 				  	</div>
 				  	<div class="column">
 				  		<div class="control">
-						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[a-zA-Z0-9][a-zA-Z0-9ñ-\s]*" placeholder="Lastname">
+						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Lastname" required>
 					  	</div>
 					  	<p class="help has-text-danger">
 							{{error.ln}}
@@ -53,7 +53,7 @@
 				<div class="field">
 				  <label class="label">Course</label>
 				  <div class="control">
-					  	<multiselect v-model="form.course" track-by="courseID" label="courseCode" :options="courses"></multiselect>
+					  	<multiselect v-model="form.course" track-by="courseID" label="courseCode" :options="courses" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.course}}
@@ -62,7 +62,7 @@
 				<div class="field">
 				  <label class="label">Prospectus</label>
 				  <div class="control">
-					  	<multiselect v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses"></multiselect>
+					  	<multiselect v-model="form.pros" track-by="prosID" label="prosCode" :options="prospectuses" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.pros}}
@@ -71,7 +71,7 @@
 				<div class="field">
 				  <label class="label">Yearlevel</label>
 				  <div class="control">
-					  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years"></multiselect>
+					  	<multiselect v-model="form.year" track-by="yearID" label="yearDesc" :options="years" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.year}}
@@ -80,7 +80,7 @@
 				<div class="field">
 				  <label class="label">Date of Birth</label>
 				  <div class="control">
-					  	<input class="input" type="date" v-model="form.dob">
+					  	<input class="input" type="date" v-model="form.dob" required>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.dob}}
@@ -89,7 +89,7 @@
 				<div class="field">
 				  <label class="label">Sex</label>
 				  <div class="control">
-					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
+					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex" required></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.sex}}
@@ -98,7 +98,7 @@
 				<div class="field">
 				  <label class="label">Address</label>
 				  <div class="control">
-					  	<textarea class="textarea" v-model.trim="form.address" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*"></textarea>
+					  	<textarea class="textarea" v-model.trim="form.address" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*"></textarea>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.address}}
@@ -110,7 +110,7 @@
 				  	<input type="text" disabled class="input" readonly value="+63" style="width: 50px;">
 				  </div>
 				  <div class="control" style="width: 100%">
-					  	<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" required maxlength="10">
+					  	<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" maxlength="10">
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.cn}}
@@ -163,7 +163,7 @@
 		    		year: {yearID: '<?php echo $record->yearID ?>', yearDesc: '<?php echo $record->yearDesc ?>'},
 		    		course: {courseID: '<?php echo $record->courseID ?>', courseCode: '<?php echo $record->courseCode ?>'},
 		    		pros: {prosID: '<?php echo $record->prosID ?>', prosCode: '<?php echo $record->prosCode ?>'},
-		    		dob: '<?php echo $record->dob ?>',
+		    		dob: new Date('<?php echo $record->dob ?>').toISOString().slice(0,10),
 		    		sex: {sex: '<?php echo $record->sex ?>'},
 		    		address: '<?php echo $record->address ?>',
 		    		cn: '<?php echo $record->cn ?>',
@@ -256,10 +256,10 @@
 								    window.location.href = this.page.show
 								  }
 								})
-			        		}else{
-			        			alert('Error: '+ c)
-			        			window.location.href = this.page.current_url + 51
 			        		}
+						 }, e => {
+						 	console.log(e.body)
+
 						 })
 		        	}else{
 		        		swal('Unable to submit. Please review the form', {
