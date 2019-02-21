@@ -13,7 +13,7 @@ class mdl_Student extends CI_Model{
 		}
 	}
 
-	function create(){
+	function create($termID){
 		//print_r($_POST); die();
 		$this->db->trans_start();
 		$this->get_form_data($data);
@@ -26,6 +26,15 @@ class mdl_Student extends CI_Model{
 		$data3['studID'] = $this->db->insert_id();
 		$data3['prosID'] = $this->input->post('pros')['prosID'];
 		$this->db->insert('studprospectus', $data3);
+		$this->db->insert('studrec_per_term', 
+			[
+				'studID'=>$data3['studID'], 
+				'yearID'=>$data2['yearID'], 
+				'termID'=>$termID,
+				'prosID'=>$data3['prosID']
+			]
+		);
+
 
 		$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'student' LIMIT 1");
 		$row =  $query->row();

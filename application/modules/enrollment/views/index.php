@@ -19,16 +19,23 @@
    </div>
       <?php
       if($status == 'active'){ ?>
-         
+      
          <section class="section">
             <div class="container">
-               <?php 
-                  if(in_array('20', $user_access) || $roleID == 1){ ?>
-                     <a v-show="ready" :href="grade_link" class="button is-primary is-pulled-right" target="_blank">View student's grade</a>
-                     <br><br>
-                     <?php
-                  }
-               ?>
+               <div class="columns">
+                  <div class="column">
+                  <?php 
+                     if(in_array('20', $user_access) || $roleID == 1){ ?>
+                        <a v-show="ready" :href="grade_link" class="button is-primary" target="_blank">View grades</a>
+                        <?php
+                     }
+                     if(in_array('14', $user_access) || $roleID == 1){ ?>
+                        <a v-show="ready" :href="profile_link" class="button is-primary" target="_blank">View profile</a>
+                        <?php
+                     }
+                  ?>
+                  </div>
+               </div>
                <div class="box">
                   <div class="columns">
                      <div class="column is-half">
@@ -38,19 +45,18 @@
                               <multiselect v-model="selected_student" label="student" track-by="studID" placeholder="Enter name / control no" :options="suggestions" :loading="isLoading" :internal-search="false" @search-change="search">
                               </multiselect>
                            </div>
+                           <p class="help" v-if="ready">
+                              Status: <span :class="statusClass">{{status2}}</span>
+                           </p>
                         </div>
                      </div>
                         <div class="column" v-if="stud != null && ready">
-                           <label class="label">Course</label>
-                           {{stud.courseCode}}
+                           <label class="label">Prospectus</label>
+                           <multiselect @input="stud_year = null " :show-labels="false" v-model="stud_pros" label="prosCode" track-by="prosID" :options="prospectuses" :allow-empty="false"></multiselect>
                         </div>
                         <div class="column" v-if="stud != null && ready">
                            <label class="label">Yearlevel</label>
-                           {{stud.yearDesc}}
-                        </div>
-                        <div class="column" v-if="ready">
-                           <label class="label">Status</label>
-                           <span :class="statusClass"> {{status2}} </span>
+                           <multiselect @input="changeYear" :show-labels="false" v-model="stud_year" label="yearDesc" track-by="yearID" :options="years2" :allow-empty="false"></multiselect>
                         </div>
                   </div>
                </div>
@@ -262,10 +268,16 @@ document.addEventListener('DOMContentLoaded', function() {
       sections: [],
       sections2: [],
       active_sections: [],
-      active_section: null
+      active_section: null,
+
+      years: [],
+      prospectuses: [],
+      stud_pros: null,
+      stud_year: null
     },   
     created(){
-      this.get_sections()
+      this.populate()
+      //this.get_sections()
     },
     watch: {
       selected_student(value){
@@ -280,10 +292,22 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     },
     computed: {
+      years2(){
+         if(this.stud_pros){
+            return this.years.filter(y => y.duration <= this.stud_pros.duration)   
+         }
+         
+      },
       grade_link(){
          const x = this.selected_student
          if(x != null){
             return this.link + x.studID
+         }
+      },
+      profile_link(){
+         const x = this.selected_student
+         if(x != null){
+            return '<?php echo base_url() ?>/users/student/show/' + x.studID
          }
       },
       statusClass(){
@@ -365,11 +389,16 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     },
     methods: {
-      get_sections(){
-         this.$http.get('<?php echo base_url() ?>enrollment/get_sections')
+      changeYear(){
+         swal('Success', "Student's yearlevel & prospectus succesfully updated!", 'success')
+      },
+      populate(){
+         this.$http.get('<?php echo base_url() ?>enrollment/populate')
          .then(response => {
-            console.log(response.body)
-            this.active_sections = response.body
+            const c = response.body
+            this.active_sections = c.sections
+            this.years = c.years
+            this.prospectuses = c.prospectuses
          }, e => {
             console.log(e.body)
 
@@ -413,7 +442,6 @@ document.addEventListener('DOMContentLoaded', function() {
          .then(response => {
             this.loading_class_sel = false
             const c = response.body
-            console.log(c)
             this.status = c.status
             if(c.status != 'Empty'){
             	this.classes = c.data
@@ -422,31 +450,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             this.sections2 = c.sections
             this.stud = c.stud
+            this.stud_pros = {prosID: c.stud.prosID, prosCode: c.stud.prosCode, duration: c.stud.duration}
+            this.stud_year = {yearID: c.stud.yearID, yearDesc: c.stud.yearDesc}
+         }, e => {
+            console.log(e.body);
+
          })
       },
-      // searchClass(value){
-      // 	if(value.trim() != ''){
-      //       this.isLoading2 = true
-      //       value = value.replace(/\s/g, "_")
-      //       this.$http.get('<?php echo base_url() ?>enrollment/searchClass/'+value+'/'+this.searchClass_opt)
-      //       .then(response => {
-      //          this.isLoading2 = false
-      //          this.class_suggestions = response.body
-      //       })
-      //    }else{
-      //       this.class_suggestions = []
-      //    }
-      // },
       section_add(){
          this.loading_btn = true
          this.$http.get('<?php echo base_url() ?>enrollment/section_add/' + this.section.secID + '/' + this.selected_student.studID)
          .then(response => {
             this.loading_btn = false
             const c = response.body
+            console.log(c);
             if(c == 'error'){
                swal("Section has no classes in this term!", {
+                  icon: 'error',
+                })
+            }else if(c == 'error1'){
+               swal("Student data does not match section data. Page will auto refresh", {
                   icon: 'warning',
                 })
+               .then(x => {
+                  window.location.href = "<?php echo base_url() ?>enrollment"
+               })
             }else{
                this.status = 'Unenrolled'
                swal('Classes succesfully added!', {
@@ -455,6 +483,9 @@ document.addEventListener('DOMContentLoaded', function() {
                this.classes = c
                this.section = null
             }
+          }, e => {
+            console.log(e.body);
+
           });
       },
       addClass(){
@@ -497,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
          }
       	this.$http.get('<?php echo base_url() ?>enrollment/deleteClass/'+classID+'/'+this.selected_student.studID)
             .then(response => {
-               console.log(response.body);
+               // console.log(response.body);
                
             }, e => {
                console.log(e.body);
@@ -582,11 +613,19 @@ document.addEventListener('DOMContentLoaded', function() {
       set_pending(){
          this.$http.post('<?php echo base_url() ?>enrollment/set_pending', {studID: this.selected_student.studID})
          .then(response => {
-            this.close_evalModal()
-            this.status = 'Pending'
-            swal('Student\'s status is set to pending', {
-                  icon: 'success',
-            })
+            if(response.body == 'success'){
+               this.close_evalModal()
+               this.status = 'Pending'
+               swal('Student\'s status is set to pending', {
+                     icon: 'success',
+               })   
+            }else{
+               swal("Ooops!", response.body, 'error')
+            }
+            
+         }, e => {
+            console.log(e.body)
+
          })
       },
       set_enrolled(){
@@ -600,15 +639,18 @@ document.addEventListener('DOMContentLoaded', function() {
            if(confirm) {
              this.$http.post('<?php echo base_url() ?>enrollment/set_enrolled', {studID: this.selected_student.studID})
             .then(response => {
-               console.log(response.body)
-               if(response.body == 'success'){
-                  swal("Succesfully enrolled student! ", {
-                     icon: "success",
-                   });
-                  this.status = 'Enrolled'
-               }else{
-                  swal("Ooops!", response.body, 'error')
-               }
+               swal("Succesfully enrolled student! ", {
+                  icon: "success",
+                });
+               this.status = 'Enrolled'
+               // if(response.body == 'success'){
+               //    swal("Succesfully enrolled student! ", {
+               //       icon: "success",
+               //     });
+               //    this.status = 'Enrolled'
+               // }else{
+               //    swal("Ooops!", response.body, 'error')
+               // }
             }, e => {
                console.log(e.body);
 

@@ -61,20 +61,24 @@
             <hr>
             <table class="table is-fullwidth">
                <thead>
-                <th>#</th>
-                  <th>Control number</th>
-                  <th>Name</th>
+                  <th>#</th>
+                  <th>Name of Student</th>
                   <th>Course</th>
                   <th>Yearlevel</th>
+                  <th>Gender</th>
+                  <th>Birthdate</th>
+                  <th>Address</th>
                </thead>
                <td colspan="5" class="has-text-centered" v-show="msg"> {{msg}} </td>
                <tbody>
                   <tr v-for="student, i in students2">
                     <td> {{++i}} </td>
-                     <td>{{student.controlNo}}</td>
                      <td>{{student.name}}</td>
                      <td>{{student.courseCode}}</td>
                      <td>{{student.yearDesc}}</td>
+                     <td>{{student.sex}}</td>
+                     <td>{{student.dob}}</td>
+                     <td>{{student.address}}</td>
                   </tr>
                </tbody>
             </table>

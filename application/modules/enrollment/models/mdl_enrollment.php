@@ -3,6 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Enrollment extends CI_Model{
 
+	function populate($termID){
+		$data['sections'] = $this->db->query("SELECT DISTINCT c.secID, s.secName FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
+		$data['prospectuses'] = $this->db->query("SELECT prosID, prosCode,duration FROM prospectus ORDER BY prosType, prosCode")->result();
+		$data['years'] = $this->db->get("year")->result();
+
+		echo json_encode($data);
+	}
+
 	function get_enrolment_status(){
 		return $this->db->select('some_value')->get_where('enrolment_settings', 'name = "status"')->row()->some_value;
 	}
@@ -25,7 +33,7 @@ class mdl_Enrollment extends CI_Model{
 		}
 		
 		$output['stud'] = $this->db->query("
-			SELECT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,c.courseID,c.courseCode,y.yearID,y.yearDesc 
+			SELECT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,p.prosID,p.prosCode,p.duration,c.courseID,y.yearID,y.yearDesc 
 			FROM student s 
 			INNER JOIN users u ON s.uID = u.uID 
 			INNER JOIN studprospectus sp ON sp.studID = s.studID 
@@ -50,6 +58,20 @@ class mdl_Enrollment extends CI_Model{
 		if(!$sql){
 			die('error');
 		}
+		$secData = $this->db->query("SELECT courseID, yearID FROM section WHERE secID = $secID LIMIT 1")->row();
+		$studData = $this->db->query("
+			SELECT p.courseID,s.yearID FROM studprospectus sp 
+			INNER JOIN prospectus p ON sp.prosID = p.prosID 
+			INNER JOIN student s ON sp.studID = s.studID 
+			WHERE sp.studID = $studID LIMIT 1
+		")->row();
+
+		if($secData->courseID != $studData->courseID || $secData->yearID != $studData->yearID){
+			die("error1");
+		}
+		// var_dump($secData);
+		// var_dump($studData);
+		// die();
 
 		$classes = $this->db->query("
 			SELECT c.classID,s.subID,c.classCode,s.subDesc,s.units,s.type,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time 
@@ -263,10 +285,10 @@ class mdl_Enrollment extends CI_Model{
 		$this->db->trans_complete();
 	}
 
-	function get_sections($termID){
-		$sql = $this->db->query("SELECT DISTINCT c.secID, s.secName FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
-		echo json_encode($sql);
-	}
+	// function get_sections($termID){
+	// 	$sql = $this->db->query("SELECT DISTINCT c.secID, s.secName FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
+	// 	echo json_encode($sql);
+	// }
 
 	function get_classes($termID, $secID){
 		$sql = $this->db->query("

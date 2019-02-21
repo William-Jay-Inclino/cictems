@@ -53,7 +53,7 @@ class Users_Student extends MY_Controller{
 	}
 
 	function create(){
-		$this->mdl_student->create();
+		$this->mdl_student->create($this->_data['current_term']->termID);
 	}
 
 	function read($data){ 

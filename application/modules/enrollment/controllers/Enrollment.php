@@ -22,6 +22,10 @@ class Enrollment extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
+	function populate(){
+		$this->mdl_enrollment->populate($this->_data['current_term']->termID);
+	}
+
 	function search($search_value){
 		$this->mdl_enrollment->search($search_value[0]);
 	}
@@ -51,7 +55,11 @@ class Enrollment extends MY_Controller{
 	}
 
 	function set_pending(){
-		$this->mdl_enrollment->change_status('Pending', $this->_data['current_term']->termID);
+		if($this->mdl_enrollment->student_is_updated($this->_data['current_term']->termID)){
+			$this->mdl_enrollment->change_status('Pending', $this->_data['current_term']->termID);
+		}else{
+			echo "You need to update first the yearlevel of student.";
+		}
 	}	
 
 	function cancel_pending(){
@@ -63,21 +71,16 @@ class Enrollment extends MY_Controller{
 	}
 
 	function set_enrolled(){
-		if($this->mdl_enrollment->student_is_updated($this->_data['current_term']->termID)){
-			$this->mdl_enrollment->change_status('Enrolled', $this->_data['current_term']->termID);	
-		}else{
-			echo "You neded to update first the yearlevel of student.";
-		}
-		
+		$this->mdl_enrollment->change_status('Enrolled', $this->_data['current_term']->termID);	
 	}
 
 	function change_enrolStatus(){
 		$this->mdl_enrollment->change_enrolStatus($this->_data['current_term']->termID);
 	}
 
-	function get_sections(){
-		$this->mdl_enrollment->get_sections($this->_data['current_term']->termID);
-	}
+	// function get_sections(){
+	// 	$this->mdl_enrollment->get_sections($this->_data['current_term']->termID);
+	// }
 
 	function get_classes($secID){
 		$this->mdl_enrollment->get_classes($this->_data['current_term']->termID, $secID[0]);
