@@ -72,7 +72,7 @@ class mdl_E_Confirmation extends CI_Model{
 	}
 
 	function get_classes($studID, $termID){
-		return $this->db->select("c.classCode,s.units,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time")
+		return $this->db->select("c.classCode,s.total_units units,s.subDesc,s.id,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time")
 			->join('class c','sc.classID = c.classID')
 			->join('subject s','c.subID = s.subID')
 			->join('day d','c.dayID = d.dayID')
@@ -83,6 +83,15 @@ class mdl_E_Confirmation extends CI_Model{
 		$studID = $this->input->post('studID');
 		$this->db->trans_start();
 		$this->db->query("UPDATE studclass INNER JOIN class ON studclass.classID = class.classID SET studclass.status = 'Enrolled' WHERE studID = $studID AND termID = $termID");
+
+		$studData = $this->db->query("SELECT s.yearID,sp.prosID FROM student s INNER JOIN studprospectus sp ON s.studID = sp.studID WHERE s.studID = $studID LIMIT 1")->row();
+		$this->db->insert('studrec_per_term', [
+			'studID'=>$studID,
+			'yearID'=>$studData->yearID,
+			'termID'=>$termID,
+			'prosID'=>$studData->prosID
+		]);
+			
 		$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'enrol_requests'");
 		$this->db->query("UPDATE counter SET total = total + 1 WHERE module = 'enrol_studs' AND termID = $termID");
 		$this->db->trans_complete();

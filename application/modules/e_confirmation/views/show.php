@@ -39,7 +39,12 @@
                 <tbody>
                 	<?php
                 		$tot = 0;
-                		foreach($records as $record){ ?>
+                		$arr = [];
+                		foreach($records as $record){ 
+                			if(in_array($record->id, $arr)){
+                				continue;
+                			}
+                		?>
 							<tr>
 								<td style="text-align: left"> <?php echo $record->classCode ?> </td>
 								<td style="text-align: left"> <?php echo $record->subDesc ?> </td>
@@ -48,6 +53,7 @@
 								<td> <?php echo $record->class_time ?> </td>
 							</tr>
 							<?php
+							$arr[] = $record->id;
 							$tot += $record->units;
                 		}
                 	?>

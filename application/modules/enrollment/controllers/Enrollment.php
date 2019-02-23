@@ -55,11 +55,12 @@ class Enrollment extends MY_Controller{
 	}
 
 	function set_pending(){
-		if($this->mdl_enrollment->student_is_updated($this->_data['current_term']->termID)){
-			$this->mdl_enrollment->change_status('Pending', $this->_data['current_term']->termID);
-		}else{
-			echo "You need to update first the yearlevel of student.";
-		}
+		$this->mdl_enrollment->change_status('Pending', $this->_data['current_term']->termID);
+		// if($this->mdl_enrollment->student_is_updated($this->_data['current_term']->termID)){
+		// 	$this->mdl_enrollment->change_status('Pending', $this->_data['current_term']->termID);
+		// }else{
+		// 	echo "You need to update first the yearlevel of student.";
+		// }
 	}	
 
 	function cancel_pending(){
@@ -78,6 +79,9 @@ class Enrollment extends MY_Controller{
 		$this->mdl_enrollment->change_enrolStatus($this->_data['current_term']->termID);
 	}
 
+	function updateStudent(){
+		$this->mdl_enrollment->updateStudent();	
+	}
 	// function get_sections(){
 	// 	$this->mdl_enrollment->get_sections($this->_data['current_term']->termID);
 	// }

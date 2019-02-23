@@ -69,7 +69,7 @@
                   <th>Birthdate</th>
                   <th>Address</th>
                </thead>
-               <td colspan="5" class="has-text-centered" v-show="msg"> {{msg}} </td>
+               <td colspan="7" class="has-text-centered" v-show="msg"> {{msg}} </td>
                <tbody>
                   <tr v-for="student, i in students2">
                     <td> {{++i}} </td>
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if(this.filter == 2) action = 'per-instructor' 
             if(this.course.courseID == 'all') course = 'all-courses'
             if(this.year.yearID == 'all') year = 'all-years'
-            const data = action + '/' + course + '/' + year + '/' + subject + '/' + instructor
+            const data = action + '/' + course + '/' + year + '/' + subject + '/' + instructor + '/' + this.term.termID
 
             window.open('<?php echo base_url() ?>reports/student/download/'+ data, '_blank')
           }

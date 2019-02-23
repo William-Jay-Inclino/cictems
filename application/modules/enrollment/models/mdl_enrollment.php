@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class mdl_Enrollment extends CI_Model{
 
 	function populate($termID){
-		$data['sections'] = $this->db->query("SELECT DISTINCT c.secID, s.secName FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
-		$data['prospectuses'] = $this->db->query("SELECT prosID, prosCode,duration FROM prospectus ORDER BY prosType, prosCode")->result();
+		$data['sections'] = $this->db->query("SELECT DISTINCT c.secID, s.secName,s.yearID,s.courseID FROM class c INNER JOIN section s ON c.secID = s.secID WHERE c.termID = $termID ORDER BY s.secName ASC")->result();
+		$data['prospectuses'] = $this->db->query("SELECT prosID, prosCode,courseID,duration FROM prospectus ORDER BY prosType, prosCode")->result();
 		$data['years'] = $this->db->get("year")->result();
 
 		echo json_encode($data);
@@ -42,13 +42,12 @@ class mdl_Enrollment extends CI_Model{
 			INNER JOIN year y ON s.yearID = y.yearID 
 			WHERE s.studID = $studID LIMIT 1    
 		")->row();
-		$output['sections'] = $this->db->query("
-			SELECT s.secID,s.secName 
-			FROM section s 
-			WHERE yearID = ".$output['stud']->yearID." AND 
-			semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1) AND
-			courseID = ".$output['stud']->courseID."
-		")->result();
+		// $output['sections'] = $this->db->query("
+		// 	SELECT secID,secName,yearID 
+		// 	FROM section s 
+		// 	WHERE semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1) AND
+		// 	courseID = ".$output['stud']->courseID."
+		// ")->result();
 		echo json_encode($output);
 
 	}
@@ -119,7 +118,9 @@ class mdl_Enrollment extends CI_Model{
 	function evaluate($termID){
 		//print_r($_POST);	die();
 		$coreq_subs = []; //use for storing subject corequisites
-		$subs_in_form = []; // use for storing subIDs in form
+		$subs_in_form = []; // use for storing classIDs in form
+		$subs_in_form2 = []; // use for storing subIDs in form
+		$dbl_subs = [];
 		//on top variables is used for checking corequisite subjects
 		$output = [];
 		$studID = $this->input->post('studID');
@@ -132,13 +133,23 @@ class mdl_Enrollment extends CI_Model{
 			$classID = $class['classID'];
 			$subID = $class['subID'];
 			$subs_in_form[] = $classID;
+			$subs_in_form2[] = $subID;
+
+			$subjectID = $this->db->select("id,prosID")->get_where('subject',"subID = $subID", 1)->row();
+			$subject2 = $this->db->query("SELECT subID FROM subject WHERE id = ".$subjectID->id." AND prosID = ".$subjectID->prosID." AND subID <> $subID LIMIT 1")->row();
+
+			if($subject2){
+				$dbl_subs[] = ['subID2'=>$subject2->subID,'classID'=>$classID];
+			}
+
 			$query = $this->db->query("SELECT
 				(SELECT COUNT(1) FROM studclass WHERE classID = $classID) population,
 				(SELECT r.capacity FROM class c, room r WHERE c.roomID = r.roomID AND c.classID = $classID LIMIT 1) capacity,
 				(SELECT prosID FROM subject WHERE subID = $subID) class_prosID,
 				(SELECT sp.prosID FROM studprospectus sp, student s WHERE sp.studID = s.studID AND s.studID = $studID LIMIT 1) student_prosID,
 				(SELECT 1 FROM subject sub, subject_req sr WHERE sr.subID = sub.subID AND sub.subID = $subID LIMIT 1) requisite_check,
-				(SELECT 1 FROM subject sub, year_req yr WHERE yr.subID = sub.subID AND sub.subID = $subID LIMIT 1) requisite_check2
+				(SELECT 1 FROM subject sub, year_req yr WHERE yr.subID = sub.subID AND sub.subID = $subID LIMIT 1) requisite_check2,
+				(SELECT 1 FROM studgrade WHERE studID = $studID AND subID = $subID AND (remarks = 'Passed' OR grade_type = 'Credit')) done
 			");
 
 			$row = $query->row_array();
@@ -166,13 +177,6 @@ class mdl_Enrollment extends CI_Model{
 							}
 						}
 					}else if($row2['req_type'] == 2){
-						//corequisite
-						// $query3 = $this->db->select('1')->get_where('studclass sc,class c,term t','sc.classID=c.classID AND c.termID=t.termID AND t.termID = "$termID" AND sc.studID = '.$studID.' AND c.subID = '.$row2['req_subID'], 1);
-						// $row3 = $query3->row_array();
-						// if(!isset($row3)){
-						// 	$output2['coreq'] = '';
-						// }
-
 						$coreq_subs[] = [
 							'coreq' => $this->db
 							->select('c.classID')
@@ -188,9 +192,6 @@ class mdl_Enrollment extends CI_Model{
 				if(isset($output2['failed'])){
 					$output[] = 'Student did not passed the required passing grade';
 				}
-				// if(isset($output2['coreq'])){
-				// 	$output[] = 'Student must first enroll the corequisite subject';
-				// }
 				$output2 = [];
 			}
 			if($row['requisite_check2'] > 0){
@@ -202,10 +203,24 @@ class mdl_Enrollment extends CI_Model{
 					$output[] = 'Student did not passed the required yearlevel';
 				}
 			}
+
+			if($row['done']){
+				$output[] = 'Student already have a grade in this subject';
+			}
+
 			if($output){
 				$failed_classes[] = ['classID'=>$classID,'reason'=>$output];
 			}
 			$output = [];	
+		}
+
+		if($dbl_subs){
+			foreach($dbl_subs as $ds){
+				if(!in_array($ds['subID2'], $subs_in_form2)){
+					$reason = 'Student must enroll both lec and lab in this subject';
+					$failed_classes[] = ['classID' => $ds['classID'], 'reason' => [$reason]];
+				}
+			}
 		}
 
 		if($coreq_subs){
@@ -242,6 +257,15 @@ class mdl_Enrollment extends CI_Model{
 		if($status == 'Pending'){
 			$this->db->query("UPDATE counter2 SET total = total + 1 WHERE module = 'enrol_requests'");
 		}else if($status == 'Enrolled'){
+			$studData = $this->db->query("SELECT s.yearID,sp.prosID FROM student s INNER JOIN studprospectus sp ON s.studID = sp.studID WHERE s.studID = $studID LIMIT 1")->row();
+			$this->db->insert('studrec_per_term', [
+				'studID'=>$studID,
+				'yearID'=>$studData->yearID,
+				'termID'=>$termID,
+				'prosID'=>$studData->prosID
+			]);
+			//$this->db->insert("studrec_per_term", )
+
 			$query = $this->db->query("SELECT 1 FROM counter WHERE module = 'enrol_studs' AND termID = $termID LIMIT 1");
 			$row =  $query->row();
 			if($row){
@@ -304,14 +328,28 @@ class mdl_Enrollment extends CI_Model{
 		echo json_encode($sql);
 	}
 
-	function student_is_updated($termID){
-		$studID = $this->input->post('studID');
-		$is_exist = $this->db->select("1")->get_where('studrec_per_term', "termID = $termID AND studID = $studID", 1)->row();
-		if($is_exist){
-			return true;
-		}else{
-			return false;
-		}
+	// function student_is_updated($termID){
+	// 	$studID = $this->input->post('studID');
+	// 	$is_exist = $this->db->select("1")->get_where('studrec_per_term', "termID = $termID AND studID = $studID", 1)->row();
+	// 	if($is_exist){
+	// 		return true;
+	// 	}else{
+	// 		return false;
+	// 	}
+	// }
+
+	function updateStudent(){
+		$studID = $this->input->post("studID");
+		$prosID = $this->input->post("prosID");
+		$yearID = $this->input->post("yearID");
+
+		$this->db->trans_start();
+
+		$this->db->update("student",['yearID'=>$yearID], "studID = $studID");
+		$this->db->update("studprospectus",['prosID'=>$prosID], "studID = $studID");
+
+		$this->db->trans_complete();
+
 	}
 
 }

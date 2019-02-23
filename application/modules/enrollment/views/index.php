@@ -56,14 +56,14 @@
                         </div>
                         <div class="column" v-if="stud != null && ready">
                            <label class="label">Yearlevel</label>
-                           <multiselect @input="changeYear" :show-labels="false" v-model="stud_year" label="yearDesc" track-by="yearID" :options="years2" :allow-empty="false"></multiselect>
+                           <multiselect @input="updateStudent" :show-labels="false" v-model="stud_year" label="yearDesc" track-by="yearID" :options="years2" :allow-empty="false"></multiselect>
                         </div>
                   </div>
                </div>
                <div v-show="ready">
                   <div class="field has-addons" v-show="status == 'Empty'">
                      <div class="control" style="width: 25%">
-                        <multiselect v-model="section" track-by="secID" label="secName" :options="sections" placeholder="Select Section"></multiselect>
+                        <multiselect v-model="section" track-by="secID" label="secName" :options="displayed_sections" placeholder="Select Section"></multiselect>
                      </div>
                      <div class="control">
                         <button :class="{'button is-link': true, 'is-loading': loading_btn}" style="height: 38px" v-show="section != null" @click="section_add">GO</button>
@@ -386,11 +386,43 @@ document.addEventListener('DOMContentLoaded', function() {
             x = 'Add Class'
          }
          return x
+      },
+      displayed_sections(){
+         if(this.stud_year && this.stud_pros){
+            return this.active_sections.filter(s => s.yearID == this.stud_year.yearID && s.courseID == this.stud_pros.courseID)
+         }else{
+            return []
+         }
+      },
+      not_enrol_both_subs(){
+         const fc = this.failed_classes
+         for(let x of fc){
+            for(let y of x.reason){
+               if(y == 'Student must enroll both lec and lab in this subject'){
+                  return false
+               }
+            }
+         }
+         return true
       }
     },
     methods: {
-      changeYear(){
+      updateStudent(){
+         this.section = null
          swal('Success', "Student's yearlevel & prospectus succesfully updated!", 'success')
+
+         this.$http.post('<?php echo base_url() ?>enrollment/updateStudent',{
+            studID: this.selected_student.studID,
+            prosID: this.stud_pros.prosID,
+            yearID: this.stud_year.yearID
+         })
+         .then(res => {
+            //console.log(res.body)
+
+         }, e => {
+            console.log(e.body)
+
+         })
       },
       populate(){
          this.$http.get('<?php echo base_url() ?>enrollment/populate')
@@ -446,11 +478,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if(c.status != 'Empty'){
             	this.classes = c.data
             }else{
-               this.sections = c.sections
+               this.sections = this.displayed_sections
             }
-            this.sections2 = c.sections
+            this.sections2 = this.displayed_sections
             this.stud = c.stud
-            this.stud_pros = {prosID: c.stud.prosID, prosCode: c.stud.prosCode, duration: c.stud.duration}
+            this.stud_pros = {prosID: c.stud.prosID, prosCode: c.stud.prosCode, duration: c.stud.duration, courseID: c.stud.courseID}
             this.stud_year = {yearID: c.stud.yearID, yearDesc: c.stud.yearDesc}
          }, e => {
             console.log(e.body);
@@ -543,9 +575,13 @@ document.addEventListener('DOMContentLoaded', function() {
       		})
       	this.$http.post('<?php echo base_url() ?>enrollment/evaluate', {studID: this.selected_student.studID, classes: this.filtered_classes})
          .then(response => {
+            console.log(response.body);
             swal.close()
             this.failed_classes = response.body
             this.evalModal = true
+         }, e => {
+            console.log(e.body);
+
          })
       },
       close_evalModal(){
@@ -578,36 +614,41 @@ document.addEventListener('DOMContentLoaded', function() {
                this.addClass()
             }
          }else{
-            swal('Password required',{
-              content: {
-                  element: "input",
-                  attributes:{
-                     placeholder: 'Please enter password',
-                     type: 'password'
-                  }
-              },
-              buttons: true,
-              icon: 'info'
-            })
-            .then((value) => {
-               if(value != null){
-                  this.$http.post('<?php echo base_url() ?>enrollment/password', {pw: value})
-                  .then(response => {
-                     if(response.body == 'success'){
-                        if(this.status != 'Enrolled'){
-                           this.set_pending()   
-                        }else{
-                           this.addClass()
-                        }
-                     }else{
-                        swal('Invalid Password!', {
-                           icon: 'error',
-                        })
+            if(!this.not_enrol_both_subs){
+               swal('Error', "Please enroll both subjects in the evaluation form!", 'error')
+            }else{
+               swal('Password required',{
+                 content: {
+                     element: "input",
+                     attributes:{
+                        placeholder: 'Please enter password',
+                        type: 'password'
                      }
-                  })
-               }
-               
-            })
+                 },
+                 buttons: true,
+                 icon: 'info'
+               })
+               .then((value) => {
+                  if(value != null){
+                     this.$http.post('<?php echo base_url() ?>enrollment/password', {pw: value})
+                     .then(response => {
+                        if(response.body == 'success'){
+                           if(this.status != 'Enrolled'){
+                              this.set_pending()   
+                           }else{
+                              this.addClass()
+                           }
+                        }else{
+                           swal('Invalid Password!', {
+                              icon: 'error',
+                           })
+                        }
+                     })
+                  }
+                  
+               })
+            }
+            
          }
       },
       set_pending(){

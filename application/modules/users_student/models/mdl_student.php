@@ -26,14 +26,14 @@ class mdl_Student extends CI_Model{
 		$data3['studID'] = $this->db->insert_id();
 		$data3['prosID'] = $this->input->post('pros')['prosID'];
 		$this->db->insert('studprospectus', $data3);
-		$this->db->insert('studrec_per_term', 
-			[
-				'studID'=>$data3['studID'], 
-				'yearID'=>$data2['yearID'], 
-				'termID'=>$termID,
-				'prosID'=>$data3['prosID']
-			]
-		);
+		// $this->db->insert('studrec_per_term', 
+		// 	[
+		// 		'studID'=>$data3['studID'], 
+		// 		'yearID'=>$data2['yearID'], 
+		// 		'termID'=>$termID,
+		// 		'prosID'=>$data3['prosID']
+		// 	]
+		// );
 
 
 		$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'student' LIMIT 1");
@@ -125,9 +125,10 @@ class mdl_Student extends CI_Model{
 		$is_exist_in_studrec_per_term = $this->db->select("id")->get_where('studrec_per_term', "termID = $termID AND studID = $id", 1)->row();
 		if($is_exist_in_studrec_per_term){
 			$this->db->update('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID']],"id = ".$is_exist_in_studrec_per_term->id);
-		}else{
-			$this->db->insert('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID'], 'studID'=>$id, 'termID'=>$termID]);
 		}
+		// else{
+		// 	$this->db->insert('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID'], 'studID'=>$id, 'termID'=>$termID]);
+		// }
 
 		$this->db->trans_complete();
 		echo "success";
