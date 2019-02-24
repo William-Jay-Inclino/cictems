@@ -77,7 +77,7 @@
 						<td>{{record.courseCode}}</td>
 						<td>{{record.yearDesc}}</td>
 						<td>
-							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.status == 'active'" @change="changeStatus(i)" :disabled="record.has_user == 'no'">
+							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.status == 'active'" @change="changeStatus(i)" :disabled="record.userName == ''">
 						 	<label :for="i"></label>
 						</td>
 						<td>

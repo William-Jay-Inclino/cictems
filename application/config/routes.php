@@ -7,12 +7,12 @@ $route['translate_uri_dashes'] = FALSE;
 
 //no routes for transactions
 
-$route['register'] = 'login/register';
-$route['first-time-login'] = 'login/first_time_login';
-$route['change-password-success'] = 'login/change_pw_success';
+// $route['register'] = 'login/register';
+// $route['first-time-login'] = 'login/first_time_login';
+// $route['change-password-success'] = 'login/change_pw_success';
 $route['logout'] = 'login/log_out';
 
-$route['settings/renew-password'] = 'settings/reset_pw_form';
+// $route['settings/renew-password'] = 'settings/reset_pw_form';
 $route['e-confirmation'] = 'e_confirmation';
 $route['e-confirmation/show/(:num)'] = 'e_confirmation/show/$1';
 

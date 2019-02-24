@@ -245,8 +245,8 @@
 			        		const c = response.body
 			        		console.log(c)
 			        		if(c == 'error'){
-			        			swal('Cannot change prospectus. Student has already a grade', {
-							      icon: 'warning',
+			        			swal('Error', 'Gmail already exist!', {
+							      icon: 'error',
 							    });
 			        		}else if(c == 'success'){
 			        			swal('Student successfull updated', {

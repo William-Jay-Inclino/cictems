@@ -39,21 +39,21 @@
                 <tbody>
                 	<?php
                 		$tot = 0;
-                		$arr = [];
                 		foreach($records as $record){ 
-                			if(in_array($record->id, $arr)){
-                				continue;
-                			}
                 		?>
 							<tr>
-								<td style="text-align: left"> <?php echo $record->classCode ?> </td>
+								<td style="text-align: left"> 
+									<?php 
+										echo $record->classCode;
+										if($record->type == 'lab'){echo " <b>(lab)</b>";}
+									?> 
+								</td>
 								<td style="text-align: left"> <?php echo $record->subDesc ?> </td>
 								<td> <?php echo $record->units ?> </td>
 								<td> <?php echo $record->day ?> </td>
 								<td> <?php echo $record->class_time ?> </td>
 							</tr>
 							<?php
-							$arr[] = $record->id;
 							$tot += $record->units;
                 		}
                 	?>

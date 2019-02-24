@@ -104,8 +104,8 @@ class Users_Student extends MY_Controller{
 		$this->mdl_student->remove_credit();	
 	}
 	
-	function sendPass(){
-		$this->mdl_student->sendPass();	
+	function sendLogin(){
+		$this->mdl_student->sendLogin();	
 		
 	}
 

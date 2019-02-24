@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma-steps/bulma-steps.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
     <style>
+    body{
+      background-image: url("<?php echo base_url() ?>assets/img/bg-tile.png");
+    }
       .no-hover{
         pointer-events: none;
       }
@@ -75,7 +78,7 @@
 
     </nav>
   </header>
-  <br>
+  <br><br>
 
 
 
@@ -86,7 +89,8 @@
     <script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
     <section id="app" class="section" v-cloak>
       <div class="container" style="max-width: 600px">
-        <h3 class="title is-3 has-text-centered has-text-primary">Register</h3>
+        <h3 class="title is-3 has-text-centered my-title">Register</h3>
+        <br><br>
         <div class="steps">
           <div :class="{'step-item': true, 'is-primary is-completed': step1Active ,'is-completed is-success': step1Completed}">
             <div class="step-marker">
@@ -162,7 +166,7 @@
             <div class="field" v-if="form.role == 'Student'">
               <label class="label">Your name <p class="help is-note">Format: Lastname, Firstname Middlename</p> </label>
               <div class="control">
-                <multiselect v-model="form.student" label="name" track-by="uID" placeholder="Type your name here" :options="students" :loading="isLoading" :internal-search="false" @search-change="fetchStudents">
+                <multiselect :show-labels="false" v-model="form.student" label="name" track-by="uID" placeholder="Type your name here" :options="students" :loading="isLoading" :internal-search="false" @search-change="fetchStudents">
                </multiselect>
               </div>
               <p class="help has-text-danger"> {{error.student}} </p>
@@ -195,13 +199,13 @@
                   </div>
                 </div>
             </div>
-            <div class="field">
+            <!-- <div class="field">
               <label class="label">Date of Birth</label>
               <div class="control">
                 <input type="date" class="input" v-model="form.dob" @keyup.enter="nextStep">
               </div>
               <p class="help has-text-danger"> {{error.dob}} </p>
-            </div>
+            </div> -->
             <div class="field" v-if="form.role != 'Student'">
               <label class="label">Sex</label>
               <div class="control">
@@ -210,20 +214,20 @@
               </div>
               <p class="help has-text-danger"> {{error.sex}} </p>
             </div>
-            <div class="field">
+            <!-- <div class="field">
               <label class="label">Address</label>
               <div class="control">
                 <input type="text" class="input" v-model.trim="form.address" @keyup.enter="nextStep">
               </div>
               <p class="help has-text-danger"> {{error.address}} </p>
-            </div>
-            <div class="field">
+            </div> -->
+            <!-- <div class="field">
               <label class="label">Contact number</label>
               <div class="control">
                 <input type="text" class="input" v-model.trim="form.cn" @keyup.enter="nextStep">
               </div>
               <p class="help has-text-danger"> {{error.cn}} </p>
-            </div>
+            </div> -->
             <div class="field">
               <label class="label">Email</label>
               <div class="control">
@@ -243,17 +247,9 @@
           </div>
 
           <div v-if="current_step == 3">
-            <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Username must start with a letter and must be alphanumeric. (Underscore is accepted) </p>
             <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Password must have atleast 8 characters </p>
             <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Password must use atleast three of the four available character types: lowercase letters, uppercase letters, numbers, and symbols. </p>
             <hr>
-            <div class="field">
-              <label class="label">Username</label>
-              <div class="control">
-                <input type="text" class="input" @keyup="un_checker()" v-model="form.userName" autofocus="true">
-              </div>
-              <p class="help" v-html="un_msg"></p>
-            </div>
             <div class="field">
               <label class="label">Password</label>
               <div class="control">
@@ -292,22 +288,22 @@
                 <td><b>Name</b></td>
                 <td> {{fullName}} </td>
               </tr>
-              <tr>
+              <!-- <tr>
                 <td><b>Date of Birth</b></td>
                 <td> {{form.dob}} </td>
-              </tr>
+              </tr> -->
               <tr>
                 <td><b>Sex</b></td>
                 <td> {{form.sex}} </td>
               </tr>
-              <tr>
+              <!-- <tr>
                 <td><b>Address</b></td>
                 <td> {{form.address}} </td>
               </tr>
               <tr>
                 <td><b>Contact number</b></td>
                 <td> {{form.cn}} </td>
-              </tr>
+              </tr> -->
               <tr>
                 <td><b>Email</b></td>
                 <td> {{form.email}} </td>
@@ -375,10 +371,8 @@
                 fn: '',
                 mn: '',
                 ln: '',
-                dob: '',
                 sex: '',
                 address: '',
-                cn: '',
                 email: '',
                 userName: '',
                 userPass: '',
@@ -441,7 +435,7 @@
                 if(this.current_step == 3){
                   x = true
                 }
-                if(this.form.userName != '' && this.form.userPass != '' && this.conPass != '' && this.disable_pw.length == 0){
+                if(this.form.userPass != '' && this.conPass != '' && this.disable_pw.length == 0){
                   x = false
                 }
                 return x
@@ -457,20 +451,6 @@
               }
             },
             methods: {
-              un_checker(){
-                const un = this.form.userName
-                if(un == ''){
-                  this.un_msg = "<span class='warn-msg'><b>You cannot use a blank username</b></span>"
-                  this.add_el(4)
-                }else if(!/^[A-Za-z]\w*$/.test(un)){
-                  this.un_msg = "<span class='warn-msg'><b>Please follow username requirements<b></span>"
-                  this.add_el(3)
-                }else{
-                  this.un_msg = ''
-                  this.remove_el(3)
-                  this.remove_el(4)
-                }
-              },
               newpass_checker(){
                 const np = this.form.userPass 
                 const cp = this.conPass
@@ -610,30 +590,30 @@
                     this.error.ln = '' 
                   }
                 }
-                if(!Date.parse(f.dob)){
-                  this.error.dob = 'Invalid date of birth'
-                  ok = false
-                }else{
-                  this.error.dob = ''
-                }
+                // if(!Date.parse(f.dob)){
+                //   this.error.dob = 'Invalid date of birth'
+                //   ok = false
+                // }else{
+                //   this.error.dob = ''
+                // }
                 if(!f.sex && f.role != 'Student'){
                   this.error.sex = msg 
                   ok = false
                 }else{
                   this.error.sex = '' 
                 }
-                if(!f.address){
-                  this.error.address = msg 
-                  ok = false
-                }else{
-                  this.error.address = '' 
-                }
-                if(!f.cn){
-                  this.error.cn = msg 
-                  ok = false
-                }else{
-                  this.error.cn = '' 
-                }
+                // if(!f.address){
+                //   this.error.address = msg 
+                //   ok = false
+                // }else{
+                //   this.error.address = '' 
+                // }
+                // if(!f.cn){
+                //   this.error.cn = msg 
+                //   ok = false
+                // }else{
+                //   this.error.cn = '' 
+                // }
                 if(!this.validEmail(f.email)){
                   this.error.email = 'Please enter valid email'
                   ok = false
@@ -668,14 +648,17 @@
                   const c = response.body
                   console.log(c)
                   this.loadingctn = false
-                  if(c == ''){
+                  if(c.output == 'success'){
                     ++this.current_step
-                  }else if(c == 1){
-                    this.un_msg = "<span class='has-text-danger'><b>Username already exist</b></span>"
-                  }else{
-                    alert('Oooops! something went wrong! Please try again or refresh the page')
-                  } 
+                    this.form.userName = c.un
+                  }
+                  if(this.form.role == 'Student'){
+                    this.form.sex = c.sex
+                  }
           
+                }, e => {
+                  console.log(e.body)
+
                 })
               },
               password_validation(pw){
@@ -761,18 +744,16 @@
 
 
 
+<br><br><br><br>
 
 
-
-  <footer class="footer bg-black">
-    <div class="container">
-      <div class="content has-text-centered">
-        <h6 class="title is-6 has-text-white">
-          Developed by <a href="#"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
-        </h6>
-      </div>
-    </div>
-  </footer>
+  <footer class="footer bg-white">
+        <div class="container">
+          <div class="content has-text-centered">
+              Developed by <a href="#" class="has-text-primary"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
+          </div>
+        </div>
+      </footer>
   <script src="<?php echo base_url(); ?>assets/js/navBurger.js"></script>
   <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
   <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

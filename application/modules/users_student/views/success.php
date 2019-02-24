@@ -7,6 +7,20 @@
 			<hr>
 			<table class="table is-fullwidth">
 				<tr>
+					<td colspan="2" style="color: darkgray">
+						<span class="icon">
+							<i class="fa fa-info-circle"></i>
+						</span>
+						<?php 
+							if($record->userName == ''){
+								echo "Login details not send";
+							}else{
+								echo "Login details successfully sent to ".$record->email;
+							}
+						?>
+					</td>
+				</tr>
+				<tr>
 					<td><b>Control No:</b> </td>
 					<td> <?php echo $record->controlNo ?> </td>
 				</tr>

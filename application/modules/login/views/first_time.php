@@ -1,109 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CICTE</title>
-    <script src="<?php echo base_url(); ?>assets/vendor/pace/pace.min.js"></script>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/pace/pace-theme-minimal.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/headroom/headroom.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/custom.css">
-    <script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
-    <style>
-      .no-hover{
-        pointer-events: none;
-      }
-      .has-image-centered {
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .login-btn{
-        width: 50%; font-size: 16px
-      }
-      .is-note{
-        color: #9c9fa6
-      }
-      .warn-msg{
-        color: #fbac00;
-        font-weight: bold;
-      }
-      .gray-msg{
-        color: #808eae;
-        font-weight: bold;
-      }
-      .fa-sm{
-        font-size: 8px;
-      }
-    </style>
-  </head>
-<body class="Site">
-  
-  <header class="header">
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
 
-    <nav class="animate-top navbar is-transparent is-fixed-top card">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
-          <img src="<?php echo base_url() ?>assets/img/cictelogo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
-        </a>
-        <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-      </div>
-
-    </nav>
-  </header>
-  <br>
-
-
-
-  <main class="Site-content">
-    <section class="section">
-      <div class="container" style="max-width: 500px">
-        <h3 class="title is-3 has-text-centered has-text-primary">Change Password</h3>
-        <div class="box" id="app" v-cloak>
-          <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Password must have atleast 8 characters </p>
-            <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Password must use atleast three of the four available character types: lowercase letters, uppercase letters, numbers, and symbols. </p>
-            <hr>  
-          <?php 
-            $js = '@submit="submitForm"';
-            echo form_open(base_url() . 'login/changePass', $js); 
-          ?>
-            <div class="field">
-                <label class="label">New Password</label>
-                <div class="control has-icons-right">
-                <input class="input is-rounded" type="password" name="np" required v-model="newPass" @keyup="newpass_checker()">
-                <span class="icon is-small is-right">
-                  <i class="fa fa-key"></i>
-                </span>
-              </div>
-              <p class="help" v-html="newPass_msg"></p>
-            </div>
-            <div class="field">
-                <label class="label">Retype Password</label>
-                <div class="control has-icons-right">
-                <input class="input is-rounded" type="password" name="retypepw" required v-model="conPass" @keyup="conpass_checker()">
-                <span class="icon is-small is-right">
-                  <i class="fa fa-key"></i>
-                </span>
-              </div>
-              <p class="help" v-html="conPass_msg"></p>
-            </div>
-            <br>
-            <div style="text-align: center">
-              <button type="submit" class="button is-primary is-outlined login-btn" :disabled="is_disabled">Submit</button> <br><br>
-            </div>
-            
-          <?php echo form_close(); ?>
-          
+<section class="section">
+  <div class="container" style="max-width: 500px">
+    <h3 class="title is-3 has-text-centered has-text-primary">Change Password</h3>
+    <div class="box" id="app" v-cloak>
+      <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Password must have atleast 8 characters </p>
+        <p class="help is-note"> <i class="fa fa-circle fa-sm"></i> Password must use atleast three of the four available character types: lowercase letters, uppercase letters, numbers, and symbols. </p>
+        <hr>  
+      <?php 
+        $js = '@submit="submitForm"';
+        echo form_open(base_url() . 'login/changePass', $js); 
+      ?>
+        <div class="field">
+            <label class="label">New Password</label>
+            <div class="control has-icons-right">
+            <input class="input is-rounded" type="password" name="np" required v-model="newPass" @keyup="newpass_checker()">
+            <span class="icon is-small is-right">
+              <i class="fa fa-key"></i>
+            </span>
+          </div>
+          <p class="help" v-html="newPass_msg"></p>
         </div>
-      </div>
-    </section>
-  </main>
-  
+        <div class="field">
+            <label class="label">Retype Password</label>
+            <div class="control has-icons-right">
+            <input class="input is-rounded" type="password" name="retypepw" required v-model="conPass" @keyup="conpass_checker()">
+            <span class="icon is-small is-right">
+              <i class="fa fa-key"></i>
+            </span>
+          </div>
+          <p class="help" v-html="conPass_msg"></p>
+        </div>
+        <br>
+        <div style="text-align: center">
+          <button type="submit" class="button is-primary is-outlined login-btn" :disabled="is_disabled">Submit</button> <br><br>
+        </div>
+        
+      <?php echo form_close(); ?>
+      
+    </div>
+  </div>
+  </section>
+
   <script>
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -265,18 +203,3 @@
   </script>
 
   <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>
-
-
-
-  <footer class="footer bg-white">
-        <div class="container">
-          <div class="content has-text-centered">
-              Developed by <a href="#" class="has-text-primary"><b>Team RAWR</b></a>. Copyright &copy; <?php echo date("Y"); ?> All Rights Reserved
-          </div>
-        </div>
-      </footer>
-  <script src="<?php echo base_url(); ?>assets/js/navBurger.js"></script>
-  <script src="<?php echo base_url(); ?>assets/vendor/headroom/headroom.min.js"></script>
-  <script src="<?php echo base_url(); ?>assets/vendor/headroom/headroom-config.js"></script>
-</body>
-</html>

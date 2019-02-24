@@ -13,11 +13,39 @@ class mdl_Student extends CI_Model{
 		}
 	}
 
+	private function is_gmail_exist($mail, $uID = NULL){
+		if($uID){
+			$is_exist = $this->db->select('1')->get_where('users', "email = '$mail' AND uID <> $uID", 1)->row();
+		}else{
+			$is_exist = $this->db->select('1')->get_where('users', "email = '$mail'", 1)->row();
+		}
+		
+		if($is_exist){
+			return true;
+		}
+		return false;
+	}
+
 	function create($termID){
 		//print_r($_POST); die();
 		$this->db->trans_start();
 		$this->get_form_data($data);
 		$data['roleID'] = 4;
+
+		if($data['email']){
+			if($this->is_gmail_exist($data['email'])){
+				die('error');
+			}
+			$data['status'] = 'active';
+		}
+
+		$data['userPass'] = $this->rand_pw();
+		$data['userName'] = explode("@", $data['email'])[0];
+		$body = '';
+		$body .= "Username: ".$data['userName'];
+		$body .= "\n";
+		$body .= "Password: ".$data['userPass'];
+		
 		$this->db->insert('users', $data);
 		$data2['uID'] = $this->db->insert_id();
 		$data2['controlNo'] = $this->input->post('controlNo');
@@ -26,15 +54,10 @@ class mdl_Student extends CI_Model{
 		$data3['studID'] = $this->db->insert_id();
 		$data3['prosID'] = $this->input->post('pros')['prosID'];
 		$this->db->insert('studprospectus', $data3);
-		// $this->db->insert('studrec_per_term', 
-		// 	[
-		// 		'studID'=>$data3['studID'], 
-		// 		'yearID'=>$data2['yearID'], 
-		// 		'termID'=>$termID,
-		// 		'prosID'=>$data3['prosID']
-		// 	]
-		// );
 
+		if($data['email']){
+			$this->send_mail($body, $data['email']);	
+		}
 
 		$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'student' LIMIT 1");
 		$row =  $query->row();
@@ -52,7 +75,7 @@ class mdl_Student extends CI_Model{
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT s.studID,u.uID,y.yearDesc,s.has_user,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,u.status,c.courseCode
+				SELECT s.studID,u.uID,u.userName,y.yearDesc,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,u.status,c.courseCode
 				FROM student s 
 				INNER JOIN year y ON s.yearID = y.yearID 
 				INNER JOIN studprospectus sp ON s.studID = sp.studID 
@@ -64,7 +87,7 @@ class mdl_Student extends CI_Model{
 			$num_records = $this->count_all();
 		}else{
 			$query = $this->db->query("
-				SELECT s.studID,s.has_user,u.uID,y.yearDesc,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',u.mn) name,u.status,c.courseCode
+				SELECT s.studID,u.uID,u.userName,y.yearDesc,s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,u.status,c.courseCode
 				FROM student s 
 				INNER JOIN year y ON s.yearID = y.yearID 
 				INNER JOIN studprospectus sp ON s.studID = sp.studID 
@@ -87,7 +110,7 @@ class mdl_Student extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT s.studID,s.has_user,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,u.dob,u.sex,u.address,u.cn,u.email
+			SELECT s.studID,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,u.dob,u.sex,u.address,u.cn,u.email,u.userName
 			FROM student s 
 			INNER JOIN year y ON s.yearID = y.yearID 
 			INNER JOIN studprospectus sp ON s.studID = sp.studID 
@@ -102,13 +125,7 @@ class mdl_Student extends CI_Model{
 	function update($termID){
 		$id = $this->input->post('id');
 		$prosID = $this->input->post('pros')['prosID'];
-		// $query = $this->db->query("
-		// 	SELECT (SELECT 1 FROM studgrade WHERE studID = $id LIMIT 1) x, (SELECT prosID FROM studprospectus WHERE studID = $id LIMIT 1) w
-		// ")->row();
-
-		// if($query->x && $prosID != $query->w){
-		// 	die('error');
-		// }
+		$uID = $this->db->query("SELECT uID FROM student WHERE studID = $id LIMIT 1")->row()->uID;
 
 		$data2['yearID'] = $this->input->post('year')['yearID'];
 		$data2['controlNo'] = $this->input->post('controlNo');
@@ -117,18 +134,22 @@ class mdl_Student extends CI_Model{
 		$this->get_form_data($data, 'update');
 
 		$this->db->trans_start();
+
+		if($data['email']){
+			if($this->is_gmail_exist($data['email'], $uID)){
+				die('error');
+			}
+		}
+
 		$this->db->update('studprospectus', $data3, "studID = $id");
 		$this->db->update('student', $data2, "studID = $id");
-		$uID = $this->db->query("SELECT uID FROM student WHERE studID = $id LIMIT 1")->row()->uID;
+		
 		$this->db->update('users', $data, "uID = $uID");
 
 		$is_exist_in_studrec_per_term = $this->db->select("id")->get_where('studrec_per_term', "termID = $termID AND studID = $id", 1)->row();
 		if($is_exist_in_studrec_per_term){
 			$this->db->update('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID']],"id = ".$is_exist_in_studrec_per_term->id);
 		}
-		// else{
-		// 	$this->db->insert('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID'], 'studID'=>$id, 'termID'=>$termID]);
-		// }
 
 		$this->db->trans_complete();
 		echo "success";
@@ -192,13 +213,6 @@ class mdl_Student extends CI_Model{
 		$data['address'] = $this->input->post('address');
 		$data['cn'] = $this->input->post('cn');
 		$data['email'] = $this->input->post('email');
-		
-		// if($action != NULL){
-		// 	$data['dob'] = $this->input->post('dob');
-		// 	$data['address'] = $this->input->post('address');
-		// 	$data['cn'] = $this->input->post('cn');
-		// 	$data['email'] = $this->input->post('email');
-		// }
 
 	}
 
@@ -353,86 +367,52 @@ class mdl_Student extends CI_Model{
 		return substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"), 0, 8);
 	}
 
-	function sendPass(){
-		//print_r($_POST);
+	function sendLogin(){
+		//turn on less secure apps in https://myaccount.google.com/security
 		$id = $this->input->post("id");
-		$headers = '';
-		$mail = $this->db->query("SELECT email FROM users WHERE uID = (SELECT studID FROM student WHERE studID = $id LIMIT 1) LIMIT 1")->row()->email;
-		//echo $mail;
+		$body = '';
+		$studData = $this->db->query("SELECT email, uID FROM users WHERE uID = (SELECT uID FROM student WHERE studID = $id LIMIT 1) LIMIT 1")->row();
+		$new_pw = $this->rand_pw();
+		$new_un = explode("@", $studData->email)[0];
 
-		$msg = "Password: ".$this->rand_pw();
-		
-		//Create a new PHPMailer instance
-		$mail = new PHPMailer\PHPMailer\PHPMailer(TRUE);
-		try {
-		   /* Set the mail sender. */
-		   	$mail->isSMTP();
-			$mail->Host = "smtp.example.com";
-			$mail->SMTPAuth = true;
-$mail->Username = 'smtp_username';
-$mail->Password = 'smtp_password';
-		   	$mail->setFrom('nightfury102497@gmail.com', 'Night Fury');
+		$body .= "Password: ".$new_pw;
+		$body .= "\n";
+		$body .= "Username: ".$new_un;
 
-		   /* Add a recipient. */
-		   $mail->addAddress('wjay.inclino@gmail.com', 'William Jay Inclino');
-
-		   /* Set the subject. */
-		   $mail->Subject = 'Force';
-
-		   /* Set the mail message body. */
-		   $mail->Body = 'There is a great disturbance in the Force.';
-
-		   /* Finally send the mail. */
-		   $mail->send();
-		   echo "send";
+		if($this->send_mail($body, $studData->email)){
+			$this->db->update('users', ['userName'=>$new_un, 'userPass'=>$new_pw, 'status'=>'active'], "uID = ".$studData->uID);
+			echo "success";
+		}else{
+			echo "error";
 		}
-		catch (Exception $e)
-		{
-		   /* PHPMailer exception. */
-		  echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
-		}
-
-
-
 	}
 
-	private function send_mail($data){
-		$name = $data['fn'].' '.$data['mn'].' '.$data['ln'];
+	private function send_mail($body, $mail_to){
+		$subj = 'WLC CICTE login details';
+		$mail_from = ['gmail'=>'cictewlc@gmail.com', 'name'=>'CICTE WLC'];
+		$mail_un = 'nightfury102497@gmail.com';
+		$mail_pw = 'Jesusismysavior102497';
 
-		$to = $data['email'];
-		$subject = "Email";
+		$mail = new PHPMailer\PHPMailer\PHPMailer(TRUE);
+		$mail->isSMTP();
+		$mail->Host = "smtp.gmail.com";
+		$mail->SMTPAuth = true;
+		$mail->Username = $mail_un;
+		$mail->Password = $mail_pw;
+		$mail->SMTPSecure = "ssl";
+		$mail->Port = 465;
+		$mail->Subject = $subj;
+		$mail->Body = $body;
 
-		$message = "
-		<html>
-		<head>
-		<title>CICTE</title>
-		</head>
-		<body>
-		<h1>WELCOME TO CICTE FAMILY ".$name."!</h1>
-		<p>Here is your login information.</p>
-		<table>
-		<tr>
-		<td><b>Username:</b> </td>
-		<td>".$data['userName']."</td>
-		</tr>
-		<tr>
-		<td><b>Password: </b></td>
-		<td>".$data['userPass']."</td>
-		</tr>
-		</table>
-		</body>
-		</html>
-		";
-
-		// Always set content-type when sending HTML email
-		$headers = "MIME-Version: 1.0";
-		$headers .= "Content-type:text/html;charset=UTF-8";
-
-		// More headers
-		$headers .= 'From: <webmaster@example.com>' . "\r\n";
-		$headers .= 'Cc: myboss@example.com' . "\r\n";
-
-		mail($to,$subject,$message,$headers);
+	   	$mail->setFrom($mail_from['gmail'], $mail_from['name']);
+	   	$mail->addAddress($mail_to);
+	   	
+	   	try{
+	   		$mail->send();
+	   		return true;
+	   	}catch(Exception $e){
+	   		return false;
+	   	}
 	}
 
 }

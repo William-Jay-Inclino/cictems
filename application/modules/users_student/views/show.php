@@ -72,10 +72,7 @@
 					<td> {{email}} </td>
 				</tr>
 			</table>
-			<?php if($record->has_user == 'yes'){ ?>
-				<a @click="sendPass" href="javascript:void(0)">Send new password</a>
-				<?php
-			} ?>
+			<a @click="sendLogin" href="javascript:void(0)">Send Login Details</a>
 		</div>
 	</div>
 </section>
@@ -110,19 +107,40 @@
 		    	},
 		    },
 		    methods: {
-		    	sendPass(){
-		    		swal('Info', "New password will be send to "+this.email, 'info')
-		    		.then(send => {
-		    			if(send){
-		    				this.$http.post('<?php echo base_url() ?>users_student/sendPass', {id: this.id})
-				        	.then(res => {
-				        		console.log(res.body)	
-							 }, e => {
-							 	console.log(e.body)
+		    	sendLogin(){
+		    		if(this.email){
+		    			swal('Info', "Login details will be send to "+this.email, 'info')
+		    			swal({
+						  title: "Info",
+						  text: "Login details will be send to "+this.email,
+						  icon: "info",
+						  buttons: {
+						  	confirm: {
+						  		closeModal: false
+						  	}
+						  },
+						  closeOnClickOutside: false
+						})
+			    		.then(send => {
+			    			if(send){
+			    				this.$http.post('<?php echo base_url() ?>users_student/sendLogin', {id: this.id})
+					        	.then(res => {
+					        		console.log(res.body)
+					        		if(res.body == 'error'){
+					        			swal('Mail not send!', "Please check your internet connection and try again", 'warning')
+					        		}else if(res.body == 'success'){
+					        			swal('Success!', "Login details successfully send to "+this.email+"!", 'success')
+					        		}	
+								 }, e => {
+								 	console.log(e.body)
 
-							 })
-		    			}
-		    		})
+								 })
+			    			}
+			    		})	
+		    		}else{
+		    			swal('Warning', "Student has no email", 'warning');
+		    		}
+		    		
 		    	},
 		    	is_safe_delete(){
 		    		const id = this.id

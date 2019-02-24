@@ -118,16 +118,16 @@
 					</p>
 				</div>
 				<div class="field">
-				  	<label class="label">Email</label>
+				  	<label class="label">Gmail</label>
 				  	<div class="control">
-					  	<input class="input" type="email" v-model.trim="form.email" placeholder="ex. nightfury@gmail.com">
+					  	<input class="input" type="email" v-model.trim="form.email" pattern="(\W|^)[\w.+\-]*@gmail\.com(\W|$)">
 				  	</div>
-				  	<p class="help has-text-danger">
-						{{error.email}}
+				  	<p class="help">
+						<i>format: wjay.inclino@gmail.com</i>
 					</p>
 				</div>
 				<br>
-				<button type="submit" class="button is-link is-pulled-right">Submit</button>
+				<button type="submit" :class="{'button is-link is-pulled-right': true, 'is-loading': isLoading}">Submit</button>
 			</form>
 			
 			<br><br>
@@ -154,7 +154,7 @@
 		    		current_url: '<?php echo base_url() ?>users/student/form',
 		    		success: '<?php echo base_url() ?>users/student/form-success/'
 		    	},
-
+		    	isLoading: false,
 		    	form: {
 		    		controlNo: '',
 		    		fn: '',
@@ -230,19 +230,24 @@
 		    		})
 		    	},
 		        submitForm() {
+		        	this.isLoading = true
 		        	const f = this.form
 		        	if(this.checkForm(f)){
 		        		this.$http.post('<?php echo base_url() ?>users_student/create',f)
 			        	.then(response => {
+			        		this.isLoading = false
 			        		const c = response.body
-			        		if(c.output == 'success'){
-			        			window.location.href = this.page.success + c.studID
+			        		if(c == 'error'){
+			        			swal('Error', "Gmail already exist!", 'error')
 			        		}else{
-			        			alert('Error: '+ c)
-			        			window.location.href = this.page.current_url
+			        			window.location.href = this.page.success + c.studID
 			        		}
+						 }, e => {
+						 	console.log(e.body);
+
 						 })
 		        	}else{
+		        		this.isLoading = false
 		        		swal('Unable to submit. Please review the form', {
 					      icon: 'warning',
 					    });

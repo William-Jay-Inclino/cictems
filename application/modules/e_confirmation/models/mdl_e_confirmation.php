@@ -72,7 +72,7 @@ class mdl_E_Confirmation extends CI_Model{
 	}
 
 	function get_classes($studID, $termID){
-		return $this->db->select("c.classCode,s.total_units units,s.subDesc,s.id,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time")
+		return $this->db->select("c.classCode,s.type,s.total_units units,s.subDesc,d.dayDesc day,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),'-',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time")
 			->join('class c','sc.classID = c.classID')
 			->join('subject s','c.subID = s.subID')
 			->join('day d','c.dayID = d.dayID')
