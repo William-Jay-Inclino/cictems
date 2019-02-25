@@ -7,18 +7,19 @@
 			<hr>
 			<table class="table is-fullwidth">
 				<tr>
-					<td><b>Username:</b></td>
-					<td><?php echo $record->userName ?></td>
+					<td colspan="2" style="color: darkgray">
+						<span class="icon">
+							<i class="fa fa-info-circle"></i>
+						</span>
+						<?php 
+							if($record->userName == ''){
+								echo "Login details not sent";
+							}else{
+								echo "Login details successfully sent to ".$record->email;
+							}
+						?>
+					</td>
 				</tr>
-				<?php 
-					if($record->is_new == 'yes'){ ?>
-						<tr>
-							<td><b>Code:</b></td>
-							<td> <?php echo $record->userPass ?> </td>
-						</tr>
-						<?php
-					}
-				?>
 				<tr>
 					<td><b>Firstname:</b> </td>
 					<td> <?php echo $record->fn ?> </td>

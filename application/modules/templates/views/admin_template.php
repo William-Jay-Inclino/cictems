@@ -119,10 +119,10 @@
                    <a class="navbar-item <?php if($current_module == 16){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>users/staff">
                      Staff
                    </a>
-                   <hr class="navbar-divider">
+                   <!-- <hr class="navbar-divider">
                    <a class="navbar-item <?php if($current_module == 16.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>users/registration">
                      Registration
-                   </a>
+                   </a> -->
                  </div>
                </div>
                <div class="navbar-item has-dropdown is-hoverable">

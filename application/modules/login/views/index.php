@@ -19,7 +19,7 @@
         <div class="field">
             <label class="label">Username</label>
             <div class="control has-icons-right">
-              <input class="input is-rounded" type="text" name="un" required autofocus>
+              <input class="input is-rounded" type="text" name="un" autofocus required>
               <span class="icon is-small is-right">
                 <i class="fa fa-user"></i>
               </span>
@@ -34,6 +34,7 @@
               <i class="fa fa-key"></i>
             </span>
           </div>
+          <?php echo form_error('pw'); ?>
         </div>
         <br>
         <div style="text-align: center">

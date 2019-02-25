@@ -37,15 +37,14 @@ class mdl_Student extends CI_Model{
 				die('error');
 			}
 			$data['status'] = 'active';
+			$data['userPass'] = $this->rand_pw();
+			$data['userName'] = explode("@", $data['email'])[0];
+			$body = '';
+			$body .= "Username: ".$data['userName'];
+			$body .= "\n";
+			$body .= "Password: ".$data['userPass'];
+			$this->send_mail($body, $data['email']);
 		}
-
-		$data['userPass'] = $this->rand_pw();
-		$data['userName'] = explode("@", $data['email'])[0];
-		$body = '';
-		$body .= "Username: ".$data['userName'];
-		$body .= "\n";
-		$body .= "Password: ".$data['userPass'];
-		
 		$this->db->insert('users', $data);
 		$data2['uID'] = $this->db->insert_id();
 		$data2['controlNo'] = $this->input->post('controlNo');
@@ -54,10 +53,6 @@ class mdl_Student extends CI_Model{
 		$data3['studID'] = $this->db->insert_id();
 		$data3['prosID'] = $this->input->post('pros')['prosID'];
 		$this->db->insert('studprospectus', $data3);
-
-		if($data['email']){
-			$this->send_mail($body, $data['email']);	
-		}
 
 		$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'student' LIMIT 1");
 		$row =  $query->row();
@@ -375,9 +370,10 @@ class mdl_Student extends CI_Model{
 		$new_pw = $this->rand_pw();
 		$new_un = explode("@", $studData->email)[0];
 
-		$body .= "Password: ".$new_pw;
-		$body .= "\n";
 		$body .= "Username: ".$new_un;
+		$body .= "\n";
+		$body .= "Password: ".$new_pw;
+		
 
 		if($this->send_mail($body, $studData->email)){
 			$this->db->update('users', ['userName'=>$new_un, 'userPass'=>$new_pw, 'status'=>'active'], "uID = ".$studData->uID);

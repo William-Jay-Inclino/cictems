@@ -16,80 +16,85 @@
 		<div class="box">
 			<h5 class="title is-4 has-text-primary" style="text-align: center">{{ page.title }}</h5>
 			<hr>
-			<div class="field">
-			  <label class="label">Name</label>
-			  <div class="columns">
-			  	<div class="column">
-			  		<div class="control">
-					  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" placeholder="Firstname">
+			<form @submit.prevent="submitForm">
+				<div class="field">
+				  <label class="label">Name</label>
+				  <div class="columns">
+				  	<div class="column">
+				  		<div class="control">
+						  	<input class="input" type="text" v-model.trim="form.fn" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Firstname" required>
+					  	</div>
+					  	<p class="help has-text-danger">
+							{{error.fn}}
+						</p>
 				  	</div>
+				  	<div class="column">
+				  		<div class="control">
+						  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Middlename">
+					  	</div>
+				  	</div>
+				  	<div class="column">
+				  		<div class="control">
+						  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" placeholder="Lastname" required>
+					  	</div>
+					  	<p class="help has-text-danger">
+							{{error.ln}}
+						</p>
+				  	</div>
+				  </div>
+				</div>
+				<div class="field">
+				  <label class="label">Date of Birth</label>
+				  <div class="control">
+					  	<input class="input" type="date" v-model="form.dob" required>
+				  </div>
 				  	<p class="help has-text-danger">
-						{{error.fn}}
+						{{error.dob}}
 					</p>
-			  	</div>
-			  	<div class="column">
-			  		<div class="control">
-					  	<input class="input" type="text" v-model.trim="form.mn" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" placeholder="Middlename">
-				  	</div>
-			  	</div>
-			  	<div class="column">
-			  		<div class="control">
-					  	<input class="input" type="text" v-model.trim="form.ln" pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" placeholder="Lastname">
-				  	</div>
+				</div>
+				<div class="field">
+				  <label class="label">Sex</label>
+				  <div class="control">
+					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex" required></multiselect>
+				  </div>
 				  	<p class="help has-text-danger">
-						{{error.ln}}
+						{{error.sex}}
 					</p>
-			  	</div>
-			  </div>
-			</div>
-			<div class="field">
-			  <label class="label">Date of Birth</label>
-			  <div class="control">
-				  	<input class="input" type="date" v-model="form.dob">
-			  </div>
-			  	<p class="help has-text-danger">
-					{{error.dob}}
-				</p>
-			</div>
-			<div class="field">
-			  <label class="label">Sex</label>
-			  <div class="control">
-				  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex"></multiselect>
-			  </div>
-			  	<p class="help has-text-danger">
-					{{error.sex}}
-				</p>
-			</div>
-			<div class="field">
-			  <label class="label">Address</label>
-			  <div class="control">
-				  	<textarea class="textarea" v-model.trim="form.address" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*"></textarea>
-			  </div>
-			  	<p class="help has-text-danger">
-					{{error.address}}
-				</p>
-			</div>
-			<div class="field">
-			  <label class="label">Contact number</label>
-			  <div class="control">
-				  	<input type="text" class="input" v-model.trim="form.cn" onpaste="return false;" onKeyPress="if(this.value.length==11 && event.keyCode>47 && event.keyCode < 58)return false;">
-			  </div>
-			  	<p class="help has-text-danger">
-					{{error.cn}}
-				</p>
-			</div>
-			<div class="field">
-			  	<label class="label">Email</label>
-			  	<div class="control">
-				  	<input class="input" type="email" v-model.trim="form.email" placeholder="ex. nightfury@gmail.com">
-			  	</div>
-			  	<p class="help has-text-danger">
-					{{error.email}}
-				</p>
-			</div>
-			<br>
-			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
-			<br><br>
+				</div>
+				<div class="field">
+				  <label class="label">Address</label>
+				  <div class="control">
+					  	<textarea class="textarea" v-model.trim="form.address" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*"></textarea>
+				  </div>
+				  	<p class="help has-text-danger">
+						{{error.address}}
+					</p>
+				</div>
+				<label class="label">Contact number</label>
+				<div class="field has-addons">
+				  <div class="control">
+				  	<input type="text" disabled class="input" readonly value="+63" style="width: 50px;">
+				  </div>
+				  <div class="control" style="width: 100%">
+					  	<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" maxlength="10">
+				  </div>
+				  	<p class="help has-text-danger">
+						{{error.cn}}
+					</p>
+				</div>
+				<div class="field">
+				  	<label class="label">Gmail</label>
+				  	<div class="control">
+					  	<input class="input" type="email" v-model.trim="form.email" pattern="(\W|^)[\w.+\-]*@gmail\.com(\W|$)">
+				  	</div>
+				  	<p class="help">
+						<i>format: williamjay.inclino@gmail.com</i>
+					</p>
+				</div>
+				<br>
+				<button type="submit" class="button is-link is-pulled-right">Submit</button>
+				<br><br>
+			</form>
 		</div>
 	</div>
 </section>
@@ -139,8 +144,8 @@
 			        	.then(response => {
 			        		const c = response.body
 			        		console.log(c)
-			        		if(c == 'exist'){
-			        			swal('Username already exist!', {
+			        		if(c == 'error'){
+			        			swal('Gmail already exist!', {
 							      icon: 'error',
 							    });
 			        		}else{
@@ -189,26 +194,6 @@
 		        	}
 
 		        	return ok
-		        },
-
-		        showOpt(val){
-		        	this.options = true
-		        	if(val == 'yes'){
-		        		this.form.un = ''
-		        		this.form.pw = ''
-		        		this.show_email = true
-		        		this.optClass = {'button is-primary is-outlined': true}
-		        		this.optClass2 = {'button is-primary': true}
-		        	}else{
-		        		this.form.email = ''
-		        		this.show_email = false
-		        		this.optClass = {'button is-primary': true}
-		        		this.optClass2 = {'button is-primary is-outlined': true}
-		        	}
-		        },
-		        validEmail(email){
-		        	var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      				return re.test(email);
 		        }
 		   },
 

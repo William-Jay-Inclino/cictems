@@ -30,19 +30,6 @@
 					<td><b>Role: </b></td>
 					<td>Faculty</td>
 				</tr>
-				<?php 
-					if($record['facInfo']->is_new == 'yes'){ ?>
-						<tr>
-							<td><b>Code:</b></td>
-							<td> <?php echo $record['facInfo']->userPass ?> </td>
-						</tr>
-						<?php
-					}
-				?>
-				<tr>
-					<td><b>Username:</b></td>
-					<td><?php echo $record['facInfo']->userName ?></td>
-				</tr>
 				<tr>
 					<td><b>Firstname:</b> </td>
 					<td> {{fn}} </td>
@@ -72,7 +59,7 @@
 					<td> {{cn}} </td>
 				</tr>
 				<tr>
-					<td><b>Email:</b> </td>
+					<td><b>Gmail:</b> </td>
 					<td> {{mail}} </td>
 				</tr>
 				<tr>
@@ -111,6 +98,7 @@
 					<td> <?php echo $record['facInfo']->status ?> </td>
 				</tr>
 			</table>
+			<a @click="sendLogin" href="javascript:void(0)">Send Login Details</a>
 		</div>
 	</div>
 </section>
@@ -143,6 +131,41 @@
 		    	},
 		    },
 		    methods: {
+		    	sendLogin(){
+		    		if(this.mail){
+		    			swal('Info', "Login details will be send to "+this.mail, 'info')
+		    			swal({
+						  title: "Info",
+						  text: "Login details will be send to "+this.mail,
+						  icon: "info",
+						  buttons: {
+						  	confirm: {
+						  		closeModal: false
+						  	}
+						  },
+						  closeOnClickOutside: false
+						})
+			    		.then(send => {
+			    			if(send){
+			    				this.$http.post('<?php echo base_url() ?>users_faculty/sendLogin', {id: this.id})
+					        	.then(res => {
+					        		console.log(res.body)
+					        		if(res.body == 'error'){
+					        			swal('Mail not send!', "Please check your internet connection and try again", 'warning')
+					        		}else if(res.body == 'success'){
+					        			swal('Success!', "Login details successfully send to "+this.mail+"!", 'success')
+					        		}	
+								 }, e => {
+								 	console.log(e.body)
+
+								 })
+			    			}
+			    		})	
+		    		}else{
+		    			swal('Warning', "Faculty has no gmail", 'warning');
+		    		}
+		    		
+		    	},
 		    	is_safe_delete(){
 		    		const id = this.id
 
@@ -188,7 +211,12 @@
 					 	console.log(e.body)
 					 })
 		    	}
-		    }
+		    },
+
+		   http: {
+            emulateJSON: true,
+            emulateHTTP: true
+    		}
 
 
 		});

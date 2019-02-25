@@ -13,7 +13,7 @@
 						</span>
 						<?php 
 							if($record->userName == ''){
-								echo "Login details not send";
+								echo "Login details not sent";
 							}else{
 								echo "Login details successfully sent to ".$record->email;
 							}

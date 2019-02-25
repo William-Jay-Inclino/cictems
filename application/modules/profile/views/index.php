@@ -164,7 +164,7 @@
 						</td>
 					</tr>
 					<tr :class="{'active-input': editEmail}">
-						<td><b>Email</b></td>
+						<td><b>Gmail</b></td>
 						<td>
 							<span v-if="editEmail">
 								<input type="email" v-model="form.email" class="input" autofocus="true" @keyup.enter="save('email')">

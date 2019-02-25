@@ -30,19 +30,6 @@
 					<td><b>Role: </b></td>
 					<td>Staff</td>
 				</tr>
-				<?php 
-					if($record->is_new == 'yes'){ ?>
-						<tr>
-							<td><b>Code:</b></td>
-							<td> <?php echo $record->userPass ?> </td>
-						</tr>
-						<?php
-					}
-				?>
-				<tr>
-					<td><b>Username:</b></td>
-					<td><?php echo $record->userName ?></td>
-				</tr>
 				<tr>
 					<td><b>Firstname:</b> </td>
 					<td> {{fn}} </td>
@@ -76,6 +63,7 @@
 					<td> {{mail}} </td>
 				</tr>
 			</table>
+			<a @click="sendLogin" href="javascript:void(0)">Send Login Details</a>
 		</div>
 	</div>
 </section>
@@ -106,6 +94,41 @@
 		    	},
 		    },
 		    methods: {
+		    	sendLogin(){
+		    		if(this.mail){
+		    			swal('Info', "Login details will be send to "+this.mail, 'info')
+		    			swal({
+						  title: "Info",
+						  text: "Login details will be send to "+this.mail,
+						  icon: "info",
+						  buttons: {
+						  	confirm: {
+						  		closeModal: false
+						  	}
+						  },
+						  closeOnClickOutside: false
+						})
+			    		.then(send => {
+			    			if(send){
+			    				this.$http.post('<?php echo base_url() ?>users_staff/sendLogin', {id: this.id})
+					        	.then(res => {
+					        		console.log(res.body)
+					        		if(res.body == 'error'){
+					        			swal('Mail not send!', "Please check your internet connection and try again", 'warning')
+					        		}else if(res.body == 'success'){
+					        			swal('Success!', "Login details successfully send to "+this.mail+"!", 'success')
+					        		}	
+								 }, e => {
+								 	console.log(e.body)
+
+								 })
+			    			}
+			    		})	
+		    		}else{
+		    			swal('Warning', "Staff has no gmail", 'warning');
+		    		}
+		    		
+		    	},
 		    	is_safe_delete(){
 		    		swal({
 					  title: "Are you sure?",
@@ -137,7 +160,12 @@
 						})
 					 });
 		    	}
-		    }
+		    },
+
+		   http: {
+            emulateJSON: true,
+            emulateHTTP: true
+    		}
 
 
 		});

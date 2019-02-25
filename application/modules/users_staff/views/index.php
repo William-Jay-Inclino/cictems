@@ -71,7 +71,7 @@
 					<tr v-for="record, i in records">
 						<td>{{record.name}}</td>
 						<td>
-							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.status == 'active'" @change="changeStatus(i)" :disabled="record.is_new == 'yes'">
+							<input :id="i" type="checkbox" name="switchNormal" class="switch is-rounded" :checked="record.status == 'active'" @change="changeStatus(i)" :disabled="record.userName == ''">
 						 	<label :for="i"></label>
 						</td>
 						<td>

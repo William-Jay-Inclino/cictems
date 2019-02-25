@@ -75,6 +75,10 @@ class Users_Staff extends MY_Controller{
 		$this->mdl_staff->changeStatus();		
 	}
 	
+	function sendLogin(){
+		$this->mdl_staff->sendLogin();	
+		
+	}
 	// function is_safe_delete($id){
 	// 	$this->mdl_staff->is_safe_delete($id[0]);
 	// }

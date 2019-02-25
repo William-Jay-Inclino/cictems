@@ -69,22 +69,25 @@
 					{{error.address}}
 				</p>
 			</div>
-			<div class="field">
-			  <label class="label">Contact number</label>
+			<label class="label">Contact number</label>
+			<div class="field has-addons">
 			  <div class="control">
-				  	<input type="text" class="input" v-model.trim="form.cn" onpaste="return false;" onKeyPress="if(this.value.length==11 && event.keyCode>47 && event.keyCode < 58)return false;">
+			  	<input type="text" disabled class="input" readonly value="+63" style="width: 50px;">
+			  </div>
+			  <div class="control" style="width: 100%">
+				  	<input type="text" class="input" v-model.trim="form.cn" pattern="^[1-9][0-9]*$" maxlength="10">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.cn}}
 				</p>
 			</div>
 			<div class="field">
-			  	<label class="label">Email</label>
+			  	<label class="label">Gmail</label>
 			  	<div class="control">
-				  	<input class="input" type="email" v-model.trim="form.email" placeholder="ex. nightfury@gmail.com">
+				  	<input class="input" type="email" v-model.trim="form.email" pattern="(\W|^)[\w.+\-]*@gmail\.com(\W|$)">
 			  	</div>
-			  	<p class="help has-text-danger">
-					{{error.email}}
+			  	<p class="help">
+					<i>format: williamjay.inclino@gmail.com</i>
 				</p>
 			</div>
 			<div class="field">
@@ -178,21 +181,22 @@
 			        	.then(response => {
 			        		const c = response.body
 			        		console.log(c)
-			        		if(c == 'exist'){
-			        			swal('Username already exist!', {
+			        		if(c == 'error'){
+			        			swal('Error', 'Gmail already exist!', {
 							      icon: 'error',
 							    });
-			        		}else{
-			        			swal('Faculty successfully updated', {
-								    icon: 'success',
-								}).then((x) => {
-									if (x) {
-										window.location.href = this.page.show
-									}
+			        		}else if(c == 'success'){
+			        			swal('Faculty successfull updated', {
+							      icon: 'success',
+							    }).then((x) => {
+								  if (x) {
+								    window.location.href = this.page.show
+								  }
 								})
 			        		}
 						 }, e => {
 						 	console.log(e.body)
+
 						 })
 		        	}else{
 		        		swal('Unable to submit. Please review the form', {

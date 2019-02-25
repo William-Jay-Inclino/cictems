@@ -13,20 +13,33 @@ class mdl_Staff extends CI_Model{
 		}
 	}
 
-	function un_generator($un){
-		$i = 1;
-		while(true){
-			$query = $this->db->query("
-				SELECT 1 FROM users WHERE userName = '$un' LIMIT 1
-			")->row();
-			if($query){
-				$un = $un.$i;
-			}else{
-				break;
-			}
-			++$i;
+	// function un_generator($un){
+	// 	$i = 1;
+	// 	while(true){
+	// 		$query = $this->db->query("
+	// 			SELECT 1 FROM users WHERE userName = '$un' LIMIT 1
+	// 		")->row();
+	// 		if($query){
+	// 			$un = $un.$i;
+	// 		}else{
+	// 			break;
+	// 		}
+	// 		++$i;
+	// 	}
+	// 	return $un;
+	// }
+
+	private function is_gmail_exist($mail, $uID = NULL){
+		if($uID){
+			$is_exist = $this->db->select('1')->get_where('users', "email = '$mail' AND uID <> $uID", 1)->row();
+		}else{
+			$is_exist = $this->db->select('1')->get_where('users', "email = '$mail'", 1)->row();
 		}
-		return $un;
+		
+		if($is_exist){
+			return true;
+		}
+		return false;
 	}
 
 	function create(){
@@ -34,11 +47,22 @@ class mdl_Staff extends CI_Model{
 		
 		$this->db->trans_start();
 
-		$data['userPass'] = substr(str_shuffle("0123456789"), 0, 6);
-		$data['userName'] = $this->un_generator($data['ln']);
-		$data['roleID'] = 3;
 		$this->get_form_data($data);
-	
+		
+		if($data['email']){
+			if($this->is_gmail_exist($data['email'])){
+				die('error');
+			}
+			$data['status'] = 'active';
+			$data['userPass'] = $this->rand_pw();
+			$data['userName'] = explode("@", $data['email'])[0];
+			$body = '';
+			$body .= "Username: ".$data['userName'];
+			$body .= "\n";
+			$body .= "Password: ".$data['userPass'];
+			$this->send_mail($body, $data['email']);
+		}
+
 		$this->db->insert('users', $data);
 
 		$data2['uID'] = $this->db->insert_id();
@@ -67,7 +91,7 @@ class mdl_Staff extends CI_Model{
 		$search_val = strtr($search_val, '_', ' ');
 		if(trim($search_val) == ''){
 			$query = $this->db->query("
-				SELECT s.staffID,u.uID,u.is_new,u.status,CONCAT(u.ln,', ',u.fn,' ',u.mn) name
+				SELECT s.staffID,u.uID,u.userName,u.status,CONCAT(u.ln,', ',u.fn,' ',u.mn) name
 				FROM staff s
 				INNER JOIN users u ON s.uID = u.uID
 				LIMIT $start, $per_page
@@ -75,7 +99,7 @@ class mdl_Staff extends CI_Model{
 			$num_records = $this->count_all();
 		}else{
 			$query = $this->db->query("
-				SELECT s.staffID,u.uID,u.is_new,u.status,CONCAT(u.ln,', ',u.fn,' ',u.mn) name
+				SELECT s.staffID,u.uID,u.userName,u.status,CONCAT(u.ln,', ',u.fn,' ',u.mn) name
 				FROM staff s
 				INNER JOIN users u ON s.uID = u.uID
 				WHERE $option LIKE '%".$search_val."%' 
@@ -95,7 +119,7 @@ class mdl_Staff extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT s.staffID,u.userName,u.fn,u.userPass,u.is_new,u.mn,u.ln,u.dob,u.sex,u.cn,u.email,u.address
+			SELECT s.staffID,u.userName,u.fn,u.userPass,u.mn,u.ln,u.dob,u.sex,u.cn,u.email,u.address
 			FROM staff s
 			INNER JOIN users u ON s.uID = u.uID
 			WHERE s.staffID = $id LIMIT 1
@@ -125,6 +149,12 @@ class mdl_Staff extends CI_Model{
 		$uID = $this->db->query("SELECT uID FROM staff WHERE staffID = $id LIMIT 1")->row()->uID;
 
 		$this->get_form_data($data);
+		
+		if($data['email']){
+			if($this->is_gmail_exist($data['email'], $uID)){
+				die('error');
+			}
+		}
 		
 		$this->db->update('users', $data, "uID = $uID");
 
@@ -205,6 +235,59 @@ class mdl_Staff extends CI_Model{
 	// 	echo $output;
 
 	// }
+
+	function rand_pw(){
+		return substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"), 0, 8);
+	}
+
+	function sendLogin(){
+		//turn on less secure apps in https://myaccount.google.com/security
+		$id = $this->input->post("id");
+		$body = '';
+		$studData = $this->db->query("SELECT email, uID FROM users WHERE uID = (SELECT uID FROM staff WHERE staffID = $id LIMIT 1) LIMIT 1")->row();
+		$new_pw = $this->rand_pw();
+		$new_un = explode("@", $studData->email)[0];
+
+		$body .= "Username: ".$new_un;
+		$body .= "\n";
+		$body .= "Password: ".$new_pw;
+		
+
+		if($this->send_mail($body, $studData->email)){
+			$this->db->update('users', ['userName'=>$new_un, 'userPass'=>$new_pw, 'status'=>'active'], "uID = ".$studData->uID);
+			echo "success";
+		}else{
+			echo "error";
+		}
+	}
+
+	private function send_mail($body, $mail_to){
+		$subj = 'WLC CICTE login details';
+		$mail_from = ['gmail'=>'cictewlc@gmail.com', 'name'=>'CICTE WLC'];
+		$mail_un = 'nightfury102497@gmail.com';
+		$mail_pw = 'Jesusismysavior102497';
+
+		$mail = new PHPMailer\PHPMailer\PHPMailer(TRUE);
+		$mail->isSMTP();
+		$mail->Host = "smtp.gmail.com";
+		$mail->SMTPAuth = true;
+		$mail->Username = $mail_un;
+		$mail->Password = $mail_pw;
+		$mail->SMTPSecure = "ssl";
+		$mail->Port = 465;
+		$mail->Subject = $subj;
+		$mail->Body = $body;
+
+	   	$mail->setFrom($mail_from['gmail'], $mail_from['name']);
+	   	$mail->addAddress($mail_to);
+	   	
+	   	try{
+	   		$mail->send();
+	   		return true;
+	   	}catch(Exception $e){
+	   		return false;
+	   	}
+	}
 
 }
 

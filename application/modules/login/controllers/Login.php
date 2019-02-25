@@ -46,6 +46,7 @@ class Login extends MX_Controller{
 
 	function login_validation(){
 	    $this->form_validation->set_rules('un', 'Username', 'trim|required');
+	    $this->form_validation->set_rules('pw', 'Password', 'trim|required');
         if($this->form_validation->run()){
             $this->mdl_login->login_validation();
         }else{

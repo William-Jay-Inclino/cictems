@@ -117,12 +117,12 @@
 					</p>
 				</div>
 				<div class="field">
-				  	<label class="label">Email</label>
+				  	<label class="label">Gmail</label>
 				  	<div class="control">
-					  	<input class="input" type="email" v-model.trim="form.email" placeholder="ex. nightfury@gmail.com">
+					  	<input class="input" type="email" v-model.trim="form.email" pattern="(\W|^)[\w.+\-]*@gmail\.com(\W|$)">
 				  	</div>
-				  	<p class="help has-text-danger">
-						{{error.email}}
+				  	<p class="help">
+						<i>format: williamjay.inclino@gmail.com</i>
 					</p>
 				</div>
 				<br>

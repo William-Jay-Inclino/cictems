@@ -87,6 +87,11 @@ class Users_Faculty extends MY_Controller{
 		$this->mdl_faculty->populateSpec($id[0]);		
 	}
 
+	function sendLogin(){
+		$this->mdl_faculty->sendLogin();	
+		
+	}
+	
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

@@ -127,8 +127,8 @@ $route['users/staff/show/(:num)'] = 'users_staff/show/$1';
 $route['users/staff/access-rights/(:num)'] = 'users_staff/access_rights/$1';
 $route['users/staff/form-success/(:num)'] = 'users_staff/success_page/$1';
 
-$route['users/registration'] = 'registration';
-$route['users/registration/show/(:num)'] = 'registration/show/$1';
+// $route['users/registration'] = 'registration';
+// $route['users/registration/show/(:num)'] = 'registration/show/$1';
 
 // --------------END USERS-----------------
 

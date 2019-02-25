@@ -68,7 +68,7 @@
 					<td> +63{{cn}} </td>
 				</tr>
 				<tr>
-					<td><b>Email:</b> </td>
+					<td><b>Gmail:</b> </td>
 					<td> {{email}} </td>
 				</tr>
 			</table>
@@ -138,7 +138,7 @@
 			    			}
 			    		})	
 		    		}else{
-		    			swal('Warning', "Student has no email", 'warning');
+		    			swal('Warning', "Student has no gmail", 'warning');
 		    		}
 		    		
 		    	},
