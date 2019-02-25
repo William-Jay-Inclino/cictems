@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="<?php echo base_url(); ?>assets/img/cicte_logo.png" type="image/x-icon" />
     <title>CICTE</title>
     <script src="<?php echo base_url(); ?>assets/vendor/pace/pace.min.js"></script>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/pace/pace-theme-minimal.css">
@@ -23,7 +24,7 @@
          <nav class="animate-top navbar is-transparent is-fixed-top card">
           
             <div class="navbar-brand">
-              <a class="navbar-item" href="https://bulma.io">
+              <a class="navbar-item" href="javascript:void(0)">
                 <img src="<?php echo base_url() ?>assets/img/cictelogo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
               </a>
             </div>

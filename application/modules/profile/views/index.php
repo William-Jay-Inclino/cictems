@@ -167,10 +167,15 @@
 						<td><b>Gmail</b></td>
 						<td>
 							<span v-if="editEmail">
-								<input type="email" v-model="form.email" class="input" autofocus="true" @keyup.enter="save('email')">
-								<p class="help dang-msg"> {{error.email}} </p>
-								<hr>
-								<button class="button is-link is-small" @click="save('email')">Save Changes</button>
+								<form @submit.prevent="save('email')">
+									<input class="input" type="email" v-model.trim="form.email" pattern="(\W|^)[\w.+\-]*@gmail\.com(\W|$)">
+									<p class="help">
+										<i>format: williamjay.inclino@gmail.com</i>
+									</p>
+									<hr>
+									<button type="submit" class="button is-link is-small">Save Changes</button>
+								</form>
+								
 								<br><br>
 							</span>
 							<span v-else>

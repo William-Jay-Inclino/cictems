@@ -2,8 +2,8 @@
 	<div class="container">
 		<h3 class="title is-3 my-title">Grades (Prospectus)</h3>
 		<div class="hero-body has-text-centered">
-			<h4 class="title is-4"> <?php echo $data['prospectus']['description'] ?> </h4>
-			<h5 class="subtitle is-5">Effectivity <?php echo $data['prospectus']['effectivity'] ?></h5>
+			<h4 class="title is-4"> <?php echo $data['prospectus']->description ?> </h4>
+			<h5 class="subtitle is-5">Effectivity <?php echo $data['prospectus']->effectivity ?></h5>
 		</div>
 		<h5 class="subtitle is-5 has-text-centered">Curriculum Structure</h5>
 		
@@ -15,7 +15,7 @@
 	             </h6>
 	             <hr>
 	             <div class="table__wrapper">
-		             <table class="table is-fullwidth">
+		             <table class="table is-fullwidth is-bordered">
 		                <thead>
 		                   <th width="5%">Grade</th>
 		                   <th width="15%">Subject Code</th>
@@ -29,7 +29,7 @@
 							<?php 
 
 								foreach($subject['subjects'] as $row){
-									if(!$row['subject']['term']){
+									if(!$row['subject']->term){
 										$term = ['','',''];
 									}else{
 										$term = explode('|', $row['subject']['term']); 
@@ -39,28 +39,28 @@
 									<tr>
 										<td>
 											<?php 
-												if($row['subject']['grade'] == '0.0'){
+												if($row['subject']->grade == '0.0'){
 													echo "INC";
 												}else{
-													echo $row['subject']['grade'];
+													echo $row['subject']->grade;
 												}
 											?>
 										</td>
-										<td> <?php echo $row['subject']['subCode'] ?> </td>
-										<td> <?php echo $row['subject']['subDesc'] ?> </td>
-										<td> <?php echo $row['subject']['units'] ?> </td>
+										<td> <?php echo $row['subject']->subCode ?> </td>
+										<td> <?php echo $row['subject']->subDesc ?> </td>
+										<td> <?php echo $row['subject']->units ?> </td>
 										<td>
 											<?php 
 												foreach($row['sub_req'] as $sr){
-													if($sr['req_type'] == 2){
+													if($sr->req_type == 2){
 														echo "Corequisite ";
 													}
-													echo $sr['req_code'];
+													echo $sr->req_code;
 												}
-												if($row['subject']['year_req']){
-													echo $row['subject']['year_req'].' Standing';
+												if($row['subject']->year_req){
+													echo $row['subject']->year_req.' Standing';
 												} 
-												echo $row['subject']['nonSub_pre'];
+												echo $row['subject']->nonSub_pre;
 										 	?>
 										</td>
 										<td> <?php echo $term[1] ?> </td>

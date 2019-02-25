@@ -10,15 +10,16 @@ class Login extends MX_Controller{
 		$this->load->helper('form');
 	}
 
-	function _remap($method, $params = []){
-        if ($method != 'index' && $method != 'login_validation' && $method != 'log_out'){
-            $this->prevent_url_access();
-        }
-        $this->$method($params);
-	}
+	// function _remap($method, $params = []){
+ //        if ($method != 'index' && $method != 'login_validation' && $method != 'log_out'){
+ //            $this->prevent_url_access();
+ //        }
+ //        $this->$method($params);
+	// }
 
 	function index(){
-		$this->my_loader('index');
+		$this->load->view('index');
+		//$this->my_loader('index');
 	}
 
 	// function register(){
@@ -68,18 +69,18 @@ class Login extends MX_Controller{
 		redirect(base_url() . 'login');
 	}
 
-	private function my_loader($view){
-		$data['page'] = $view;
-		$this->load->view('top', $data);
-		$this->load->view($view);
-		$this->load->view('bottom');
-	}
+	// private function my_loader($view){
+	// 	$data['page'] = $view;
+	// 	$this->load->view('top', $data);
+	// 	$this->load->view($view);
+	// 	$this->load->view('bottom');
+	// }
 
-	private function prevent_url_access(){
-		if (!$this->input->is_ajax_request()) {
-		  show_404();
-		}
-	}
+	// private function prevent_url_access(){
+	// 	if (!$this->input->is_ajax_request()) {
+	// 	  show_404();
+	// 	}
+	// }
 
 }
 
