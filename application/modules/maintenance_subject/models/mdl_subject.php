@@ -264,8 +264,11 @@ class mdl_Subject extends CI_Model{
 		foreach($subIDs as $sids){
 			$query = $this->db->select('1')->get_where('class', "subID = ".$sids->subID, 1)->row();
 			$query2 = $this->db->select('1')->get_where('studgrade', "subID = ".$sids->subID, 1)->row();
+			// $query3 = $this->db->select('1')->get_where('subject_req', "subID = ".$sids->subID, 1)->row();
+			$query4 = $this->db->select('1')->get_where('year_req', "subID = ".$sids->subID, 1)->row();
+			$query5 = $this->db->select('1')->get_where('subject_req', "req_subID = ".$sids->subID, 1)->row();
 
-			if($query || $query2){
+			if($query || $query2 || $query4 || $query5){
 				$output = 0;
 				break;
 			}
@@ -408,6 +411,7 @@ class mdl_Subject extends CI_Model{
 		$data['specID'] = $sql->specID;
 		$data['subCode'] = $sql->subCode;
 		$data['subDesc'] = $sql->subDesc;
+		$data['total_units'] = $sql->total_units;
 		$data['units'] = $this->input->post('units');
 		$data['type'] = $this->input->post('type');
 		$data['id'] = $id;
