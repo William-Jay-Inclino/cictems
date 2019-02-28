@@ -9,7 +9,35 @@
    <section class="section">
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
-        <a :href="reportLink" target="_blank" class="button is-primary is-pulled-right">Generate Report</a>
+        <div class="is-pulled-right">
+          <div :class="{'dropdown is-right': true, 'is-active': is_settings_open}">
+           <div class="dropdown-trigger">
+              <button @click="is_settings_open = !is_settings_open" class="button" aria-haspopup="true">
+                <span class="icon has-text-primary">
+                  <i class="fa fa-cog"></i>
+                </span> &nbsp;
+                Settings
+              </button>
+           </div>
+           <div class="dropdown-menu" role="menu" style="min-width: 300px;">
+              <form @submit.prevent="updateSettings" class="dropdown-content">
+                <div class="dropdown-item">
+                  <div class="field">
+                     <label class="label">Date updated: </label>
+                     <div class="control">
+                        <input type="date" class="input" v-model.trim="updated_at" required>
+                     </div>
+                  </div>
+               </div>
+                <hr class="dropdown-divider">
+                 <div class="dropdown-item">
+                    <button type="submit" class="button is-primary is-fullwidth">Save</button>
+                 </div>
+              </form>
+           </div>
+        </div>
+          <a :href="reportLink" target="_blank" class="button is-primary">Generate Report</a>  
+        </div>
         <br><br>
         <button @click="filter = 'class'" :class="{'button is-primary btn-width': true, 'is-outlined': filter != 'class'}">Class</button>
         <button @click="filter = 'room'" :class="{'button is-primary btn-width': true, 'is-outlined': filter != 'room'}">Room</button>
@@ -198,6 +226,9 @@ document.addEventListener('DOMContentLoaded', function() {
       courses: [],
       has_data: true,
       filter: 'class',
+
+      is_settings_open: false,
+      updated_at: new Date('<?php echo $date_updated; ?>').toISOString().slice(0,10)
    },
    created(){  
     this.populate()
@@ -281,36 +312,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
    },
    methods: {
-      populate(){
-         this.$http.get('<?php echo base_url() ?>reports_class/populate')
-        .then(response => {
-          const c = response.body
-          this.terms = c.terms 
-          this.courses = c.courses
-          this.courses.unshift({
-            courseID: 'all',
-            courseCode: 'All'
-          })
+    updateSettings(){
+      swal('Success', 'Settings successfully updated!', 'success')
+      this.is_settings_open = false
+      this.$http.post('<?php echo base_url() ?>reports_class/updateSettings', {termID: this.term.termID, updated_at: this.updated_at})
+       .then(res => {
+        console.log(res.body)
+     }, e => {
+      console.log(e.body);
 
-          for(let cc of c.class_list){
-            for(let x of cc.classes){
-              if(x.class_time == '12:00AM-12:00AM'){
-                x.class_time = ''
-              }
+     })
+    },
+    populate(){
+       this.$http.get('<?php echo base_url() ?>reports_class/populate')
+      .then(response => {
+        const c = response.body
+        this.terms = c.terms 
+        this.courses = c.courses
+        this.courses.unshift({
+          courseID: 'all',
+          courseCode: 'All'
+        })
+
+        for(let cc of c.class_list){
+          for(let x of cc.classes){
+            if(x.class_time == '12:00AM-12:00AM'){
+              x.class_time = ''
             }
           }
-          this.class_list = c.class_list
-          this.loader = false
-        })
-      },
-      fetch_class_list(){
-         this.loader = true
-         this.$http.get('<?php echo base_url() ?>reports_class/get_class_list/' + this.term.termID)
-           .then(response => {
-             this.class_list = response.body
-             this.loader = false
-         })
-      }
+        }
+        this.class_list = c.class_list
+        this.loader = false
+      })
+    },
+    fetch_class_list(){
+       this.loader = true
+       this.$http.get('<?php echo base_url() ?>reports_class/get_class_list/' + this.term.termID)
+         .then(response => {
+          const c = response.body
+          console.log(c);
+           this.class_list = c.classes
+           this.updated_at = new Date(c.updated_at).toISOString().slice(0,10)
+           this.loader = false
+       }, e => {
+        console.log(e.body)
+
+       })
+    }
    },
 
 
@@ -327,4 +375,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.js"></script>
-
+<script src="<?php echo base_url(); ?>assets/vendor/vue/vue-swal/vue-swal.min.js"></script>

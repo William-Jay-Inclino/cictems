@@ -32,6 +32,9 @@ class mdl_Term extends CI_Model{
 			$output = ['status'=> 1,'id'=>$insertID];
 
 			$this->db->insert('counter', ['module'=>'enrol_studs', 'termID'=>$insertID, 'total'=>0]);
+			$this->db->insert('reports_date', ['termID'=>$insertID, 'module'=>'enrolled_students', 'updated_at'=>'2000-01-01']);
+			$this->db->insert('reports_date', ['termID'=>$insertID, 'module'=>'fees', 'updated_at'=>'2000-01-01']);
+			$this->db->insert('reports_date', ['termID'=>$insertID, 'module'=>'class_schedules', 'updated_at'=>'2000-01-01']);
 
 			$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'term' LIMIT 1");
 			$row =  $query->row();

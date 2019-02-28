@@ -31,7 +31,7 @@
 	<div style="text-align: center">
 			<b>LIST OF <?php echo strtoupper($type) ?> ACCOUNTS<br>
 			<?php echo 'SY '.$data['term'] ?> <br>
-			as of <?php echo date("F j, Y"); ?><br><br>
+			As of <?php echo $date_updated; ?><br><br>
 	</div>
 	<br><br>
 	

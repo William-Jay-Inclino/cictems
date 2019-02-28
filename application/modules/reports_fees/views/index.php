@@ -15,7 +15,36 @@
             <multiselect v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false" @input="changeTerm"></multiselect>
           </div>
           <div class="column">
-            <button @click="generateReport" class="button is-primary is-pulled-right" class="button is-primary">Generate Report</button>
+            <div class="is-pulled-right">
+              <div :class="{'dropdown is-right': true, 'is-active': is_settings_open}">
+                 <div class="dropdown-trigger">
+                    <button @click="is_settings_open = !is_settings_open" class="button" aria-haspopup="true">
+                      <span class="icon has-text-primary">
+                        <i class="fa fa-cog"></i>
+                      </span> &nbsp;
+                      Settings
+                    </button>
+                 </div>
+                 <div class="dropdown-menu" role="menu" style="min-width: 300px;">
+                    <form @submit.prevent="updateSettings" class="dropdown-content">
+                      <div class="dropdown-item">
+                        <div class="field">
+                           <label class="label">Date updated: </label>
+                           <div class="control">
+                              <input type="date" class="input" v-model.trim="updated_at" required>
+                           </div>
+                        </div>
+                     </div>
+                      <hr class="dropdown-divider">
+                       <div class="dropdown-item">
+                          <button type="submit" class="button is-primary is-fullwidth">Save</button>
+                       </div>
+                    </form>
+                 </div>
+              </div>
+              <button @click="generateReport" class="button is-primary" class="button is-primary">Generate Report</button>
+            </div>
+            
           </div>
         </div>
         
@@ -148,7 +177,10 @@ document.addEventListener('DOMContentLoaded', function() {
               {filterID: 'Unpaid', filterDesc: 'Unpaid'},
               {filterID: 'Partial', filterDesc: 'Partially Paid'},
               {filterID: 'Refundable', filterDesc: 'Refundable'}
-      ]
+      ],
+
+       is_settings_open: false,
+       updated_at: new Date('<?php echo $date_updated; ?>').toISOString().slice(0,10)
    },
    created(){  
     this.populate()
@@ -159,6 +191,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
    },
    methods: {
+    updateSettings(){
+      swal('Success', 'Settings successfully updated!', 'success')
+      this.is_settings_open = false
+      this.$http.post('<?php echo base_url() ?>reports_fees/updateSettings', {termID: this.term.termID, updated_at: this.updated_at})
+       .then(res => {
+        console.log(res.body)
+     }, e => {
+      console.log(e.body);
+
+     })
+    },
     filterStudents(){
       const f = this.filter 
       const students = this.students2 

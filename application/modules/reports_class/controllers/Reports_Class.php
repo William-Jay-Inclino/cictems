@@ -19,6 +19,7 @@ class Reports_Class extends MY_Controller{
 
 	function index(){
 		$this->_data['module_view'] = 'index';
+		$this->_data['date_updated'] = $this->mdl_class_list->get_date_updated($this->_data['current_term']->termID);
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -27,6 +28,7 @@ class Reports_Class extends MY_Controller{
 		$mpdf = new \Mpdf\Mpdf();
 		$this->_data['data'] = $this->mdl_class_list->download($data[0],$data[1], $view);
 		$this->_data['term'] = $this->mdl_class_list->get_term($data[1]);
+		$this->_data['date_updated'] = $this->mdl_class_list->get_date_updated($data[1], 'download');
 
 		$html = $this->load->view($this->_data['module'].'/'.$view,$this->_data, true);
 		$mpdf->WriteHTML($html);
@@ -38,9 +40,14 @@ class Reports_Class extends MY_Controller{
 	}
 
 	function get_class_list($data){
-		echo json_encode($this->mdl_class_list->get_class_list($data[0]));
+		$data2['classes'] = $this->mdl_class_list->get_class_list($data[0]);
+		$data2['updated_at'] = $this->mdl_class_list->get_date_updated($data[0]);
+		echo json_encode($data2);
 	}
 
+	function updateSettings(){
+		$this->mdl_class_list->updateSettings();	
+	}
 
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {

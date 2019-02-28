@@ -10,7 +10,35 @@
    <section class="section">
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
-        <button @click="generateReport" class="button is-primary is-pulled-right" :disabled="!allow_generate">Generate Report</button>
+        <div class="is-pulled-right">
+          <div :class="{'dropdown is-right': true, 'is-active': is_settings_open}">
+           <div class="dropdown-trigger">
+              <button @click="is_settings_open = !is_settings_open" class="button" aria-haspopup="true">
+                <span class="icon has-text-primary">
+                  <i class="fa fa-cog"></i>
+                </span> &nbsp;
+                Settings
+              </button>
+           </div>
+           <div class="dropdown-menu" role="menu" style="min-width: 300px;">
+              <form @submit.prevent="updateSettings" class="dropdown-content">
+                <div class="dropdown-item">
+                  <div class="field">
+                     <label class="label">Date updated: </label>
+                     <div class="control">
+                        <input type="date" class="input" v-model.trim="updated_at" required>
+                     </div>
+                  </div>
+               </div>
+                <hr class="dropdown-divider">
+                 <div class="dropdown-item">
+                    <button type="submit" class="button is-primary is-fullwidth">Save</button>
+                 </div>
+              </form>
+           </div>
+        </div> &nbsp;
+          <button @click="generateReport" class="button is-primary is-pulled-right" :disabled="!allow_generate">Generate Report</button>
+        </div>
         <br><br><br> 
         <div class="columns">
           <div class="column is-3">
@@ -121,7 +149,10 @@ document.addEventListener('DOMContentLoaded', function() {
       years: [],
       subjects: [],
       faculties: [],
-      total_records: 0
+      total_records: 0,
+
+      is_settings_open: false,
+      updated_at: new Date('<?php echo $date_updated; ?>').toISOString().slice(0,10)
 
    },
    created(){  
@@ -197,6 +228,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // }
    },
    methods: {
+    updateSettings(){
+      swal('Success', 'Settings successfully updated!', 'success')
+      this.is_settings_open = false
+      this.$http.post('<?php echo base_url() ?>reports_student/updateSettings', {termID: this.term.termID, updated_at: this.updated_at})
+       .then(res => {
+        console.log(res.body)
+     }, e => {
+      console.log(e.body);
+
+     })
+    },
       generateReport(){
         swal('Info', "Report is based on your selections", 'info')
         .then(x => {
@@ -228,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
           this.loading = false
           const c = response.body
+          this.updated_at = new Date(c.updated_at).toISOString().slice(0,10)
           this.terms = c.terms 
           this.faculties = c.faculties
           this.students = c.students

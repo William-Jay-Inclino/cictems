@@ -266,6 +266,7 @@
 		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/is_safe_delete/' + id + '/' + this.prosID)
 		        	.then(response => {
 		        		const c = response.body
+		        		console.log(c);
 		        		if(c == 1){
 		        			swal({
 							  title: "Are you sure?",

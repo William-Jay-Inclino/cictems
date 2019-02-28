@@ -32,7 +32,7 @@
 		<b>
 			LIST OF CANCELLED ACADEMIC ACTIVITIES <br>
 			<?php echo 'SY '.$data['term']; ?> <br>
-			as of <?php echo date("F j, Y"); ?><br><br>
+			As of <?php echo $date_updated; ?><br><br>
 		</b>
 	</div>
 	<br><br>

@@ -19,6 +19,7 @@ class Reports_Fees extends MY_Controller{
 
 	function index(){
 		$this->_data['module_view'] = 'index';
+		$this->_data['date_updated'] = $this->mdl_fees->get_date_updated($this->_data['current_term']->termID);
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -27,6 +28,7 @@ class Reports_Fees extends MY_Controller{
 		$this->_data['data'] = $this->mdl_fees->download($data[0],$data[1], $view);
 		$this->_data['type'] = $data[1];
 		//die(print_r($this->_data['data']));
+		$this->_data['date_updated'] = $this->mdl_fees->get_date_updated($data[0], 'download');
 		$html = $this->load->view($this->_data['module'].'/'.$view,$this->_data, true);
 
 		$mpdf->WriteHTML($html);
@@ -44,6 +46,10 @@ class Reports_Fees extends MY_Controller{
 
 	function getStudents($feeID){
 		$this->mdl_fees->getStudents($feeID[0]);
+	}
+
+	function updateSettings(){
+		$this->mdl_fees->updateSettings();	
 	}
 
 	private function prevent_url_access(){

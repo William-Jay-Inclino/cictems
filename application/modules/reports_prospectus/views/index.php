@@ -10,7 +10,41 @@
       <div class="container">
         <h3 class="title is-3 my-title"> {{page_title}} </h3>
         <br>
-        <button :disabled="!selected_pros" @click="generateReport" class="button is-primary is-pulled-right">Generate Report</button> <br><br><br>
+        <div class="is-pulled-right">
+           <div :class="{'dropdown is-right': true, 'is-active': is_settings_open}">
+            <div class="dropdown-trigger">
+               <button @click="toggle_settings" class="button" aria-haspopup="true"> <i class="fa fa-cog has-text-primary"></i> &nbsp; Settings </button>
+            </div>
+            <div class="dropdown-menu" role="menu" style="min-width: 300px;">
+               <form @submit.prevent="updateReport" class="dropdown-content">
+                  <div class="dropdown-item">
+                     <div class="field">
+                        <label class="label">Prepared by: </label>
+                        <div class="control">
+                           <input type="text" class="input" v-model.trim="name" autofocus="true">
+                        </div>
+                        <p class="help has-text-danger"> {{errName}} </p>
+                     </div>
+                  </div>
+                  <div class="dropdown-item">
+                     <div class="field">
+                        <label class="label">Description: </label>
+                        <div class="control">
+                           <input type="text" class="input" v-model.trim="description">
+                        </div>
+                        <p class="help has-text-danger"> {{errDesc}} </p>
+                     </div>
+                  </div>
+                  <hr class="dropdown-divider">
+                  <div class="dropdown-item">
+                     <button type="submit" class="button is-primary is-fullwidth">Save</button>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <button :disabled="!selected_pros" @click="generateReport" class="button is-primary">Generate Report</button>
+        </div>
+         <br><br><br>
          <div class="box columns bg-white">
             <div class="column">
                <div class="field">
@@ -20,42 +54,6 @@
                   </div>
                   <br>
                </div>
-            </div>
-            <div class="column">
-               <div class="is-pulled-right">
-                  <div :class="{'dropdown is-right': true, 'is-active': is_settings_open}">
-                     <div class="dropdown-trigger">
-                        <button @click="toggle_settings" class="button" aria-haspopup="true"> <i class="fa fa-cog has-text-primary"></i> </button>
-                     </div>
-                     <div class="dropdown-menu" role="menu" style="min-width: 300px;">
-                        <form @submit.prevent="updateReport" class="dropdown-content">
-                           <div class="dropdown-item">
-                              <div class="field">
-                                 <label class="label">Prepared by: </label>
-                                 <div class="control">
-                                    <input type="text" class="input" v-model.trim="name" autofocus="true">
-                                 </div>
-                                 <p class="help has-text-danger"> {{errName}} </p>
-                              </div>
-                           </div>
-                           <div class="dropdown-item">
-                              <div class="field">
-                                 <label class="label">Description: </label>
-                                 <div class="control">
-                                    <input type="text" class="input" v-model.trim="description">
-                                 </div>
-                                 <p class="help has-text-danger"> {{errDesc}} </p>
-                              </div>
-                           </div>
-                           <hr class="dropdown-divider">
-                           <div class="dropdown-item">
-                              <button type="submit" class="button is-primary is-fullwidth">Save</button>
-                           </div>
-                        </form>
-                     </div>
-                  </div>
-               </div>
-               
             </div>
       </div>
 
@@ -68,10 +66,9 @@
                     {{titlePros.description}} <span v-if="titlePros.prosDesc">with {{titlePros.prosDesc}}</span>
                   </h5>
                   <h6 class="title is-6 has-text-grey">
-                    Effective School Year {{titlePros.effectivity}}
-                  </h6>
-                  <h6 class="title is-6 has-text-grey">
-                    Revised Curriculum  {{titlePros.prosDesc2}}
+                    Effective School Year {{titlePros.effectivity}} <br>
+                     Revised Curriculum  {{titlePros.prosDesc2}} <br>
+                     as of {{titlePros.updated_at}}
                   </h6>
                 </div>
               </div>

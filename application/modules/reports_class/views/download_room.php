@@ -36,7 +36,7 @@
 		<?php 
 			echo "ROOM SCHEDULES - College of ICT & Engineering<br>";
 			echo "SY: ".$term->schoolYear." - ".$term->semDesc.'<br>';
-			echo "As of ".date("F j, Y");
+			echo "As of ".$date_updated;
 		?>
 		</b>
 	</div>

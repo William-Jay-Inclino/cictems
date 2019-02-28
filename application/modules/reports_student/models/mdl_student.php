@@ -3,6 +3,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Student extends CI_Model{
 
+	function get_date_updated($termID, $val = NULL){
+		if($val == NULL){
+			return $this->db->select("updated_at")->get_where('reports_date', "termID = $termID and module = 'enrolled_students'", 1)->row()->updated_at;
+		}else{
+			return $this->db->select("DATE_FORMAT(updated_at, '%M %d , %Y') updated_at")->get_where('reports_date', "termID = $termID and module = 'enrolled_students'", 1)->row()->updated_at;
+		}
+		
+	}
+
+	function updateSettings(){
+		$termID = $this->input->post("termID");
+		$data['updated_at'] = $this->input->post("updated_at");
+		//die(print_r($_POST));
+		$this->db->update('reports_date', $data, "termID = $termID AND module = 'enrolled_students'");
+	}
+
 	function download($action, $courseID, $yearID, $subID, $facID, $termID){
 		$data['course'] = $data['faculty'] = $data['subCode'] = $data['yearDesc'] = '';
 		
@@ -224,6 +240,7 @@ class mdl_Student extends CI_Model{
 	}
 
 	function populate($termID){
+		$data['updated_at'] = $this->get_date_updated($termID);
 		$data['faculties'] = $this->db->query("SELECT f.facID, CONCAT(u.ln,', ',u.fn,' ',u.mn) name FROM faculty f INNER JOIN users u ON f.uID = u.uID WHERE u.status = 'active'")->result();
 
 		$data['terms'] = $this->db->query('SELECT t.termID, CONCAT(t.schoolYear," ",s.semDesc) AS term FROM term t INNER JOIN semester s ON t.semID=s.semID ORDER BY t.schoolYear DESC,s.semOrder DESC')->result();

@@ -46,7 +46,7 @@
 				if($data['subCode']){echo $data['subCode']." <br>";} 
 			?>
 			S.Y <?php echo $data['term'] ?> <br>
-			as of <?php echo date("F j, Y"); ?><br><br>
+			As of <?php echo $date_updated; ?><br><br>
 	</div>
 	<br><br>
 	<table>

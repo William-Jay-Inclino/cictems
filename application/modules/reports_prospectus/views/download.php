@@ -35,7 +35,8 @@
 			echo "<b>COLLEGE OF ICT & ENGINEERING</b><br><br>";
 			echo '<b>'.$data['prospectus']->description.$with.$data['prospectus']->prosDesc.'</b><br>'; 
 			echo "Effective School Year ".$data['prospectus']->effectivity.' [K + 12] Compliant <br>';
-			echo "Revised Curriculum ".$data['prospectus']->prosDesc2;
+			echo "Revised Curriculum ".$data['prospectus']->prosDesc2.'<br>';
+			echo "as of ".$data['prospectus']->updated_at;
 		?>
 	</div>
 	<br><br>

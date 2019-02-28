@@ -3,6 +3,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Class_List extends CI_Model{
 
+	function get_date_updated($termID, $val = NULL){
+		if($val == NULL){
+			return $this->db->select("updated_at")->get_where('reports_date', "termID = $termID and module = 'class_schedules'", 1)->row()->updated_at;
+		}else{
+			return $this->db->select("DATE_FORMAT(updated_at, '%M %d , %Y') updated_at")->get_where('reports_date', "termID = $termID and module = 'class_schedules'", 1)->row()->updated_at;
+		}
+		
+	}
+
+	function updateSettings(){
+		$termID = $this->input->post("termID");
+		$data['updated_at'] = $this->input->post("updated_at");
+		//die(print_r($_POST));
+		$this->db->update('reports_date', $data, "termID = $termID AND module = 'class_schedules'");
+	}
+
 	function download($value, $termID, &$view){
 		if($value == 'faculty'){
 			$view = 'download_faculty';

@@ -32,7 +32,7 @@ class mdl_Prospectus extends CI_Model{
 	function get_subjects($prosID, $val = NULL){
 		$holder2 = [];
 		$data['prospectus'] = $this->db->query("
-			SELECT CONCAT(c.courseDesc,' (',c.courseCode,')') AS description,p.prosDesc,p.effectivity,p.prosDesc2
+			SELECT CONCAT(c.courseDesc,' (',c.courseCode,')') AS description,p.prosDesc,p.effectivity,p.prosDesc2,DATE_FORMAT(p.updated_at, '%M %d %Y') updated_at
 			FROM prospectus p  
 			INNER JOIN course c ON p.courseID=c.courseID 
 			WHERE p.prosID = $prosID LIMIT 1

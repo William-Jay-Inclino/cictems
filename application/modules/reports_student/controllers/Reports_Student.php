@@ -20,6 +20,7 @@ class Reports_Student extends MY_Controller{
 
 	function index(){
 		$this->_data['module_view'] = 'index';
+		$this->_data['date_updated'] = $this->mdl_student->get_date_updated($this->_data['current_term']->termID);
 		echo Modules::run($this->_template, $this->_data);
 	}
 
@@ -28,6 +29,7 @@ class Reports_Student extends MY_Controller{
 		$this->_data['data'] = $this->mdl_student->download($data[0],$data[1],$data[2],$data[3],$data[4], $data[5]);
 		$this->_data['course'] = $data[1];
 		$this->_data['year'] = $data[2];
+		$this->_data['date_updated'] = $this->mdl_student->get_date_updated($data[5], 'download');
 		$html = $this->load->view($this->_data['module'].'/download',$this->_data, true);
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
@@ -55,6 +57,10 @@ class Reports_Student extends MY_Controller{
 
 	function get_subjects_of_instructor($data){
 		$this->mdl_student->get_subjects_of_instructor($data[0],$data[1]);	
+	}
+
+	function updateSettings(){
+		$this->mdl_student->updateSettings();	
 	}
 
 	private function prevent_url_access(){
