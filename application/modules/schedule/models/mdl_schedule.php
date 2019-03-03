@@ -109,8 +109,9 @@ class mdl_Schedule extends CI_Model{
 
 	function fetchClasses($yearID, $prosID, $termID){
 		$data['classes'] = $this->db->query("
-			SELECT subID,subCode,subDesc,units,type FROM subject WHERE prosID = $prosID AND yearID = $yearID AND
-			semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1)
+			SELECT s.subID,s.subCode,s.subDesc,s.units,s.type,(SELECT subID FROM subject WHERE id = s.id AND prosID = s.prosID AND subID <> s.subID LIMIT 1) subID2
+			FROM subject s WHERE s.prosID = $prosID AND s.yearID = $yearID AND
+			s.semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1)
 		")->result();
 		//die($this->db->last_query());
 		$data['sections'] = $this->get_sections($yearID, $prosID, $termID);

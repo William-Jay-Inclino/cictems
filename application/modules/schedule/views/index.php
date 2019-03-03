@@ -1203,6 +1203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	is_time_conflict(cc, c,i,ii){
 	    		per_week = this.time_per_week(cc.timeIn,cc.timeOut,cc.day.dayCount)
 	    		has_error = false
+	    		console.log(cc.subID2)
 	    		if(cc.subID2){
 	    			if(per_week != '03:00:00'){
 	    				cc.msg = "Time should be 3 hours a week. Time given a week "+per_week
