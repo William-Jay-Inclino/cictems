@@ -128,7 +128,9 @@ class mdl_Schedule extends CI_Model{
 
 	function get_sec_info($secID, $termID){
 		$data['classes'] = $this->db->query("
-				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn,CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge FROM class c 
+				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn,
+				CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge,(SELECT subID FROM subject WHERE id = sub.id AND prosID = sub.prosID AND subID <> sub.subID LIMIT 1) subID2
+				FROM class c 
 				INNER JOIN room r ON c.roomID = r.roomID 
 				INNER JOIN day d ON c.dayID = d.dayID 
 				INNER JOIN faculty f ON c.facID = f.facID 

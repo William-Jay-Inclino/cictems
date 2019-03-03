@@ -695,6 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				  }
 				})
 	    	},
+
 	    	splitClass(i){
 	    		const c = (this.current_sec) ? this.classes2[i] : this.classes[i]
 	    		c.open_action = false
@@ -713,6 +714,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    				console.log(e.body)
 	    			})	
 	    		}
+	    		
+
 	    	},
 	    	afterMerge(c, class_merge){
     			c.error = false
@@ -982,7 +985,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		this.$http.get('<?php echo base_url() ?>schedule/get_sec_info/' + secID + '/' + this.current_term.termID)
 	        	.then(response => {
 	        		const c = response.body
-	        		//console.log(c.classes)
 	        		this.loader = false
 	        		this.ready3 = true 
 	        		this.prospectus2 = c.prospectus 
@@ -1108,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		    		}else{
 		    			this.checkConflict3(i, classes)
 		    		}
-				}, 1000)
+				}, 1500)
 	    	},
 	    	checkConflict2(c, i, ii){
 	    		if(this.current_sec == null){
@@ -1158,9 +1160,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		for(let [ii, cc] of classes.entries()){
 
     				if(cc.timeIn && cc.timeOut && cc.day != null && cc.room != null && cc.faculty != null && cc.status2 == 0){
-    					// console.log(this.is_time_conflict(cc, c))
-    					if(!this.is_time_conflict(cc, c,i,ii)){
-    						for(let [iii, ccc] of classes.entries()){
+
+    					per_week = this.time_per_week(cc.timeIn,cc.timeOut,cc.day.dayCount)
+
+						if(per_week != this.unit_to_hr(cc.units)){
+							//cc.msg old code
+							//cc.loading old code
+	    					c.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
+	    					c.loading = false
+						}else{
+
+							for(let [iii, ccc] of classes.entries()){
 								if(iii != ii){
 									if(ccc.timeIn && ccc.timeOut && ccc.day != null && ccc.room != null && ccc.faculty != null && ccc.status2 == 0){
 										cc.timeIn = this.remove_milliseconds(cc.timeIn)
@@ -1193,30 +1203,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		    						this.checkConflict2(cc,i, ii)
 		    					}
 		    				}
-    					}
-    					
+						}
     				}
     				has_conflict = false
     				per_week = null
     			}
-	    	},
-	    	is_time_conflict(cc, c,i,ii){
-	    		per_week = this.time_per_week(cc.timeIn,cc.timeOut,cc.day.dayCount)
-	    		has_error = false
-	    		if(cc.subID2){
-	    			if(per_week != '03:00:00'){
-	    				cc.msg = "Time should be 3 hours a week. Time given a week "+per_week
-						cc.loading = false
-						has_error = true
-	    			}
-	    		}else{
-	    			if(per_week != this.unit_to_hr(cc.units)){
-						cc.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
-						cc.loading = false
-						has_error = true
-					}
-	    		}
-	    		return has_error
 	    	},
 	    	remove_milliseconds(t){
 	    		const x = t.split(':')

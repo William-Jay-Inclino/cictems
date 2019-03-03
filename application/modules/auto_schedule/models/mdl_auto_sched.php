@@ -50,7 +50,9 @@ class mdl_auto_sched extends CI_Model{
 			}
 			$secDT_holder = [];
 			$subjects = $this->db->query("
-				SELECT subID,specID,subCode,units,id,prosID FROM subject WHERE prosID = ".$section['prosID']." AND yearID = ".$section['yearID']." AND semID = ".$term['semID']."
+				SELECT s.subID,s.specID,s.subCode,s.units,s.id,s.prosID,(SELECT subID FROM subject WHERE id = s.id AND prosID = s.prosID AND subID <> s.subID LIMIT 1) subID2
+				FROM subject s
+				WHERE s.prosID = ".$section['prosID']." AND s.yearID = ".$section['yearID']." AND s.semID = ".$term['semID']."
 			")->result();
 
 			if($is_dt_auto == 'yes'){
@@ -82,7 +84,7 @@ class mdl_auto_sched extends CI_Model{
 										if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
 											$last_added['dayID'] = $rand_day['dayID'];
 											$last_added['timeIn'] = $min_time2;
-											$last_added['timeOut'] = $this->get_timeOut($min_time2, $s->units, $rand_day['dayCount']);
+											$last_added['timeOut'] = $this->get_timeOut($min_time2, $s->units, $rand_day['dayCount'], $s->subID2);
 											$min_time = $last_added['timeOut'];
 										}
 										break;
@@ -91,7 +93,7 @@ class mdl_auto_sched extends CI_Model{
 								$ctr = 0;
 							}
 
-							$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+							$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount'], $s->subID2);
 
 							if(($this->convert_to_mins($timeOut) > $this->convert_to_mins($break_min_time)) && !$noon_class){ //lunch break
 								if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
@@ -100,7 +102,7 @@ class mdl_auto_sched extends CI_Model{
 								}else{
 									$min_time = $break_max_time;
 								}
-								$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+								$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount'], $s->subID2);
 								$noon_class = true;
 							}else if(($this->convert_to_mins($timeOut) > $this->convert_to_mins($max_time)) && $noon_class){ //time out should not exceed max time
 								if($last_added['id'] == $s->id && $last_added['prosID'] == $s->prosID){
@@ -109,7 +111,7 @@ class mdl_auto_sched extends CI_Model{
 								}else{
 									$min_time = $min_time2;
 								}
-								$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+								$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount'], $s->subID2);
 								$noon_class = false;
 							}
 
@@ -124,7 +126,7 @@ class mdl_auto_sched extends CI_Model{
 							++$ctr;
 						}
 					}else{
-						$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount']);
+						$timeOut = $this->get_timeOut($min_time, $s->units, $rand_day['dayCount'], $s->subID2);
 					}
 					
 
@@ -304,9 +306,21 @@ class mdl_auto_sched extends CI_Model{
 		return $output;
 	}
 
-	function get_timeOut($timeIn, $units, $dayCount){
+	function get_timeOut($timeIn, $units, $dayCount, $subID2){
 
-		$range = ((60 * $units) / $dayCount); //minutes
+		if($subID2){
+			// $range = 60;
+			if($dayCount % 2 == 0){
+				$range = 90;
+			}else if($dayCount % 3 == 0){
+				$range = 60;
+			}else{
+				$range = 360;
+			}
+		}else{
+			$range = ((60 * $units) / $dayCount); //minutes	
+		}
+		
 		$timeIn = $this->convert_to_mins($timeIn);
 		return $this->convert_to_hr($range + $timeIn);
 
