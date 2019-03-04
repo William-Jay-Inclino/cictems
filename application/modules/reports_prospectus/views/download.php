@@ -45,13 +45,21 @@
 		foreach($data['subjects'] as $subjects){ ?>
 			<table border="1">
 				<tr>
-					<th colspan="4"><?php echo $subjects['term'] ?></th>
+					<th colspan="6"><?php echo $subjects['term'] ?></th>
 				</tr>
 				<tr class="tbl-headers">
-					<th style="width: 25%">Course Code</th>
-					<th style="width: 40%">Descriptive Title</th>
-					<th style="width: 10%; text-align: center">Units</th>
-					<th style="width: 25%">Pre-requisites</th>
+					<th style="width: 20%">Course Code</th>
+					<th style="width: 30%">Descriptive Title</th>
+					<th colspan="3" style="width: 30%; text-align: center">Units</th>
+					<th style="width: 20%">Pre-requisites</th>
+				</tr>
+				<tr class="tbl-headers">
+					<th></th>
+					<th></th>
+					<th style="text-align: center">lec</th>
+					<th style="text-align: center">lab</th>
+					<th style="text-align: center">total</th>
+					<th></th>
 				</tr>
 				<?php 
 					$total_sub = count($subjects['subjects']) - 1;
@@ -60,7 +68,9 @@
 						<tr>
 							<td style="color: <?php echo $subject['subject']->specColor ?>"><?php echo $subject['subject']->subCode; ?></td>
 							<td style="color: <?php echo $subject['subject']->specColor ?>"><?php echo $subject['subject']->subDesc; ?></td>
-							<td style="color: <?php echo $subject['subject']->specColor ?>; text-align: center"><?php echo $subject['subject']->units; ?></td>
+							<td style="color: <?php echo $subject['subject']->specColor ?>; text-align: center"><?php echo $subject['lec']; ?></td>
+							<td style="color: <?php echo $subject['subject']->specColor ?>; text-align: center"><?php echo $subject['lab']; ?></td>
+							<td style="color: <?php echo $subject['subject']->specColor ?>; text-align: center"><?php echo $subject['subject']->total_units; ?></td>
 							<td style="color: <?php echo $subject['subject']->specColor ?>">
 								<?php 
 									foreach($subject['sub_req'] as $sr){
@@ -80,6 +90,12 @@
 						++$ctr;
 					}
 				?>
+				<tr>
+					<td></td>
+					<td></td>
+					<th style="text-align: center" colspan="3">Total units: <?php echo $subjects['tot_units'] ?></th>
+					<th></th>
+				</tr>
 			</table>
 			<br>
 			<?php

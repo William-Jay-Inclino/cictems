@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
             for(let s of ss.subjects){
 
                for(let spec of specs){
-                  if(spec.specID == s.subject.specID){
+                  if(spec.specID == s.subject.specID && s.subject.is_counted == 'yes'){
                      spec.total += Number(s.subject.total_units)
                      break
                   }

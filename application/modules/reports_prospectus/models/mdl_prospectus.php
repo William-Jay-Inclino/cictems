@@ -14,7 +14,11 @@ class mdl_Prospectus extends CI_Model{
 		$holder = [];
 		if($prosID){
 			foreach($specs as $s){
-				$total = $this->db->query("SELECT SUM(units) total FROM subject WHERE prosID = $prosID AND specID = ".$s->specID)->row()->total;
+				$total = 0;
+				$subjects = $this->db->query("SELECT DISTINCT id, total_units FROM subject WHERE prosID = $prosID AND is_counted = 'yes' AND specID = ".$s->specID)->result();
+				foreach($subjects as $sub){
+					$total += $sub->total_units;
+				}
 				$holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'specColor'=>$s->specColor,'total'=>$total];
 			}
 			return ['populate'=>$sql, 'specializations'=>$holder];
@@ -22,6 +26,21 @@ class mdl_Prospectus extends CI_Model{
 			return $sql;
 		}
 	}
+
+	// function populate2($prosID = NULL){
+	// 	$sql = $this->db->query("SELECT name, description FROM reports WHERE module = 'reports_prospectus'")->row();
+	// 	$specs = $this->db->get_where('specialization', "prosID = $prosID")->result();
+	// 	$holder = [];
+	// 	if($prosID){
+	// 		foreach($specs as $s){
+	// 			$total = $this->db->query("SELECT SUM(units) total FROM subject WHERE prosID = $prosID AND specID = ".$s->specID)->row()->total;
+	// 			$holder[] = ['specID'=>$s->specID,'specDesc'=>$s->specDesc,'specColor'=>$s->specColor,'total'=>$total];
+	// 		}
+	// 		return ['populate'=>$sql, 'specializations'=>$holder];
+	// 	}else{
+	// 		return $sql;
+	// 	}
+	// }
 
 	function get_prospectuses(){
 		echo json_encode(
