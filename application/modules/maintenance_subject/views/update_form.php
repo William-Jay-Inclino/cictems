@@ -115,6 +115,13 @@
 					{{error.units}}
 				</p>
 			</div>
+			<div class="field">
+				<label class="label">Is unit counted?</label>
+				<div class="control">
+					<button @click="form.is_counted = 'yes'" :class="{'button is-primary': true, 'is-outlined': form.is_counted == 'no'}">Yes</button>
+					<button @click="form.is_counted = 'no'" :class="{'button is-primary': true, 'is-outlined': form.is_counted == 'yes'}">No</button>
+				</div>
+			</div>
 			<br>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
@@ -149,6 +156,7 @@
 		    		subCode: '<?php echo $records[0]->subCode ?>',
 		    		subDesc: '<?php echo $records[0]->subDesc ?>',
 		    		nonSub_pre: '<?php echo $records[0]->nonSub_pre ?>',
+		    		is_counted: '<?php echo $records[0]->is_counted ?>',
 		    		totUnits: {unit: '<?php echo $records[0]->total_units ?>'},
 		    		pre: null,
 		    		pre2: null,

@@ -57,7 +57,7 @@ class mdl_Prospectus extends CI_Model{
 				$tot_units = 0;
 
 				$subjects = $this->db->query("
-					SELECT s.subID,s.id,sp.specID,sp.specColor,s.subCode,s.subDesc,s.type,s.units,s.total_units,s.total_units,s.nonSub_pre,(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
+					SELECT s.subID,s.id,sp.specID,sp.specColor,s.is_counted,s.subCode,s.subDesc,s.type,s.units,s.total_units,s.total_units,s.nonSub_pre,(SELECT yearDesc FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
 					FROM subject s
 					INNER JOIN specialization sp ON s.specID = sp.specID
 					WHERE s.prosID = $prosID AND s.yearID = ".$y->yearID." AND s.semID = ".$sem->semID."
@@ -71,12 +71,18 @@ class mdl_Prospectus extends CI_Model{
 						INNER JOIN subject_req sr ON s.subID = sr.subID AND s.subID = ".$subject->subID."
 					")->result();
 
+					if($subject->is_counted == 'no'){
+						$subject->specColor = 'red';
+					}
+
 					if($last_added){
-						if($last_added->id != $subject->id){
+						if($last_added->id != $subject->id && $subject->is_counted == 'yes'){
 							$tot_units += $subject->total_units;
 						}
 					}else{
-						$tot_units = $subject->total_units;
+						if($subject->is_counted == 'yes'){
+							$tot_units = $subject->total_units;	
+						}
 					}
 
 					$lec = $lab = 0;

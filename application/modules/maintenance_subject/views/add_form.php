@@ -128,6 +128,13 @@
 					{{error.units}}
 				</p>
 			</div>
+			<div class="field">
+				<label class="label">Is unit counted?</label>
+				<div class="control">
+					<button @click="form.is_counted = 'yes'" :class="{'button is-primary': true, 'is-outlined': form.is_counted == 'no'}">Yes</button>
+					<button @click="form.is_counted = 'no'" :class="{'button is-primary': true, 'is-outlined': form.is_counted == 'yes'}">No</button>
+				</div>
+			</div>
 			<br>
 			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
 			<br><br>
@@ -167,7 +174,8 @@
 		    		pre2: null,
 		    		coreq: null,
 		    		spec: null,
-		    		totUnits: null
+		    		totUnits: null,
+		    		is_counted: 'yes'
 		    	},
 		    	error: {
 		    		prospectus: '',
@@ -360,7 +368,7 @@
 		        	}else{
 		        		this.error.spec = ''
 		        	}
-		        	if(!f.lec && !f.lab && !f.totUnits){
+		        	if(!f.lec && !f.lab){
 		        		this.error.units = errMsg
 		        		ok = false
 		        	}else{
