@@ -104,6 +104,10 @@ class Maintenance_Subject extends MY_Controller{
 		$this->mdl_subject->save_unit($data[0],$data[1]);				
 	}
 
+	function save_hr($data){
+		$this->mdl_subject->save_hr($data[0],$data[1]);					
+	}
+
 	function populateShow($ids){
 		$this->mdl_subject->populateShow($ids[0],$ids[1]);					
 	}

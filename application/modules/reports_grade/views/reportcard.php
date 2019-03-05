@@ -101,7 +101,7 @@
 	</table>
 	<?php 
 		$y = array_sum($arr);
-		if($is_complete){
+		if($is_complete && $total_units > 0){
 			$gwa = round(($y / $total_units), 2);	
 		}else{
 			$gwa = '';

@@ -1,5 +1,19 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/vue/vue-multiselect/vue-multiselect.min.css">
 
+<style>
+	.without_ampm::-webkit-datetime-edit-ampm-field {
+	   display: none;
+	 }
+	 input[type=time]::-webkit-clear-button {
+	   -webkit-appearance: none;
+	   -moz-appearance: none;
+	   -o-appearance: none;
+	   -ms-appearance:none;
+	   appearance: none;
+	   margin: -10px; 
+	 }
+</style>
+
 <div id="app" v-cloak>
 
 <section class="section">
@@ -12,13 +26,13 @@
 		</nav>
 	</div>
 	<div class="container" style="max-width: 600px;">
-		<div class="box">
+		<form @submit.prevent="submitForm" class="box">
 			<h5 class="title is-4 has-text-primary has-text-centered">{{ page.title }}</h5>
 			<hr>
 			<div class="field">
 			  <label class="label">Subject Code</label>
 			  <div class="control">
-				  	<input class="input" type="text" v-model.trim="form.subCode" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces." autofocus="true">
+				  	<input class="input" type="text" v-model.trim="form.subCode" required autofocus="true">
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.subCode}}
@@ -27,7 +41,7 @@
 			<div class="field">
 			  <label class="label">Description</label>
 			  <div class="control">
-				  	<textarea class="textarea" v-model.trim="form.subDesc" required pattern="^[a-zA-Z0-9][a-zA-Z0-9\s]*" title="Must only contain alpha-numeric characters and spaces."></textarea>
+				  	<textarea class="textarea" v-model.trim="form.subDesc" required></textarea>
 			  </div>
 			  	<p class="help has-text-danger">
 					{{error.subDesc}}
@@ -128,6 +142,18 @@
 					{{error.units}}
 				</p>
 			</div>
+			<div class="field" v-if="form.lec">
+				<label class="label">Lecture Hours</label>
+				<div class="control">
+					<input type="time" v-model="form.lecHrs" class="input without_ampm" required>	
+				</div>
+			</div>
+			<div class="field" v-if="form.lab">
+				<label class="label">Laboratory Hours</label>
+				<div class="control">
+					<input type="time" v-model="form.labHrs" class="input without_ampm" required>	
+				</div>
+			</div>
 			<div class="field">
 				<label class="label">Is unit counted?</label>
 				<div class="control">
@@ -136,9 +162,9 @@
 				</div>
 			</div>
 			<br>
-			<button class="button is-link is-pulled-right" v-on:click="submitForm">Submit</button>
+			<button type="submit" class="button is-link is-pulled-right">Submit</button>
 			<br><br>
-		</div>
+		</form>
 
 	</div>
 </section>
@@ -175,7 +201,9 @@
 		    		coreq: null,
 		    		spec: null,
 		    		totUnits: null,
-		    		is_counted: 'yes'
+		    		is_counted: 'yes',
+		    		lecHrs: '03:00:00',
+		    		labHrs: '03:00:00'
 		    	},
 		    	error: {
 		    		prospectus: '',

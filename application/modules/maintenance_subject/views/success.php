@@ -32,6 +32,10 @@
 							<td> <?php echo $record->units ?> </td>
 						</tr>
 						<tr>
+							<td><b>Hours/Week:</b> </td>
+							<td> <?php echo $record->hrs_per_wk ?> </td>
+						</tr>
+						<tr>
 							<td><b>Unit Type:</b></td>
 							<td> <?php echo $record->type ?> </td>
 						</tr>

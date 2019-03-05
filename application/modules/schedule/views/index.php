@@ -377,6 +377,9 @@
 				                    	</div>
 				                    	<div class="dropdown-menu" role="menu">
 				                        	<div class="dropdown-content">
+				                        		<a class="dropdown-item has-text-left" :href="'<?php echo base_url() ?>maintenance/subject/show/' + record.id + '/' + record.prosID" target="_blank">
+				                        			<span class="icon has-text-link"> <i class="fa fa-angle-double-right"></i> </span> View details
+				                        		</a>
 				                        		<a @click="deleteClass(i)" class="dropdown-item has-text-left">
 				                        			<span class="icon has-text-danger"> <i class="fa fa-trash"></i> </span> Delete class
 				                        		</a>
@@ -1201,24 +1204,35 @@ document.addEventListener('DOMContentLoaded', function() {
     			}
 	    	},
 	    	is_time_conflict(cc, c,i,ii){
+	    		console.log(cc);
 	    		per_week = this.time_per_week(cc.timeIn,cc.timeOut,cc.day.dayCount)
 	    		has_error = false
-	    		console.log(cc.subID2)
-	    		if(cc.subID2){
-	    			if(per_week != '03:00:00'){
-	    				cc.msg = "Time should be 3 hours a week. Time given a week "+per_week
-						cc.loading = false
-						has_error = true
-	    			}
-	    		}else{
-	    			if(per_week != this.unit_to_hr(cc.units)){
-						cc.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
-						cc.loading = false
-						has_error = true
-					}
+	    		if(per_week != cc.hrs_per_wk){
+	    			cc.msg = "Time should be "+cc.hrs_per_wk+" hours a week. Time given a week "+per_week
+	    			cc.loading = false
+	    			has_error = true
 	    		}
 	    		return has_error
 	    	},
+	    // 	is_time_conflict(cc, c,i,ii){
+	    // 		per_week = this.time_per_week(cc.timeIn,cc.timeOut,cc.day.dayCount)
+	    // 		has_error = false
+	    // 		console.log(cc.subID2)
+	    // 		if(cc.subID2){
+	    // 			if(per_week != '03:00:00'){
+	    // 				cc.msg = "Time should be 3 hours a week. Time given a week "+per_week
+					// 	cc.loading = false
+					// 	has_error = true
+	    // 			}
+	    // 		}else{
+	    // 			if(per_week != this.unit_to_hr(cc.units)){
+					// 	cc.msg = "Time should be "+cc.units+" hours a week. Time given a week "+per_week
+					// 	cc.loading = false
+					// 	has_error = true
+					// }
+	    // 		}
+	    // 		return has_error
+	    // 	},
 	    	remove_milliseconds(t){
 	    		const x = t.split(':')
 	    		return x[0]+':'+x[1]

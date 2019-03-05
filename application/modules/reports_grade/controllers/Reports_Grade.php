@@ -43,7 +43,7 @@ class Reports_Grade extends MY_Controller{
 	function download_by_class($data){
 		$mpdf = new \Mpdf\Mpdf();
 		$this->_data['data'] = $this->mdl_grade->download_by_class($data[0],$data[1],$data[2]);
-		$this->_data['student'] = $this->mdl_grade->get_student($data[1], 'dl');
+		$this->_data['student'] = $this->mdl_grade->get_student($data[0], 'dl');
 		if($data[2] == 'tg'){$view = 'termgrade';}
 		else if($data[2] == 'pr'){$view = 'prelim';}
 		else if($data[2] == 'md'){$view = 'midterm';}

@@ -13,6 +13,17 @@
 	.active-input{
 		background-color: #f2f2f2 
 	}
+	.without_ampm::-webkit-datetime-edit-ampm-field {
+	   display: none;
+	 }
+	 input[type=time]::-webkit-clear-button {
+	   -webkit-appearance: none;
+	   -moz-appearance: none;
+	   -o-appearance: none;
+	   -ms-appearance:none;
+	   appearance: none;
+	   margin: -10px; 
+	 }
 </style>
 
 <div id="app" v-cloak>
@@ -76,6 +87,34 @@
 				</tr>
 				<tr>
 					<td><b>Units:</b> </td>
+					<td colspan="2">
+						<span v-if="!subject.updateUnit">
+							<div class="columns">
+								<div class="column">
+									{{subject.units.unit}} 
+								</div>
+								<div class="column">
+									<button @click="subject.updateUnit = true" class="button is-small is-pulled-right"> <i class="fa fa-pencil"></i> </button>
+								</div>
+							</div>
+						</span>
+						<span v-else>
+							<div class="columns">
+								<div class="column is-7">
+									<multiselect :allow-empty="false" v-model="subject.units" track-by="unit" label="unit" :options="units"></multiselect>
+								</div>
+								<div class="column">
+									<div class="is-pulled-right">
+										<button @click="cancel_unit(i)" class="button is-small btn-width"> Cancel </button>	
+										<button @click="save_unit(i)" class="button is-small btn-width is-success"> Save </button>	
+									</div>
+								</div>
+							</div>
+						</span>
+					</td>
+				</tr>
+				<!-- <tr>
+					<td><b>Units:</b> </td>
 					<td>
 						<span v-if="!subject.updateUnit">
 							 {{subject.units.unit}} 
@@ -86,12 +125,43 @@
 					</td>
 					<td>
 						<div v-if="!subject.updateUnit">
-							<button @click="subject.updateUnit = true" class="button is-small"> <i class="fa fa-pencil"></i> </button>	
+							<button @click="subject.updateUnit = true" class="button is-small is-pulled-right"> <i class="fa fa-pencil"></i> </button>	
 						</div>
 						<div v-else>
 							<button @click="cancel_unit(i)" class="button is-small btn-width"> Cancel </button>	
 							<button @click="save_unit(i)" class="button is-small btn-width is-success"> Save </button>	
 						</div>
+					</td>
+				</tr> -->
+				<tr>
+					<td><b>Hours/Week:</b> </td>
+					<td colspan="2">
+						<span v-if="!subject.updateHrs">
+							<div class="columns">
+								<div class="column">
+									{{subject.hrs_per_wk}} 
+								</div>
+								<div class="column">
+									<button @click="subject.updateHrs = true" class="button is-small is-pulled-right"> <i class="fa fa-pencil"></i> </button>
+								</div>
+							</div>
+						</span>
+						<span v-else>
+							<form @submit.prevent="save_hr(i)">
+								<div class="columns">
+									<div class="column is-7">
+										<input type="time" v-model="subject.hrs_per_wk" class="input without_ampm" required>
+									</div>
+									<div class="column">
+										<div class="is-pulled-right">
+											<button type="button" @click="cancel_hr(i)" class="button is-small btn-width"> Cancel </button>	
+											<button type="submit" class="button is-small btn-width is-success"> Save </button>	
+										</div>
+									</div>
+								</div>
+							</form>
+							
+						</span>
 					</td>
 				</tr>
 				<tr>
@@ -231,6 +301,24 @@
 					 	console.log(e.body)
 					 })
 		    	},
+		    	cancel_hr(i){
+		    		const subject = this.subjects[i]
+		    		subject.updateHrs = false 
+		    		subject.hrs_per_wk = subject.hrs2
+		    	},
+		    	save_hr(i){
+		    		const subject = this.subjects[i]
+		    		subject.updateHrs = false 
+		    		subject.hrs2 = subject.hrs_per_wk
+		    		console.log(subject.hrs_per_wk);
+		    		this.$http.get('<?php echo base_url() ?>maintenance_subject/save_hr/'+subject.hrs_per_wk+'/'+subject.subID)
+		        	.then(response => {
+		        		console.log(response.body)
+		        		
+					 }, e => {
+					 	console.log(e.body)
+					 })
+		    	},
 		    	cancel_unit(i){
 		    		const subject = this.subjects[i]
 		    		subject.updateUnit = false 
@@ -242,9 +330,11 @@
 		        		console.log(response.body)
 		        		const c = response.body
 		        		this.subjects = c.sub.map(k => {
+		        			k.updateHrs = false
 		        			k.updateUnit = false
 		        			k.units = {unit: k.units}
 		        			k.units2 = k.units
+		        			k.hrs2 = k.hrs_per_wk
 		        			return k
 		        		})
 		        		this.reqs = c.reqs

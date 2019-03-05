@@ -72,6 +72,7 @@ class mdl_Subject extends CI_Model{
 			if($lec){
 				$data['units'] = $lec['unit'];
 				$data['type'] = 'lec';
+				$data['hrs_per_wk'] = $this->input->post("lecHrs");
 				$this->db->insert('subject', $data);
 				$id = $this->db->insert_id();	
 
@@ -90,6 +91,7 @@ class mdl_Subject extends CI_Model{
 			if($lab){
 				$data['units'] = $lab['unit'];
 				$data['type'] = 'lab';
+				$data['hrs_per_wk'] = $this->input->post("labHrs");
 				$this->db->insert('subject', $data);
 				$id2 = $this->db->insert_id();	
 
@@ -154,7 +156,7 @@ class mdl_Subject extends CI_Model{
 		$this->check_form_id($id, $prosID);
 
 		$query = $this->db->query("
-			SELECT s.subID,s.subCode,s.subDesc,s.total_units,s.is_counted,s.nonSub_pre,p.prosID,p.prosCode,spec.specID,spec.specDesc,s.units,s.type,s.id,yy.yearID,yy.yearDesc,sem.semID,sem.semDesc,
+			SELECT s.subID,s.subCode,s.subDesc,s.hrs_per_wk,s.total_units,s.is_counted,s.nonSub_pre,p.prosID,p.prosCode,spec.specID,spec.specDesc,s.units,s.type,s.id,yy.yearID,yy.yearDesc,sem.semID,sem.semDesc,
 			(SELECT CONCAT(y.yearDesc,' Standing') FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
 			FROM subject s 
 			INNER JOIN prospectus p ON s.prosID = p.prosID
@@ -385,10 +387,13 @@ class mdl_Subject extends CI_Model{
 		$this->db->update('subject',['units'=>$unit], "subID = $subID");
 		//$this->db->trans_complete();
 	}
+	function save_hr($hr, $subID){
+		$this->db->update('subject',['hrs_per_wk'=>$hr], "subID = $subID");
+	}
 
 	function populateShow($id, $prosID){
 		$data['sub'] = $this->db->query("
-			SELECT s.subID,s.subCode,s.subDesc,s.nonSub_pre,p.prosID,p.prosCode,spec.specID,spec.specDesc,s.units,s.type,s.id,yy.yearID,yy.yearDesc,sem.semID,sem.semDesc,
+			SELECT s.subID,s.subCode,s.subDesc,s.hrs_per_wk,s.nonSub_pre,p.prosID,p.prosCode,spec.specID,spec.specDesc,s.units,s.type,s.id,yy.yearID,yy.yearDesc,sem.semID,sem.semDesc,
 			(SELECT CONCAT(y.yearDesc,' Standing') FROM year_req yr,year y,subject s2 WHERE yr.subID=s2.subID AND yr.yearID=y.yearID AND s2.subID=s.subID LIMIT 1) year_req
 			FROM subject s 
 			INNER JOIN prospectus p ON s.prosID = p.prosID

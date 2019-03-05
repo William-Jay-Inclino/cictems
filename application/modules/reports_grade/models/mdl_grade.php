@@ -194,6 +194,7 @@ class mdl_Grade extends CI_Model{
 				INNER JOIN prospectus p ON sp.prosID = p.prosID  
 				INNER JOIN course c ON p.courseID = c.courseID  
 				INNER JOIN year y ON s.yearID = y.yearID 
+				WHERE s.studID = $studID LIMIT 1
 			")->row();
 		}
 	}

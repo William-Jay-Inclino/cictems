@@ -109,7 +109,7 @@ class mdl_Schedule extends CI_Model{
 
 	function fetchClasses($yearID, $prosID, $termID){
 		$data['classes'] = $this->db->query("
-			SELECT s.subID,s.subCode,s.subDesc,s.units,s.type,(SELECT subID FROM subject WHERE id = s.id AND prosID = s.prosID AND subID <> s.subID LIMIT 1) subID2
+			SELECT s.subID,s.id,s.prosID,s.subCode,s.hrs_per_wk,s.subDesc,s.units,s.type,(SELECT subID FROM subject WHERE id = s.id AND prosID = s.prosID AND subID <> s.subID LIMIT 1) subID2
 			FROM subject s WHERE s.prosID = $prosID AND s.yearID = $yearID AND
 			s.semID = (SELECT semID FROM term WHERE termID = $termID LIMIT 1)
 		")->result();
@@ -129,7 +129,7 @@ class mdl_Schedule extends CI_Model{
 
 	function get_sec_info($secID, $termID){
 		$data['classes'] = $this->db->query("
-				SELECT c.classID,c.merge_with,sub.subID,sub.subCode,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn,
+				SELECT c.classID,c.merge_with,sub.subID,sub.id,sub.prosID,sub.subCode,sub.hrs_per_wk,sub.subDesc,sub.units,sub.type,d.dayID,d.dayDesc,d.dayCount,c.timeIn,c.timeOut,r.roomID,r.roomName,f.facID,u.ln, u.fn,
 				CONCAT(TIME_FORMAT(c.timeIn, '%h:%i%p'),' - ',TIME_FORMAT(c.timeOut, '%h:%i%p')) class_time, (SELECT CONCAT(ss.subCode,'|',ss.type,'|',sec.secName) FROM class cc INNER JOIN section sec ON cc.secID = sec.secID INNER JOIN subject ss ON cc.subID = ss.subID WHERE classID = c.merge_with LIMIT 1) class_merge,(SELECT subID FROM subject WHERE id = sub.id AND prosID = sub.prosID AND subID <> sub.subID LIMIT 1) subID2
 				FROM class c 
 				INNER JOIN room r ON c.roomID = r.roomID 
