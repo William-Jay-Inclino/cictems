@@ -14,7 +14,7 @@ class mdl_Deans_List extends CI_Model{
 	function populate($termID){
 		$data = [];
 		$this->termID = $termID;
-		$reqs = $this->db->query("SELECT * FROM deanslist_reqs WHERE termID = $termID ORDER BY discount DESC")->result();
+		$reqs = $this->db->query("SELECT * FROM deanslist_reqs WHERE termID = $termID AND NOT(discount = '' AND min_units = 0 AND max_units = 0 AND min_gwa = 0.00 AND max_gwa = 0.00) ORDER BY discount DESC")->result();
 
 		$students =$this->db->query("
 			SELECT DISTINCT s.studID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseID, c.courseCode,y.yearID, y.yearDesc,u.sex,u.address,u.dob
@@ -27,7 +27,7 @@ class mdl_Deans_List extends CI_Model{
 			INNER JOIN course c ON p.courseID = c.courseID
 			INNER JOIN users u ON s.uID = u.uID 
 			WHERE class.termID = $termID AND sc.status = 'Enrolled' AND spt.termID = $termID
-			ORDER BY y.yearDesc,name ASC
+			ORDER BY c.courseCode,y.yearDesc,name ASC
 		")->result();
 
 		//check qualifications for deans list

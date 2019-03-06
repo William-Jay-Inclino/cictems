@@ -15,6 +15,16 @@ class mdl_Deans_List extends CI_Model{
 		$this->db->update('deanslist_reqs', $data, "id = $id");
 	}
 
+	function remove(){
+		$id = $this->input->post('id');
+		$this->db->delete('deanslist_reqs', "id = $id");
+	}
+
+	function add(){
+		$data['termID'] = $this->input->post('termID');
+		$this->db->insert('deanslist_reqs', $data);
+	}
+
 }
 
 ?>

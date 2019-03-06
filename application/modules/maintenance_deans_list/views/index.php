@@ -17,6 +17,8 @@
 		</div>
 		<br>
 		<div class="box">
+			<button @click="add" :class="{'button is-primary': true, 'is-loading': isLoading}">Add Qualification</button>
+			<hr>
 			<table class="table is-fullwidth">
 				<thead>
 					<tr>
@@ -46,7 +48,7 @@
 							<multiselect @input="update(i,'maxG')" v-model="q.max_gwa" track-by="gwa" label="gwa" :options="gwas" :allow-empty="false"></multiselect>
 						</td>
 						<td>
-							<button class="button is-danger"> <span class="icon"><i class="fa fa-trash"></i></span>  </button>
+							<button @click="remove(i)" class="button is-danger"> <span class="icon"><i class="fa fa-trash"></i></span>  </button>
 						</td>
 					</tr>
 				</tbody>
@@ -71,7 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	qualifications: [],
 	    	discounts: [],
 	    	units: [],
-	    	gwas: []
+	    	gwas: [],
+	    	isLoading: false
 	    },
 	    created() {
 	    	this.fetchTerms()
@@ -85,6 +88,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	    },
 	    methods: {
+	    	add(){
+	    		this.isLoading = true
+	    		this.$http.post('<?php echo base_url() ?>maintenance_deans_list/add', {termID: this.term.termID})
+	        	.then(response => {
+	        		this.populate()
+				 });
+	    	},
 	    	fetchTerms() {
 	        	this.$http.get('<?php echo base_url() ?>reusable/get_all_term')
 	        	.then(response => {
@@ -108,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    				})
 	    			}
 	    			this.qualifications = qualifications
-	    			
+	    			this.isLoading = false
 	    		}, e => {
 	    			console.log(e)
 
@@ -116,8 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    	},
 	    	update(i, val){
 	    		const quals = this.qualifications[i]
-	    		console.log(quals);
-	    		swal('Success', 'Qualification successfully updated!', 'success')
+	    		//swal('Success', 'Qualification successfully updated!', 'success')
 	    		if(val == 'dc') data = {discount: quals.discount.discount}
 	    		if(val == 'minU') data = {min_units: quals.min_units.unit}
 	    		if(val == 'maxU') data = {max_units: quals.max_units.unit}
@@ -133,6 +142,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				 })
 
+	    	},
+	    	remove(i){
+	    		const quals = this.qualifications[i]
+	    		swal({
+				  title: "Confirmation",
+				  text: "Are you sure you want to remove this qualification?",
+				  icon: "warning",
+				  buttons: {
+				  	cancel: true,
+				  	confirm: {
+				  		closeModal: false
+				  	}
+				  },
+				  dangerMode: true
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+				    swal('Success', 'Qualification successfully deleted!', 'success')
+				    this.qualifications.splice(i, 1)
+				    this.$http.post('<?php echo base_url() ?>maintenance_deans_list/remove', {id: quals.id})
+		        	.then(res => {
+		        		console.log(res.body)
+
+					 }, e => {
+					 	console.log(e.body)
+
+					 })
+				  }
+				})
 	    	},
 	    	prepareForm(){
 	    		const discounts = []
