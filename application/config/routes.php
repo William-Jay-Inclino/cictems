@@ -101,6 +101,8 @@ $route['maintenance/fees/form-success/(:num)'] = 'maintenance_fees/success_page/
 $route['maintenance/fees/transfer-fee/(:num)'] = 'maintenance_fees/transfer_fee/$1';
 $route['maintenance/fees/involved-students/(:num)'] = 'maintenance_fees/involved_page/$1';
 
+$route['maintenance/honor-list-qualification'] = 'maintenance_deans_list';
+
 // --------------END MAINTENANCE-----------------
 
 
@@ -157,6 +159,8 @@ $route['reports/payment-logs/download/(:any)/(:any)/(:any)'] = 'reports_payment_
 
 $route['reports/class'] = 'reports_class';
 $route['reports/class/download/(:any)/(:num)'] = 'reports_class/download/$1/$2';
+
+$route['reports/deans-lists'] = 'reports_deans_list';
 
 // --------------END REPORTS-----------------
 

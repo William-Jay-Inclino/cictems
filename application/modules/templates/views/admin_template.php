@@ -101,6 +101,9 @@
                    <a class="navbar-item <?php if($current_module == 12){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/grade-formula">
                      Grade Formula
                    </a>
+                   <a class="navbar-item <?php if($current_module == 12.5){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/honor-list-qualification">
+                     Honor List Qualifications
+                   </a>
                    <a class="navbar-item <?php if($current_module == 13){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>maintenance/fees">
                      Departmental Fees
                    </a>
@@ -151,6 +154,9 @@
                    </a>
                    <a class="navbar-item <?php if($current_module == 22){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/class">
                      Schedules
+                   </a>
+                   <a class="navbar-item <?php if($current_module == 23){echo 'nav-active2';} ?>" href="<?php echo base_url() ?>reports/deans-lists">
+                     Dean's Honor Lists
                    </a>
                  </div>
                </div>

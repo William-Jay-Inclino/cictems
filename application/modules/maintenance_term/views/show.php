@@ -100,6 +100,7 @@
 		    	deleteRec(id){
 		    		this.$http.get('<?php echo base_url() ?>maintenance_term/delete/'+id)
 		        	.then(response => {
+		        		console.log(response.body);
 		        		swal('Poof! record has been deleted!', {
 					      icon: 'success',
 					    }).then((x) => {
@@ -107,6 +108,9 @@
 						    window.location.href = this.page.list
 						  }
 						})
+					 }, e => {
+					 	console.log(e.body);
+
 					 });
 		    	},
 		    	set_active(){

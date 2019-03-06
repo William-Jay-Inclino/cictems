@@ -36,6 +36,8 @@ class mdl_Term extends CI_Model{
 			$this->db->insert('reports_date', ['termID'=>$insertID, 'module'=>'fees', 'updated_at'=>'2000-01-01']);
 			$this->db->insert('reports_date', ['termID'=>$insertID, 'module'=>'class_schedules', 'updated_at'=>'2000-01-01']);
 
+			$this->insert_deans_list_qualifications($insertID);
+
 			$query = $this->db->query("SELECT 1 FROM counter2 WHERE module = 'term' LIMIT 1");
 			$row =  $query->row();
 			if($row){
@@ -47,6 +49,24 @@ class mdl_Term extends CI_Model{
 		}
 
 		echo json_encode($output);
+	}
+
+	function insert_deans_list_qualifications($termID){
+		$prevQuals = $this->db->query("
+			SELECT * FROM deanslist_reqs WHERE termID = (SELECT termID FROM term WHERE termStat = 'active' LIMIT 1)
+		")->result();
+
+		foreach($prevQuals as $pq){
+			$data['termID'] = $termID;
+			$data['min_units'] = $pq->min_units;
+			$data['max_units'] = $pq->max_units;
+			$data['min_gwa'] = $pq->min_gwa;
+			$data['max_gwa'] = $pq->max_gwa;
+			$data['discount'] = $pq->discount;
+
+			$this->db->insert('deanslist_reqs', $data);
+		}
+
 	}
 
 	function read($search_val = NULL, $page = '1', $per_page = '10'){
@@ -107,6 +127,8 @@ class mdl_Term extends CI_Model{
 	}
 
 	function delete($id){
+		$this->db->delete('deanslist_reqs', 'termID = '.$id);
+		$this->db->delete('reports_date', 'termID = '.$id);
 		$this->db->delete('term', 'termID = '.$id);
 		$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'term'");
 	}
@@ -145,10 +167,10 @@ class mdl_Term extends CI_Model{
 
 		if($stat == 'inactive'){
 			$query = $this->db->select('1')->get_where('class', "termID = $id", 1)->row();
-			//$query2 = $this->db->select('1')->get_where('fee', "termID = $id", 1)->row();
+			$query2 = $this->db->select('1')->get_where('fee', "termID = $id", 1)->row();
 			$query3 = $this->db->select('1')->get_where('studgrade', "termID = $id", 1)->row();
 
-			if(!$query && !$query3){
+			if(!$query && !$query3 && !$query2){
 				$output = 1;
 			}
 		}else{
