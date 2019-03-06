@@ -25,6 +25,10 @@ class Maintenance_Deans_List extends MY_Controller{
 		$this->mdl_deans_list->populate($data[0]);
 	}
 
+	function update(){
+		$this->mdl_deans_list->update();	
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

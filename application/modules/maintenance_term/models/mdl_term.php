@@ -127,10 +127,12 @@ class mdl_Term extends CI_Model{
 	}
 
 	function delete($id){
+		$this->db->trans_start();
 		$this->db->delete('deanslist_reqs', 'termID = '.$id);
 		$this->db->delete('reports_date', 'termID = '.$id);
 		$this->db->delete('term', 'termID = '.$id);
 		$this->db->query("UPDATE counter2 SET total = total - 1 WHERE module = 'term'");
+		$this->db->trans_complete();
 	}
 
 	function set_active($id){

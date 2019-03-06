@@ -201,7 +201,7 @@ class mdl_Schedule extends CI_Model{
 
 	function search_subject($search_value, $prosID){
 		$search_value = strtr($search_value, '_', ' ');
-		$query = $this->db->select("subID,subCode,CONCAT(subCode,' | ',subDesc,' (',type,')') subject,subDesc, units, type")->like("CONCAT(subCode,' | ',subDesc)",$search_value)->get_where('subject', "prosID = $prosID" , 10);
+		$query = $this->db->select("subID,hrs_per_wk,subCode,CONCAT(subCode,' | ',subDesc,' (',type,')') subject,subDesc, units, type")->like("CONCAT(subCode,' | ',subDesc)",$search_value)->get_where('subject', "prosID = $prosID" , 10);
 		echo json_encode($query->result());
 	}
 

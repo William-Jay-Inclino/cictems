@@ -9,6 +9,11 @@ class mdl_Deans_List extends CI_Model{
 		);
 	}
 
+	function update(){
+		$data = $this->input->post('data');
+		$id = $this->input->post('id');
+		$this->db->update('deanslist_reqs', $data, "id = $id");
+	}
 
 }
 

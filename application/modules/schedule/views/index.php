@@ -1037,8 +1037,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		if(s != null && c.timeIn && c.timeOut && c.day != null && c.room != null && c.faculty != null){
 	    			c.units = s.units
 	    			per_week = this.time_per_week(c.timeIn,c.timeOut,c.day.dayCount)
-					if(per_week != this.unit_to_hr(c.units)){
-    					c.msg = "Time should be "+c.units+" hours a week. Time given a week "+per_week
+					if(per_week != s.hrs_per_wk){
+    					c.msg = "Time should be "+s.hrs_per_wk+" hours a week. Time given a week "+per_week
     					has_error = true
 					}else{
 						for(let [i,cc] of classes.entries()){
@@ -1159,7 +1159,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		let has_conflict = false
 	    		let per_week = null
 	    		for(let [ii, cc] of classes.entries()){
-
     				if(cc.timeIn && cc.timeOut && cc.day != null && cc.room != null && cc.faculty != null && cc.status2 == 0){
     					// console.log(this.is_time_conflict(cc, c))
     					if(!this.is_time_conflict(cc, c,i,ii)){
