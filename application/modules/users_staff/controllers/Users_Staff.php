@@ -41,6 +41,7 @@ class Users_Staff extends MY_Controller{
 
 	function success_page($id){
 		$this->_data['module_view'] = 'success';
+		$this->_data['mailStat'] = $id[1];
 		$this->_data['record'] = $this->mdl_staff->read_one($id[0],$this->_data['current_term']->termID);
 		echo Modules::run($this->_template, $this->_data);
 	}

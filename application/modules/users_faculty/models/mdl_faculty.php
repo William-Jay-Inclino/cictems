@@ -43,6 +43,7 @@ class mdl_Faculty extends CI_Model{
 	}
 
 	function create(){
+		$mail_status = 'not-sent';
 		$this->get_form_data($data);
 		
 		$this->db->trans_start();
@@ -61,7 +62,9 @@ class mdl_Faculty extends CI_Model{
 			$body .= "Username: ".$data['userName'];
 			$body .= "\n";
 			$body .= "Password: ".$data['userPass'];
-			$this->send_mail($body, $data['email']);
+			if($this->send_mail($body, $data['email'])){
+				$mail_status = 'sent';
+			}
 		}
 
 		$this->db->insert('users', $data);
@@ -86,8 +89,8 @@ class mdl_Faculty extends CI_Model{
 		//$this->send_mail($data);
 
 		$this->db->trans_complete();
-
-		echo $facID;
+		echo json_encode(['facID' => $facID, 'mailStat' => $mail_status]);
+		// echo $facID;
 		
 
 	}

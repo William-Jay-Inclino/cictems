@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		this.$http.get('<?php echo base_url() ?>classes/populate_class_sel/'+this.facID+'/'+this.termID+'/'+this.id+'/'+this.prosID+'/'+this.secID)
 	            .then(response => {
 	            	const c = response.body 
-	            	console.log(c);
+	            	// console.log(c);
 	               	this.classes = c.class 
 	               	this.status = c.class[0].status
 	               	this.date_submitted = c.class[0].date_submitted
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		    		s.final_loader = false
 
 	            	const res = response.body
-	            	console.log(res)
+	            	// console.log(res)
 	            	if(res.output == 'error'){
 	            		swal('Unable to drop!', 'Succeeding term grade has data', 'error')
 	            		if(x == 'p'){s.prelim = {grade: res.prevGrade}}
@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		this.$http.post('<?php echo base_url() ?>classes/add_student', data)
 	            .then(response => {
 	               const c = response.body
-	               console.log(c)
+	               // console.log(c)
 	               if(c == 'exist'){
 	               		swal('Student is already in this class!', {icon: 'warning'})
 	               }else{
@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	    	finGrade(){
 	    		const x = this.checkRemarks
-	    		console.log(x);
+	    		// console.log(x);
 	    		if(x.length == 0){
 	    			swal({
 					  title: "Are you sure?",

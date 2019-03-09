@@ -237,10 +237,11 @@
 			        	.then(response => {
 			        		this.isLoading = false
 			        		const c = response.body
+			        		console.log(c);
 			        		if(c == 'error'){
 			        			swal('Error', "Gmail already exist!", 'error')
 			        		}else{
-			        			window.location.href = this.page.success + c.studID
+			        			window.location.href = this.page.success + c.studID + '/' + c.mailStat
 			        		}
 						 }, e => {
 						 	console.log(e.body);

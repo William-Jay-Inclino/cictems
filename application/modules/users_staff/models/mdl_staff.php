@@ -43,6 +43,7 @@ class mdl_Staff extends CI_Model{
 	}
 
 	function create(){
+		$mail_status = 'not-sent';
 		$this->get_form_data($data);
 		
 		$this->db->trans_start();
@@ -60,7 +61,9 @@ class mdl_Staff extends CI_Model{
 			$body .= "Username: ".$data['userName'];
 			$body .= "\n";
 			$body .= "Password: ".$data['userPass'];
-			$this->send_mail($body, $data['email']);
+			if($this->send_mail($body, $data['email'])){
+				$mail_status = 'sent';
+			}
 		}
 
 		$this->db->insert('users', $data);
@@ -81,7 +84,8 @@ class mdl_Staff extends CI_Model{
 
 		$this->db->trans_complete();
 
-		echo $staffID;
+		echo json_encode(['staffID' => $staffID, 'mailStat' => $mail_status]);
+		// echo $staffID;
 		
 
 	}

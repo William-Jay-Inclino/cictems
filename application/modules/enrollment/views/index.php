@@ -103,7 +103,7 @@
                            <th>Units</th>
                            <th>Days</th>
                            <th>Time</th>
-                           <th v-if="status == 'Unenrolled'">Remove</th>
+                           <th v-if="status != 'Pending'">Remove</th>
                         </thead>
                         <tbody>
                            <tr v-for="record, i in classes">
@@ -112,7 +112,7 @@
                               <td> {{record.units}} </td>
                               <td>{{record.day}}</td>
                               <td>{{record.class_time}}</td>
-                              <td v-if="status == 'Unenrolled'">
+                              <td v-if="status != 'Pending'">
                                  <button class="button is-rounded is-small is-danger" v-on:click="remove(record.classID,record.subCode,i)">
                                     <span class="icon">
                                        <i class="fa fa-times"></i>
@@ -552,15 +552,19 @@ document.addEventListener('DOMContentLoaded', function() {
          this.active_section = null
       },
       remove(classID,subCode,index){
-         this.classes.splice(index, 1)
-         if(this.classes.length === 0){
-            this.status = 'Empty'
-            this.sections = this.sections2
-            this.section = null
-         }
-      	this.$http.get('<?php echo base_url() ?>enrollment/deleteClass/'+classID+'/'+this.selected_student.studID)
+      	this.$http.get('<?php echo base_url() ?>enrollment/deleteClass/'+classID+'/'+this.selected_student.studID+'/'+this.status)
             .then(response => {
-               // console.log(response.body);
+               console.log(response.body)
+               if(response.body == 'error'){
+                  swal('Error', 'Unable to remove class. Student has already a grade', 'error')
+               }else{
+                  this.classes.splice(index, 1)
+                  if(this.classes.length === 0){
+                     this.status = 'Empty'
+                     this.sections = this.sections2
+                     this.section = null
+                  }   
+               }
                
             }, e => {
                console.log(e.body);
@@ -614,10 +618,11 @@ document.addEventListener('DOMContentLoaded', function() {
                this.addClass()
             }
          }else{
-            if(!this.not_enrol_both_subs){
+            if(!this.not_enrol_both_subs && this.status != 'Enrolled'){
                swal('Error', "Please enroll both subjects in the evaluation form!", 'error')
             }else{
-               swal('Password required',{
+               const msg = (!this.not_enrol_both_subs) ? '. Please also enrol the other class in this subject!' : ''
+               swal('Password required' + msg,{
                  content: {
                      element: "input",
                      attributes:{

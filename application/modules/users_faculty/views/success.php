@@ -12,10 +12,10 @@
 							<i class="fa fa-info-circle"></i>
 						</span>
 						<?php 
-							if($record['facInfo']->userName == ''){
-								echo "Login details not sent";
-							}else{
+							if($mailStat == 'sent'){
 								echo "Login details successfully sent to ".$record['facInfo']->email;
+							}else{
+								echo "Login details not sent";
 							}
 						?>
 					</td>

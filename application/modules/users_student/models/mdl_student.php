@@ -28,6 +28,7 @@ class mdl_Student extends CI_Model{
 
 	function create($termID){
 		//print_r($_POST); die();
+		$mail_status = 'not-sent';
 		$this->db->trans_start();
 		$this->get_form_data($data);
 		$data['roleID'] = 4;
@@ -43,7 +44,10 @@ class mdl_Student extends CI_Model{
 			$body .= "Username: ".$data['userName'];
 			$body .= "\n";
 			$body .= "Password: ".$data['userPass'];
-			$this->send_mail($body, $data['email']);
+			if($this->send_mail($body, $data['email'])){
+				$mail_status = 'sent';
+			}
+			
 		}
 		$this->db->insert('users', $data);
 		$data2['uID'] = $this->db->insert_id();
@@ -62,7 +66,7 @@ class mdl_Student extends CI_Model{
 			$this->db->query("INSERT INTO counter2(module,total) VALUES('student','1')");
 		}
 		$this->db->trans_complete();
-		echo json_encode(['output'=>'success','studID'=>$data3['studID']]);
+		echo json_encode(['output'=>'success','studID'=>$data3['studID'], 'mailStat' => $mail_status]);
 	}
 
 	function read($option = 's.controlNo',$search_val = NULL, $page = '1', $per_page = '10'){

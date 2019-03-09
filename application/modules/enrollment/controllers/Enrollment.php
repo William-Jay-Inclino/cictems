@@ -47,7 +47,7 @@ class Enrollment extends MY_Controller{
 	}
 
 	function deleteClass($id){
-		$this->mdl_enrollment->deleteClass($id[0],$id[1]);
+		$this->mdl_enrollment->deleteClass($id[0],$id[1], $id[2]);
 	}
 
 	function evaluate(){

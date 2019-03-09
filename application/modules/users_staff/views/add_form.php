@@ -153,7 +153,7 @@
 			        		if(c == 'error'){
 			        			swal('Error', "Gmail already exist!", 'error')
 			        		}else{
-			        			window.location.href = this.page.success + c
+			        			window.location.href = this.page.success + c.staffID + '/' + c.mailStat
 			        		}
 						 }, e => {
 						 	console.log(e.body);

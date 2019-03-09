@@ -111,7 +111,13 @@ class mdl_Enrollment extends CI_Model{
 		}
 	}
 
-	function deleteClass($classID,$studID){
+	function deleteClass($classID,$studID, $status){
+		if($status == 'Enrolled'){
+			$has_grade = $this->db->query("SELECT 1 FROM studclass WHERE studID = $studID AND classID = $classID AND NOT(prelim = '' AND midterm = '' AND prefi = '' AND final = '') LIMIT 1")->row();
+			if($has_grade){
+				die('error');
+			}
+		}
 		$this->db->delete('studclass', ['classID'=>$classID,'studID'=>$studID]);
 	}
 
