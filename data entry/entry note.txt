@@ -1,0 +1,3 @@
+1st year - not encoded
+2nd year - done
+3rd year - done (to be reviewed. see readme.txt)
