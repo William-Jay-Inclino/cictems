@@ -287,7 +287,7 @@ class mdl_myclass extends CI_Model{
 	}
 
 	function finalized_grade(){
-		$basic  = new \Nexmo\Client\Credentials\Basic('40a92841', 'shf74GcIMk3uvizb');
+		$basic  = new \Nexmo\Client\Credentials\Basic('180152c6', 'QxlpypeqM9KGx3Nm');
 		$client = new \Nexmo\Client($basic);
 
 		$ids = $this->input->post('classIDs');
