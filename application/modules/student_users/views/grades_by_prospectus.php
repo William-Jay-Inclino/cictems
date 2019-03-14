@@ -32,7 +32,7 @@
 									if(!$row['subject']->term){
 										$term = ['','',''];
 									}else{
-										$term = explode('|', $row['subject']['term']); 
+										$term = explode('|', $row['subject']->term); 
 									}
 									?>
 									

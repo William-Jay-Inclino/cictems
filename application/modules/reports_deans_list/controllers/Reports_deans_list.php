@@ -10,7 +10,7 @@ class Reports_deans_list extends MY_Controller{
 	}
 
 	function _remap($method, $params = []){
-        if ($method != 'index'){
+        if ($method != 'index' && $method != 'download'){
             $this->prevent_url_access();
         }
         $this->$method($params);
@@ -23,6 +23,17 @@ class Reports_deans_list extends MY_Controller{
 
 	function populate($data){
 		$this->mdl_deans_list->populate($data[0]);
+	}
+
+	function download($data){
+		// $this->mdl_deans_list->populate($data[0]);
+		$mpdf = new \Mpdf\Mpdf();
+		$this->_data['data'] = $this->mdl_deans_list->populate($data[0], 'dl');
+		$this->_data['term'] = $this->mdl_deans_list->get_term($data[0]);
+
+		$html = $this->load->view($this->_data['module'].'/download',$this->_data, true);
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
 	}
 
 	private function prevent_url_access(){

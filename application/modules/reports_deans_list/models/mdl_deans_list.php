@@ -9,9 +9,14 @@ class mdl_Deans_List extends CI_Model{
 		2. No grade of 5.0 & INC in the current and past semesters
 		3a. A GWA of 1.0 - 1.29 = 100% tuition fee
 		3b. A GWA of 1.30 - 1.50 = 50% tuition fee
+		note: dapat submitted na tanan ge enroll na classes
 	*/
 
-	function populate($termID){
+	function get_term($termID){
+		return $this->db->query("SELECT t.schoolYear, s.semDesc FROM term t INNER JOIN semester s ON t.semID=s.semID WHERE t.termID = $termID LIMIT 1")->row();
+	}
+
+	function populate($termID, $val = NULL){
 		$data = [];
 		$this->termID = $termID;
 		$reqs = $this->db->query("SELECT * FROM deanslist_reqs WHERE termID = $termID AND NOT(discount = '' AND min_units = 0 AND max_units = 0 AND min_gwa = 0.00 AND max_gwa = 0.00) ORDER BY discount DESC")->result();
@@ -49,17 +54,28 @@ class mdl_Deans_List extends CI_Model{
 
 			
 		}
-		echo json_encode($data);
+		if($val == NULL){
+			echo json_encode($data);
+		}else{
+			return $data;
+		}
 	}
 
 	private function is_qualified($classes, $reqs, $studID){
 		$gwa = $discount =  '';
+		$is_all_class_submitted = true;
 		$is_qualified = $unit_qualified = $gwa_qualified = $grade_qualified = false;
 		$total_units = 0;
 		$container = [];
 
 		//get total units
 		foreach($classes as $class){
+
+			if($class->finalgrade == ''){
+				$is_all_class_submitted = false;
+				break;
+			}
+
 			$is_exist = false;
 			foreach($container as $c){
 				if($c['id'] == $class->id && $c['prosID'] == $class->prosID){
@@ -74,33 +90,39 @@ class mdl_Deans_List extends CI_Model{
 			}
 		}
 
-		foreach($reqs as $r){
-			if($total_units >= $r->min_units && $total_units <= $r->max_units){
-				$unit_qualified = true;
-				break;
+		if($is_all_class_submitted){
+			foreach($reqs as $r){
+				if($total_units >= $r->min_units && $total_units <= $r->max_units){
+					$unit_qualified = true;
+					break;
+				}
+
+			}	
+			
+			if($unit_qualified){
+				$is_invalid_grade = $this->db->select('1')->get_where('studgrade', "studID = $studID AND remarks <> 'Passed'", 1)->row();
+				if(!$is_invalid_grade){
+					$grade_qualified = true;
+				}
 			}
 
-		}	
+			if($grade_qualified){
+				$result = $this->is_gwa_qualified($studID, $total_units, $container, $reqs);
+				$gwa_qualified = $result['is_qualified'];
+				$gwa = $result['gwa'];
+				$discount = $result['discount'];
+			}
+
+			if($gwa_qualified){
+				$is_qualified = true;
+			}
+
+			return ['is_qualified' => $is_qualified, 'gwa' => $gwa, 'discount' => $discount];
+		}else{
+			return ['is_qualified' => false, 'gwa' => $gwa, 'discount' => $discount];
+		}
+
 		
-		if($unit_qualified){
-			$is_invalid_grade = $this->db->select('1')->get_where('studgrade', "studID = $studID AND remarks <> 'Passed'", 1)->row();
-			if(!$is_invalid_grade){
-				$grade_qualified = true;
-			}
-		}
-
-		if($grade_qualified){
-			$result = $this->is_gwa_qualified($studID, $total_units, $container, $reqs);
-			$gwa_qualified = $result['is_qualified'];
-			$gwa = $result['gwa'];
-			$discount = $result['discount'];
-		}
-
-		if($gwa_qualified){
-			$is_qualified = true;
-		}
-
-		return ['is_qualified' => $is_qualified, 'gwa' => $gwa, 'discount' => $discount];
 	
 	}
 

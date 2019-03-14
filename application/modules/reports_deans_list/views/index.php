@@ -13,12 +13,11 @@
 		<div class="columns">
 			<div class="column">
 				<label class="label">Term</label>
-	            <multiselect v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
+	            <multiselect @input="populate" v-model="term" track-by="termID" label="term" :options="terms" :allow-empty="false"></multiselect>
 			</div>
 			<div class="column">
 				<div class="is-pulled-right">
-					<button class="button">Settings</button>
-					<button class="button is-primary">Generate Report</button>	
+					<a :href="'<?php echo base_url() ?>reports/deans-lists/download/' + term.termID" class="button is-primary" target="_blank">Generate Report</a>
 				</div>
 			</div>
 		</div>

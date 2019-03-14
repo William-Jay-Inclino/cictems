@@ -37,7 +37,10 @@
                <a class="navbar-item <?php if($current_module == 1){echo 'nav-active';} ?>" href="<?php echo base_url() ?>classes">
                  Class Grades
                </a>
-               <div class="navbar-item has-dropdown is-hoverable">
+               <a class="navbar-item <?php if($current_module == 26){echo 'nav-active';} ?>" href="<?php echo base_url() ?>schedule">
+                 Schedule
+               </a>
+               <!-- <div class="navbar-item has-dropdown is-hoverable">
                  <a class="navbar-link <?php if($current_module == 26 || $current_module == 27){echo 'nav-active';} ?>" href="#">
                    Schedule
                  </a>
@@ -49,7 +52,7 @@
                    Automatic
                   </a>
                  </div>
-               </div>
+               </div> -->
                <div class="navbar-item has-dropdown is-hoverable">
                  <a class="navbar-link <?php if($current_module >= 2 && $current_module <= 4){echo 'nav-active';} ?>" href="#">
                    Transactions

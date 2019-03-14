@@ -102,6 +102,7 @@ $route['reports/payment-logs/download/(:any)/(:any)/(:any)'] = 'reports_payment_
 $route['reports/class'] = 'reports_class';
 $route['reports/class/download/(:any)/(:num)'] = 'reports_class/download/$1/$2';
 $route['reports/deans-lists'] = 'reports_deans_list';
+$route['reports/deans-lists/download/(:num)'] = 'reports_deans_list/download/$1';
 $route['student/dashboard'] = 'student_users';
 $route['student/my-classes'] = 'student_users/my_classes';
 $route['student/enrolment'] = 'student_users/enrolment';
