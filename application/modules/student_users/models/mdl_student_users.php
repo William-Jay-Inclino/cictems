@@ -332,7 +332,7 @@ class mdl_Student_Users extends CI_Model{
 		$page = $this->input->post("page");
 		$per_page = $this->input->post("per_page");
 		$filteredDate = $this->input->post("filteredDate");
-		$studID = $this->session->userdata('uID');
+		$studID = $this->db->query("SELECT studID FROM student WHERE uID = ".$this->session->userdata('uID')." LIMIT 1")->row()->studID;
 
 		$start = ($page - 1) * $per_page;
 

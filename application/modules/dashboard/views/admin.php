@@ -24,7 +24,7 @@
 			<hr>
 			<div class="columns" v-show="is_user_active">
 				<div class="column">
-					<a href="<?php echo base_url() ?>users/student" target="_blank">
+					<a href="<?php echo base_url() ?>reports/student" target="_blank">
 						<div class="message is-success">
 							<div class="message-header">
 						    	<p>Enrolled Students</p>
@@ -62,7 +62,7 @@
 			</div>
 		</div>
 
-		<div class="box">
+		<!-- <div class="box">
 			<h4 class="title is-4">
 				<span class="icon has-text-primary">
 					<i class="fa fa-cogs"></i>
@@ -178,7 +178,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<div class="box">
 			<h4 class="title is-4">
 				<span class="icon has-text-primary">
