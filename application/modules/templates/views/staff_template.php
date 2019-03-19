@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="<?php echo base_url(); ?>assets/img/cicte_logo.png" type="image/x-icon" />
     <title>CICTE</title>
-    <script src="<?php echo base_url(); ?>assets/vendor/pace/pace.min.js"></script>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/pace/pace-theme-minimal.css">
+    <!-- <script src="<?php echo base_url(); ?>assets/vendor/pace/pace.min.js"></script>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/pace/pace-theme-minimal.css"> -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bulma/bulma.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/headroom/headroom.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
@@ -262,7 +262,7 @@
      </header>
         
       <main class="Site-content">
-        <script src="<?php echo base_url(); ?>assets/vendor/vue/vue.js"></script>
+        <script src="<?php echo base_url(); ?>assets/vendor/vue/vue.min.js"></script>
         <!-- main content here -->
         <?php
           $this->load->view($module.'/'.$module_view); 

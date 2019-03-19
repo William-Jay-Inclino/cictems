@@ -34,8 +34,8 @@ class Dashboard extends MY_Controller{
 		echo Modules::run($this->_template, $this->_data);
 	}
 
-	function get_subjects(){
-		$this->mdl_dashboard->get_subjects($this->_data['current_term']->termID);
+	function populate2(){
+		$this->mdl_dashboard->populate2($this->_data['current_term']->termID);
 	}
 
 	private function prevent_url_access(){
