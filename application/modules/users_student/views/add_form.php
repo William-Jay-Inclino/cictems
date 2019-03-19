@@ -79,6 +79,15 @@
 					</p>
 				</div>
 				<div class="field">
+				  <label class="label">Status</label>
+				  <div class="control">
+					  	<multiselect v-model="form.status" track-by="statDesc" label="statDesc" :options="statuses" required :allow-empty="false"></multiselect>
+				  </div>
+				  	<p class="help has-text-danger">
+						{{error.year}}
+					</p>
+				</div>
+				<div class="field">
 				  <label class="label">Date of Birth</label>
 				  <div class="control">
 					  	<input class="input" type="date" v-model="form.dob" required>
@@ -167,7 +176,8 @@
 		    		dob: '',
 		    		address: '',
 		    		cn: '',
-		    		email: ''
+		    		email: '',
+		    		status: {statDesc: 'New'}
 		    	},
 		    	error: {
 		    		fn: '',
@@ -180,7 +190,12 @@
 		    	prospectuses: [],
 		    	years: [],
 		    	courses: [],
-		    	sex: [{sex: 'Male'},{sex: 'Female'}]
+		    	sex: [{sex: 'Male'},{sex: 'Female'}],
+		    	statuses: [
+		    		{statDesc: 'New'},
+		    		{statDesc: 'Old'},
+		    		{statDesc: 'Transferee'}
+		    	]
 		    },
 		    created(){
 		    	this.fetchCourses()

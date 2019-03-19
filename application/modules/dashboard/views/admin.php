@@ -224,6 +224,18 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- <table class="table is-fullwidth">
+			<tr>
+				<th>Name</th>
+				<th>Status</th>
+			</tr>
+			<tr v-for="s of NOT_students">
+				<td> {{s.name}} </td>
+				<td> {{s.status}} </td>
+			</tr>
+
+		</table> -->
 	</div>
 </section>
 
@@ -277,17 +289,83 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		}
 	    		return arr
 	    	},
-	    	percentage(){
-	    		return{
-	    			new: '21%',
-	    			old: '50%',
-	    			trans: '10%'
-	    		}
-	    	}
-	    	// percentage_NOT_students(){
-	    	// 	const students = this.NOT_students
+	    	studLength(){
+	    		const students = this.NOT_students 
+	    		const course = this.course 
+	    		const year = this.year
+	    		let len = 0
 
-	    	// }	
+	    		if(course && year){
+    				for(let s of students){
+    					if(s.courseID == course.courseID && s.yearID == year.yearID) ++len
+    				}
+    				return len
+    			}else if(course && !year){
+    				for(let s of students){
+    					if(s.courseID == course.courseID) ++len
+    				}
+    				return len
+    			}else if(!course && year){
+    				for(let s of students){
+    					if(s.yearID == year.yearID) ++len
+    				}
+    				return len
+    			}else{
+    				return students.length
+    			}
+
+	    	},
+	    	percentage(){
+	    		const students = this.NOT_students 
+	    		const course = this.course 
+	    		const year = this.year
+	    		let data = {
+	    			new: '0%',
+	    			old: '0%',
+	    			trans: '0%'
+	    		}
+	    		if(students){
+	    			const studLen = this.studLength
+	    			if(studLen > 0){
+	    				let newTotal = 0
+			    		let oldTotal = 0
+			    		let transTotal = 0
+			    		for(let s of students){
+
+			    			if(course && year){
+			    				if(s.courseID != course.courseID || s.yearID != year.yearID){
+			    					continue
+			    				}
+			    			}else if(course && !year){
+			    				if(s.courseID != course.courseID){
+			    					continue
+			    				}
+			    			}else if(!course && year){
+			    				if(s.yearID != year.yearID){
+			    					continue
+			    				}
+			    			}
+
+			    			if(s.status == 'New') ++newTotal
+			    			if(s.status == 'Old') ++oldTotal
+			    			if(s.status == 'Transferee') ++transTotal
+			    		}
+			    		data = {
+			    			new: (Math.round(((newTotal / studLen) * 100) * 100) / 100) + '%',
+			    			old: (Math.round(((oldTotal / studLen) * 100) * 100) / 100) + '%',
+			    			trans: (Math.round(((transTotal / studLen) * 100) * 100) / 100) + '%',
+			    			n: newTotal,
+			    			o: oldTotal,
+			    			t: transTotal,
+			    			sl: studLen
+			    		}
+	    			}
+		    		
+	    		}
+	    		
+	    		return data
+	    		
+	    	}
 	    },
 	    methods: {
 	    	populate2(){

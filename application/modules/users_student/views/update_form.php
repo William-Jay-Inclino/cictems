@@ -78,6 +78,15 @@
 					</p>
 				</div>
 				<div class="field">
+				  <label class="label">Status</label>
+				  <div class="control">
+					  	<multiselect v-model="form.status" track-by="statDesc" label="statDesc" :options="statuses" required :allow-empty="false"></multiselect>
+				  </div>
+				  	<p class="help has-text-danger">
+						{{error.year}}
+					</p>
+				</div>
+				<div class="field">
 				  <label class="label">Date of Birth</label>
 				  <div class="control">
 					  	<input class="input" type="date" v-model="form.dob" required>
@@ -89,7 +98,7 @@
 				<div class="field">
 				  <label class="label">Sex</label>
 				  <div class="control">
-					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex" required></multiselect>
+					  	<multiselect v-model="form.sex" track-by="sex" label="sex" :options="sex" required :allow-empty="false"></multiselect>
 				  </div>
 				  	<p class="help has-text-danger">
 						{{error.sex}}
@@ -167,7 +176,8 @@
 		    		sex: {sex: '<?php echo $record->sex ?>'},
 		    		address: '<?php echo $record->address ?>',
 		    		cn: '<?php echo $record->cn ?>',
-		    		email: '<?php echo $record->email ?>'
+		    		email: '<?php echo $record->email ?>',
+		    		status: {statDesc: '<?php echo $record->status ?>'}
 		    	},
 		    	error: {
 		    		fn: '',
@@ -181,7 +191,12 @@
 		    	prospectuses: [],
 		    	years: [],
 		    	courses: [],
-		    	sex: [{sex: 'Male'},{sex: 'Female'}]
+		    	sex: [{sex: 'Male'},{sex: 'Female'}],
+		    	statuses: [
+		    		{statDesc: 'New'},
+		    		{statDesc: 'Old'},
+		    		{statDesc: 'Transferee'}
+		    	]
 		    },
 		    created(){
 		    	this.fetchCourses()

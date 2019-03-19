@@ -263,12 +263,13 @@ class mdl_Enrollment extends CI_Model{
 		if($status == 'Pending'){
 			$this->db->query("UPDATE counter2 SET total = total + 1 WHERE module = 'enrol_requests'");
 		}else if($status == 'Enrolled'){
-			$studData = $this->db->query("SELECT s.yearID,sp.prosID FROM student s INNER JOIN studprospectus sp ON s.studID = sp.studID WHERE s.studID = $studID LIMIT 1")->row();
+			$studData = $this->db->query("SELECT s.yearID,sp.prosID,s.status FROM student s INNER JOIN studprospectus sp ON s.studID = sp.studID WHERE s.studID = $studID LIMIT 1")->row();
 			$this->db->insert('studrec_per_term', [
 				'studID'=>$studID,
 				'yearID'=>$studData->yearID,
 				'termID'=>$termID,
-				'prosID'=>$studData->prosID
+				'prosID'=>$studData->prosID,
+				'status'=>$studData->status
 			]);
 			//$this->db->insert("studrec_per_term", )
 

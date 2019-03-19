@@ -49,6 +49,10 @@
 					<td> <?php echo $record->prosCode ?> </td>
 				</tr>
 				<tr>
+					<td><b>Status:</b> </td>
+					<td> <?php echo $record->status ?> </td>
+				</tr>
+				<tr>
 					<td><b>Birthdate:</b> </td>
 					<td> <?php echo $record->dob ?> </td>
 				</tr>

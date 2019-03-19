@@ -81,7 +81,7 @@ class mdl_Dashboard extends CI_Model{
 
 	function populate2($termID){
 		$this->get_subjects($termID, $data);
-		$this->percentage_new_old_trans($termID, $data);
+		$this->get_students($termID, $data);
 		$this->get_courses($data);
 		$this->get_years($data);
 		echo json_encode($data);
@@ -132,15 +132,14 @@ class mdl_Dashboard extends CI_Model{
 		// echo json_encode($sub_container);
 	}
 
-	private function percentage_new_old_trans($termID, &$data){
+	private function get_students($termID, &$data){
 		$data['students'] = $this->db->query("
-			SELECT c.courseCode, y.yearDesc, spt.status,
+			SELECT p.courseID, spt.yearID, spt.status,spt.studID,
 			(SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) FROM users u INNER JOIN student s ON u.uID = s.uID WHERE s.studID = spt.studID LIMIT 1) name
 			FROM studrec_per_term spt 
-			INNER JOIN year y ON spt.yearID = y.yearID 
 			INNER JOIN prospectus p ON spt.prosID = p.prosID 
-			INNER JOIN course c ON p.courseID = c.courseID  
 			WHERE spt.termID = $termID
+			ORDER BY name ASC
 		")->result();
 	}
 

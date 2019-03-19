@@ -52,6 +52,10 @@
 					<td> {{prosCode}} </td>
 				</tr>
 				<tr>
+					<td><b>Status:</b> </td>
+					<td> {{status}} </td>
+				</tr>
+				<tr>
 					<td><b>Birthdate:</b> </td>
 					<td> {{dob}} </td>
 				</tr>
@@ -100,6 +104,7 @@
 		    	sex: '<?php echo $record->sex ?>',
 		    	cn: '<?php echo $record->cn ?>',
 		    	email: '<?php echo $record->email ?>',
+		    	status: '<?php echo $record->status ?>',
 		    	page:{
 		    		edit: '<?php echo base_url()."users/student/form/".$record->studID ?>',
 		    		list: '<?php echo base_url() ?>users/student',

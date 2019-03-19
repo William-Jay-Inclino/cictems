@@ -136,6 +136,7 @@ class mdl_Term extends CI_Model{
 	}
 
 	function set_active($id){
+		$this->db->update('student', ['status'=>'Old']);
 		$this->db->update('term',['termStat' => 'inactive'], "termStat = 'active'");
 		$this->db->update('term',['termStat' => 'active'], "termID = $id");
 	}

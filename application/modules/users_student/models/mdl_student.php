@@ -53,6 +53,7 @@ class mdl_Student extends CI_Model{
 		$data2['uID'] = $this->db->insert_id();
 		$data2['controlNo'] = $this->input->post('controlNo');
 		$data2['yearID'] = $this->input->post('year')['yearID'];
+		$data2['status'] = $this->input->post('status')['statDesc'];
 		$this->db->insert('student', $data2);
 		$data3['studID'] = $this->db->insert_id();
 		$data3['prosID'] = $this->input->post('pros')['prosID'];
@@ -109,7 +110,7 @@ class mdl_Student extends CI_Model{
 		$this->check_form_id($id);
 
 		$query = $this->db->query("
-			SELECT s.studID,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,u.dob,u.sex,u.address,u.cn,u.email,u.userName
+			SELECT s.studID,s.status,y.yearID,y.yearDesc,c.courseID,c.courseCode,p.prosID,p.prosCode,s.controlNo,u.fn,u.mn,u.ln,u.dob,u.sex,u.address,u.cn,u.email,u.userName
 			FROM student s 
 			INNER JOIN year y ON s.yearID = y.yearID 
 			INNER JOIN studprospectus sp ON s.studID = sp.studID 
@@ -128,6 +129,7 @@ class mdl_Student extends CI_Model{
 
 		$data2['yearID'] = $this->input->post('year')['yearID'];
 		$data2['controlNo'] = $this->input->post('controlNo');
+		$data2['status'] = $this->input->post('status')['statDesc'];
 		$data3['prosID'] = $prosID;
 	
 		$this->get_form_data($data, 'update');
@@ -147,7 +149,7 @@ class mdl_Student extends CI_Model{
 
 		$is_exist_in_studrec_per_term = $this->db->select("id")->get_where('studrec_per_term', "termID = $termID AND studID = $id", 1)->row();
 		if($is_exist_in_studrec_per_term){
-			$this->db->update('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID']],"id = ".$is_exist_in_studrec_per_term->id);
+			$this->db->update('studrec_per_term',['yearID'=>$data2['yearID'], 'prosID'=>$data3['prosID'], 'status'=>$data2['status']],"id = ".$is_exist_in_studrec_per_term->id);
 		}
 
 		$this->db->trans_complete();
@@ -212,7 +214,7 @@ class mdl_Student extends CI_Model{
 		$data['address'] = $this->input->post('address');
 		$data['cn'] = $this->input->post('cn');
 		$data['email'] = $this->input->post('email');
-
+		
 	}
 
 
