@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class mdl_Dashboard extends CI_Model{
 
+	private $enrolled_students = [];
+
 	function populate($termID){
 
 		// $cnt = $this->db->query("SELECT total FROM counter2")->result();
@@ -84,7 +86,38 @@ class mdl_Dashboard extends CI_Model{
 		$this->get_students($termID, $data);
 		$this->get_courses($data);
 		$this->get_years($data);
+		$this->get_terms($termID, $data);
 		echo json_encode($data);
+	}
+
+	function get_prevStudents($prevTermID){
+		echo json_encode(
+			$this->db->query("
+				SELECT p.courseID, spt.yearID, spt.studID
+				FROM studrec_per_term spt 
+				INNER JOIN prospectus p ON spt.prosID = p.prosID 
+				WHERE spt.termID = $prevTermID
+			")->result()
+		);
+
+		// foreach($this->enrolled_students as $es){
+		// 	$is_retain = false;
+
+		// 	foreach($prevStudents as $ps){
+
+		// 		if($ps->studID == $es->studID){
+		// 			++$retention;
+		// 			$is_retain = true;
+		// 			break;
+		// 		}
+		// 	}
+
+		// 	if(!$is_retain){
+		// 		++$attrition;
+		// 	}
+
+		// }
+
 	}
 
 	private function get_subjects($termID, &$data){
@@ -134,13 +167,12 @@ class mdl_Dashboard extends CI_Model{
 
 	private function get_students($termID, &$data){
 		$data['students'] = $this->db->query("
-			SELECT p.courseID, spt.yearID, spt.status,spt.studID,
-			(SELECT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) FROM users u INNER JOIN student s ON u.uID = s.uID WHERE s.studID = spt.studID LIMIT 1) name
+			SELECT p.courseID, spt.yearID, spt.status,spt.studID
 			FROM studrec_per_term spt 
 			INNER JOIN prospectus p ON spt.prosID = p.prosID 
 			WHERE spt.termID = $termID
-			ORDER BY name ASC
 		")->result();
+		$this->enrolled_students = $data['students'];
 	}
 
 	private function get_courses(&$data){
@@ -151,6 +183,17 @@ class mdl_Dashboard extends CI_Model{
 		$data['years'] = $this->db->order_by('duration')->get('year')->result();
 	}
 
+	private function get_terms($termID, &$data){
+		$sql = $this->db->query("SELECT t.schoolYear, s.semOrder FROM term t INNER JOIN semester s ON t.semID = s.semID WHERE termID = $termID LIMIT 1")->row();
+		$data['current_term'] = ['schoolYear' => $sql->schoolYear, 'semOrder' => $sql->semOrder];
+		$data['terms'] = $this->db->query("
+			SELECT t.termID,t.schoolYear,s.semOrder, CONCAT(t.schoolYear,' ',s.semDesc) term 
+			FROM term t 
+			INNER JOIN semester s ON t.semID = s.semID 
+			WHERE t.schoolYear <= '".$sql->schoolYear."' AND t.termID <> $termID
+			ORDER BY t.schoolYear DESC, s.semOrder DESC
+		")->result();
+	}
 
 }
 

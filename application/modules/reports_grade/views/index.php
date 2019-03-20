@@ -71,7 +71,7 @@
                         </thead>
                         <tbody>
                            <tr v-for="row of subject.subjects">
-                              <td style="text-align: center">
+                              <th style="text-align: center">
                                  <span v-if="row.subject.grade_type == 'Credit'">
                                     <i class="fa fa-check has-text-primary"></i>
                                  </span>
@@ -83,7 +83,7 @@
                                        {{row.subject.grade}}
                                     </span>
                                  </span>
-                              </td>
+                              </th>
                               <td> {{row.subject.subCode}}</td>
                               <td> {{row.subject.subDesc}} </td>
                               <td> {{row.subject.units}} </td>

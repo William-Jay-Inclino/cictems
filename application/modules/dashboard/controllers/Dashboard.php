@@ -38,6 +38,10 @@ class Dashboard extends MY_Controller{
 		$this->mdl_dashboard->populate2($this->_data['current_term']->termID);
 	}
 
+	function get_prevStudents($data){
+		$this->mdl_dashboard->get_prevStudents($data[0]);
+	}
+
 	private function prevent_url_access(){
 		if (!$this->input->is_ajax_request()) {
 		  show_404();

@@ -138,7 +138,7 @@
 					<div class="column">
 						<div class="message is-info">
 							<div class="message-header">
-								<p>NEW: <span style="font-size: 50px">{{percentage.new}}</span></p>
+								<p>NEW: <span style="font-size: 50px">{{NOT_percentage.new}}</span></p>
 							</div>
 							<div class="message-body has-text-centered has-text-link">
 								<a style="text-decoration: none" href="#">
@@ -150,7 +150,7 @@
 					<div class="column">
 						<div class="message is-success">
 							<div class="message-header">
-								<p>OLD: <span style="font-size: 50px">{{percentage.old}}</span></p>
+								<p>OLD: <span style="font-size: 50px">{{NOT_percentage.old}}</span></p>
 							</div>
 							<div class="message-body has-text-centered has-text-link">
 								<a style="text-decoration: none" href="#">
@@ -162,7 +162,7 @@
 					<div class="column">
 						<div class="message is-primary">
 							<div class="message-header">
-								<p>TRANSFEREES: <span style="font-size: 50px">{{percentage.trans}}</span></p>
+								<p>TRANSFEREES: <span style="font-size: 50px">{{NOT_percentage.trans}}</span></p>
 							</div>
 							<div class="message-body has-text-centered has-text-link">
 								<a style="text-decoration: none" href="#">
@@ -190,6 +190,24 @@
 			<div v-show="is_p2_active">
 				<div class="columns">
 					<div class="column">
+						<div class="field">
+							<label class="label">Previous Term</label>
+							<div class="control">
+								<multiselect v-model="previous_term" track-by="termID" label="term" :options="terms2" :allow-empty="false"></multiselect>
+							</div>
+						</div>
+					</div>
+					<div class="column">
+						<div class="field">
+							<label class="label">Current Term</label>
+							<div class="control">
+								<p> {{current_term.term}} </p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="columns">
+					<div class="column">
 						<multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" placeholder="Select Course"></multiselect>
 					</div>
 					<div class="column">
@@ -200,7 +218,7 @@
 					<div class="column">
 						<div class="message is-info">
 							<div class="message-header">
-								<p>Retention: <span style="font-size: 50px">{{percentage.new}}</span></p>
+								<p>Retention: <span style="font-size: 50px">{{RA_percentage.retention}}</span></p>
 							</div>
 							<div class="message-body has-text-centered has-text-link">
 								<a style="text-decoration: none" href="#">
@@ -212,7 +230,7 @@
 					<div class="column">
 						<div class="message is-success">
 							<div class="message-header">
-								<p>Attrition: <span style="font-size: 50px">{{percentage.old}}</span></p>
+								<p>Attrition: <span style="font-size: 50px">{{RA_percentage.attrition}}</span></p>
 							</div>
 							<div class="message-body has-text-centered has-text-link">
 								<a style="text-decoration: none" href="#">
@@ -249,6 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	new Vue({
 	    el: '#app',
 	    data: {
+	    	current_term: {termID: '<?php echo $current_term->termID ?>', term: '<?php echo $current_term->term ?>'},
 	    	page_title: 'Dashboard',
 	    	is_user_active: false,
 	       	is_m_active: false,
@@ -257,18 +276,26 @@ document.addEventListener('DOMContentLoaded', function() {
 	       	is_p2_active: false,
 	       	subjects: [],
 	       	NOT_students: [],
+	       	previous_students: [],
+	       	previous_term: null,
 
 	       	searched_sub: null,
 	       	course: null,
 	       	year: null,
+	       	current_term2: null,
 	       	courses: [],
-	       	years: []
+	       	years: [],
+	       	terms: []
 	    },
 	    created() {
 	        this.populate2()
 	    },
 	    watch: {
-
+	    	previous_term(val){
+	    		if(val){
+	    			this.get_prevStudents()
+	    		}
+	    	}
 	    },
 	    computed: {
 	    	subjects2(){
@@ -315,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
     			}
 
 	    	},
-	    	percentage(){
+	    	NOT_percentage(){
 	    		const students = this.NOT_students 
 	    		const course = this.course 
 	    		const year = this.year
@@ -353,11 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			    		data = {
 			    			new: (Math.round(((newTotal / studLen) * 100) * 100) / 100) + '%',
 			    			old: (Math.round(((oldTotal / studLen) * 100) * 100) / 100) + '%',
-			    			trans: (Math.round(((transTotal / studLen) * 100) * 100) / 100) + '%',
-			    			n: newTotal,
-			    			o: oldTotal,
-			    			t: transTotal,
-			    			sl: studLen
+			    			trans: (Math.round(((transTotal / studLen) * 100) * 100) / 100) + '%'
 			    		}
 	    			}
 		    		
@@ -365,6 +388,78 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		
 	    		return data
 	    		
+	    	},
+	    	RA_percentage(){
+	    		const curStuds = this.NOT_students 
+	    		const prevStuds = this.previous_students 
+	    		const course = this.course 
+	    		const year = this.year
+	    		let data = {
+	    			retention: '0%',
+	    			attrition: '0%'
+	    		}
+	    		if(curStuds){
+	    			const studLen = this.studLength
+		    		if(studLen > 0){
+		    			let retTotal = 0
+			    		let attrTotal = 0
+
+			    		for(let cs of curStuds){
+
+			    			if(course && year){
+			    				if(cs.courseID != course.courseID || cs.yearID != year.yearID){
+			    					continue
+			    				}
+			    			}else if(course && !year){
+			    				if(cs.courseID != course.courseID){
+			    					continue
+			    				}
+			    			}else if(!course && year){
+			    				if(cs.yearID != year.yearID){
+			    					continue
+			    				}
+			    			}
+
+			    			is_retain = false
+			    			for(let ps of prevStuds){
+
+			    				if(cs.studID == ps.studID){
+			    					++retTotal
+			    					is_retain = true
+			    					break
+			    				}
+
+			    			}
+
+			    			if(!is_retain){
+			    				++attrTotal
+			    			}
+			    		}
+
+			    		data = {
+			    			retention: (Math.round(((retTotal / studLen) * 100) * 100) / 100) + '%',
+			    			attrition: (Math.round(((attrTotal / studLen) * 100) * 100) / 100) + '%'
+			    		}
+
+		    		}
+	    		}
+	    		
+	    		return data
+	    	},
+	    	terms2(){
+	    		const terms = this.terms 
+	    		//if(terms.length > 0){
+	    			const curTerm = this.current_term2
+		    		const arr = []
+		    		for(let t of terms){
+		    			if(t.schoolYear == curTerm.schoolYear && t.semOrder > curTerm.semOrder){
+		    				continue
+		    			}
+		    			arr.push(t)
+		    		}
+		    		this.previous_term = arr[0]
+		    		return arr
+	    		//}
 	    	}
 	    },
 	    methods: {
@@ -375,8 +470,21 @@ document.addEventListener('DOMContentLoaded', function() {
 		          	const c = res.body
 		          	this.subjects = c.subjects
 		          	this.NOT_students = c.students
+		          	this.RA_students = c.students2
 		          	this.courses = c.courses 
 		          	this.years = c.years
+		          	this.terms = c.terms
+		          	this.current_term2 = c.current_term
+		          }, e => {
+		          	console.log(e.body)
+
+		          })
+	    	},
+	    	get_prevStudents(){
+	    		this.$http.get('<?php echo base_url() ?>dashboard/get_prevStudents/'+this.previous_term.termID)
+		         .then(res => {
+		          	console.log(res.body)
+		          	this.previous_students = res.body
 		          }, e => {
 		          	console.log(e.body)
 

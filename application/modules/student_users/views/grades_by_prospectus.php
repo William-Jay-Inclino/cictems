@@ -37,7 +37,7 @@
 									?>
 									
 									<tr>
-										<td>
+										<th>
 											<?php 
 												if($row['subject']->grade == '0.0'){
 													echo "INC";
@@ -45,7 +45,7 @@
 													echo $row['subject']->grade;
 												}
 											?>
-										</td>
+										</th>
 										<td> <?php echo $row['subject']->subCode ?> </td>
 										<td> <?php echo $row['subject']->subDesc ?> </td>
 										<td> <?php echo $row['subject']->units ?> </td>
