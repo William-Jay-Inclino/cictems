@@ -43,7 +43,7 @@ class mdl_Deans_List extends CI_Model{
 				FROM studclass sc  
 				INNER JOIN class c ON sc.classID = c.classID 
 				INNER JOIN subject s ON c.subID = s.subID
-				WHERE sc.studID = ".$student->studID."
+				WHERE sc.studID = ".$student->studID." AND c.termID = $termID
 			")->result();
 
 			$result = $this->is_qualified($classes, $reqs, $student->studID);

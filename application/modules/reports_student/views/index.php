@@ -48,14 +48,17 @@
              </div>   
          </div>
         </div>
+
          <div class="box">
+          <div class="columns">
+            <div class="column">
+              <label class="label">Filter</label>
+              <button @click="filter = 0" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 0}">All</button>
+              <button @click="filter = 1" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 1}">Subject</button>
+              <button @click="filter = 2" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 2}">Instructor</button>   
+           </div>
+          </div>
             <div class="columns">
-               <div class="column">
-                  <label class="label">Filter</label>
-                  <button @click="filter = 0" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 0}">All</button>
-                  <button @click="filter = 1" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 1}">Subject</button>
-                  <button @click="filter = 2" :class="{'button is-primary my-btn': true, 'is-outlined': filter != 2}">Instructor</button>   
-               </div>
                <div class="column">
                 <label class="label">Course</label>
                  <multiselect v-model="course" track-by="courseID" label="courseCode" :options="courses" :allow-empty="false"></multiselect>
@@ -63,6 +66,10 @@
                <div class="column">
                 <label class="label">Year</label>
                  <multiselect v-model="year" track-by="yearID" label="yearDesc" :options="years" :allow-empty="false"></multiselect>
+               </div>
+               <div class="column">
+                <label class="label">Status</label>
+                 <multiselect v-model="status" track-by="statDesc" label="statDesc" :options="statuses"></multiselect>
                </div>
             </div>
          </div>
@@ -99,7 +106,7 @@
                </thead>
                <td colspan="7" class="has-text-centered" v-show="msg"> {{msg}} </td>
                <tbody>
-                  <tr v-for="student, i in students2">
+                  <tr v-for="student, i in students3">
                     <td> {{++i}} </td>
                      <td>{{student.name}}</td>
                      <td>{{student.courseCode}}</td>
@@ -152,7 +159,14 @@ document.addEventListener('DOMContentLoaded', function() {
       total_records: 0,
 
       is_settings_open: false,
-      updated_at: new Date('<?php echo $date_updated; ?>').toISOString().slice(0,10)
+      updated_at: new Date('<?php echo $date_updated; ?>').toISOString().slice(0,10),
+      status: null,
+      statuses: [
+        {statDesc: 'New'},
+        {statDesc: 'Old'},
+        {statDesc: 'Transferee'},
+        {statDesc: 'Returnee'}
+      ]
 
    },
    created(){  
@@ -208,24 +222,16 @@ document.addEventListener('DOMContentLoaded', function() {
           return s.filter(x => x.yearID == y.yearID && x.courseID == c.courseID)
         }
       }
+    },
+    students3(){
+      const students2 = this.students2 
+      const stat = this.status 
+      if(stat){
+        return students2.filter(s => s.status == stat.statDesc)
+      }else{
+        return students2 
+      }
     }
-    // students2(){
-    //   const c = this.course 
-    //   const s = (this.filter == 0) ? this.all_students : this.students 
-
-    //   let students = []
-
-    //   if(c.courseID == 'all'){
-    //     students = s
-    //   }else{
-    //     for(let x of s){
-    //       if(x.courseID == c.courseID){
-    //         students.push(x)
-    //       }
-    //     }
-    //   }
-    //   return students
-    // }
    },
    methods: {
     updateSettings(){
@@ -243,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
         swal('Info', "Report is based on your selections", 'info')
         .then(x => {
           if(x){
+            const status = (this.status) ? this.status.statDesc : 'no-status'
             let action = 'all-students'
             let course = this.course.courseID 
             let year = this.year.yearID 
@@ -253,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if(this.filter == 2) action = 'per-instructor' 
             if(this.course.courseID == 'all') course = 'all-courses'
             if(this.year.yearID == 'all') year = 'all-years'
-            const data = action + '/' + course + '/' + year + '/' + subject + '/' + instructor + '/' + this.term.termID
+            const data = action + '/' + course + '/' + year + '/' + subject + '/' + instructor + '/' + this.term.termID + '/' + status
 
             window.open('<?php echo base_url() ?>reports/student/download/'+ data, '_blank')
           }
@@ -270,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
           this.loading = false
           const c = response.body
+          console.log(c);
           this.updated_at = new Date(c.updated_at).toISOString().slice(0,10)
           this.terms = c.terms 
           this.faculties = c.faculties

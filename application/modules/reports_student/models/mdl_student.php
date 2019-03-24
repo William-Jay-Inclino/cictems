@@ -39,7 +39,7 @@ class mdl_Student extends CI_Model{
 		if($action == 'per-subject'){
 			if($courseID == 'all-courses' && $yearID == 'all-years'){
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseCode, y.yearDesc,u.sex,u.address,u.dob
+					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseCode, y.yearDesc,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -53,7 +53,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else if($courseID != 'all-courses' && $yearID == 'all-years'){
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -67,7 +67,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else if($courseID == 'all-courses' && $yearID != 'all-years'){
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -81,7 +81,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else{
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT s.controlNo,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -107,7 +107,7 @@ class mdl_Student extends CI_Model{
 			")->row();
 			if($courseID == 'all-courses' && $yearID == 'all-years'){
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseCode, y.yearDesc,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseCode, y.yearDesc,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -121,7 +121,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else if($courseID != 'all-courses' && $yearID == 'all-years'){
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -136,7 +136,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else if($courseID == 'all-courses' && $yearID != 'all-years'){
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -151,7 +151,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else{
 				$data['students'] = $this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -169,7 +169,7 @@ class mdl_Student extends CI_Model{
 		}else{
 			if($courseID == 'all-courses' && $yearID == 'all-years'){
 				$data['students'] =$this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseCode, y.yearDesc,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseCode, y.yearDesc,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -183,7 +183,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else if($courseID != 'all-courses' && $yearID == 'all-years'){
 				$data['students'] =$this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -197,7 +197,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else if($courseID == 'all-courses' && $yearID != 'all-years'){
 				$data['students'] =$this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -211,7 +211,7 @@ class mdl_Student extends CI_Model{
 				")->result();
 			}else{
 				$data['students'] =$this->db->query("
-					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob
+					SELECT DISTINCT CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name, y.yearDesc,c.courseCode,u.sex,u.address,u.dob,spt.status
 					FROM studclass sc 
 					INNER JOIN class ON sc.classID = class.classID 
 					INNER JOIN student s ON sc.studID = s.studID 
@@ -246,19 +246,29 @@ class mdl_Student extends CI_Model{
 		$data['terms'] = $this->db->query('SELECT t.termID, CONCAT(t.schoolYear," ",s.semDesc) AS term FROM term t INNER JOIN semester s ON t.semID=s.semID ORDER BY t.schoolYear DESC,s.semOrder DESC')->result();
 		$data['courses'] = $this->db->query('SELECT courseID, courseCode FROM course ORDER BY courseCode ASC')->result();
 		$data['years'] = $this->db->query('SELECT yearID, yearDesc FROM year ORDER BY duration ASC')->result();
-		$data['students'] =$this->db->query("
-			SELECT DISTINCT s.studID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseID, c.courseCode,y.yearID, y.yearDesc,u.sex,u.address,u.dob
-			FROM studclass sc 
-			INNER JOIN class ON sc.classID = class.classID 
-			INNER JOIN student s ON sc.studID = s.studID 
-			INNER JOIN studrec_per_term spt ON s.studID = spt.studID 
-			INNER JOIN year y ON spt.yearID = y.yearID
-			INNER JOIN prospectus p ON spt.prosID = p.prosID
-			INNER JOIN course c ON p.courseID = c.courseID
-			INNER JOIN users u ON s.uID = u.uID 
-			WHERE class.termID = $termID AND sc.status = 'Enrolled' AND spt.termID = $termID
-			ORDER BY y.yearDesc,name ASC
+		$data['students'] = $this->db->query("
+			SELECT s.studID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseID, c.courseCode,y.yearID, y.yearDesc,u.sex,u.address,u.dob,spt.status
+			FROM studrec_per_term spt 
+			INNER JOIN prospectus p ON spt.prosID = p.prosID 
+			INNER JOIN course c ON p.courseID = c.courseID 
+			INNER JOIN year y ON spt.yearID = y.yearID 
+			INNER JOIN student s ON spt.studID = s.studID 
+			INNER JOIN users u ON s.uID = u.uID   
+			WHERE spt.termID = $termID
 		")->result();
+		// $data['students'] =$this->db->query("
+		// 	SELECT DISTINCT s.studID,CONCAT(u.ln,', ',u.fn,' ',LEFT(u.mn,1)) name,c.courseID, c.courseCode,y.yearID, y.yearDesc,u.sex,u.address,u.dob
+		// 	FROM studclass sc 
+		// 	INNER JOIN class ON sc.classID = class.classID 
+		// 	INNER JOIN student s ON sc.studID = s.studID 
+		// 	INNER JOIN studrec_per_term spt ON s.studID = spt.studID 
+		// 	INNER JOIN year y ON spt.yearID = y.yearID
+		// 	INNER JOIN prospectus p ON spt.prosID = p.prosID
+		// 	INNER JOIN course c ON p.courseID = c.courseID
+		// 	INNER JOIN users u ON s.uID = u.uID 
+		// 	WHERE class.termID = $termID AND sc.status = 'Enrolled' AND spt.termID = $termID
+		// 	ORDER BY y.yearDesc,name ASC
+		// ")->result();
 		$data['total_rows'] = $this->count_all($termID);
 		echo json_encode($data);
 	}

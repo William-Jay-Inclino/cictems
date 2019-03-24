@@ -194,7 +194,8 @@
 		    	statuses: [
 		    		{statDesc: 'New'},
 		    		{statDesc: 'Old'},
-		    		{statDesc: 'Transferee'}
+		    		{statDesc: 'Transferee'},
+		    		{statDesc: 'Returnee'}
 		    	]
 		    },
 		    created(){

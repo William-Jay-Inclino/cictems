@@ -117,7 +117,7 @@
 				<span class="icon has-text-primary">
 					<i class="fa fa-bar-chart-o"></i>
 				</span>
-				New, Old, & Transferee Students <span class="has-text-primary">%</span>
+				New, Old, Transferee, & Returnee Students <span class="has-text-primary">%</span>
 				<a @click="is_p_active = !is_p_active" href="javascript:void(0)" class="is-pulled-right">
 					<span class="icon has-text-primary">
 						<i class="fa fa-lg fa-chevron-down"></i>
@@ -163,6 +163,18 @@
 						<div class="message is-primary">
 							<div class="message-header">
 								<p>TRANSFEREES: <span style="font-size: 50px">{{NOT_percentage.trans}}</span></p>
+							</div>
+							<div class="message-body has-text-centered has-text-link">
+								<a style="text-decoration: none" href="#">
+						  			View Details <span class="icon"> <i class="fa fa-angle-double-right"></i> </span>
+						  		</a>
+							</div>
+						</div>
+					</div>
+					<div class="column">
+						<div class="message is-danger">
+							<div class="message-header">
+								<p>Returnee: <span style="font-size: 50px">{{NOT_percentage.retur}}</span></p>
 							</div>
 							<div class="message-body has-text-centered has-text-link">
 								<a style="text-decoration: none" href="#">
@@ -349,7 +361,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    		let data = {
 	    			new: '0%',
 	    			old: '0%',
-	    			trans: '0%'
+	    			trans: '0%',
+	    			retur: '0%'
 	    		}
 	    		if(students){
 	    			const studLen = this.studLength
@@ -357,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    				let newTotal = 0
 			    		let oldTotal = 0
 			    		let transTotal = 0
+			    		let returTotal = 0
 			    		for(let s of students){
 
 			    			if(course && year){
@@ -376,11 +390,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			    			if(s.status == 'New') ++newTotal
 			    			if(s.status == 'Old') ++oldTotal
 			    			if(s.status == 'Transferee') ++transTotal
+			    			if(s.status == 'Returnee') ++returTotal
 			    		}
 			    		data = {
 			    			new: (Math.round(((newTotal / studLen) * 100) * 100) / 100) + '%',
 			    			old: (Math.round(((oldTotal / studLen) * 100) * 100) / 100) + '%',
-			    			trans: (Math.round(((transTotal / studLen) * 100) * 100) / 100) + '%'
+			    			trans: (Math.round(((transTotal / studLen) * 100) * 100) / 100) + '%',
+			    			retur: (Math.round(((returTotal / studLen) * 100) * 100) / 100) + '%'
 			    		}
 	    			}
 		    		

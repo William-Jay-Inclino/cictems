@@ -1,3 +1,10 @@
+<?php 
+	$myVar = '';
+	if($status != 'no-status' && $status == 'New' || $status == 'Old' || $status == 'Transferee' || $status == 'Returnee'){
+		$myVar = '('.$status.')';
+	}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +35,7 @@
 	
 	<img src="<?php echo base_url(); ?>assets/img/banner.png">
 	<div style="text-align: center">
-			<b>LIST OF ENROLLED STUDENTS <br>
+			<b>LIST OF ENROLLED STUDENTS <?php echo strtoupper($myVar); ?> <br>
 			<?php 
 				if($data['course']){
 					echo $data['course'].'<br>';
@@ -65,7 +72,15 @@
 		</tr>
 		<?php 
 			$ctr = 1;
-			foreach($data['students'] as $student){ ?>
+			foreach($data['students'] as $student){ 
+
+				if($status != 'no-status'){
+					if($student->status != $status){
+						continue;
+					}
+				}
+
+				?>
 				<tr>
 					<td><?php echo $ctr; ?></td>
 					<td><?php echo $student->name; ?></td>
