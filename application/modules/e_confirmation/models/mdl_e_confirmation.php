@@ -76,6 +76,7 @@ class mdl_E_Confirmation extends CI_Model{
 			->join('class c','sc.classID = c.classID')
 			->join('subject s','c.subID = s.subID')
 			->join('day d','c.dayID = d.dayID')
+			->order_by('day,c.timeIn', 'ASC')
 			->get_where('studclass sc', "sc.studID = $studID AND c.termID = $termID")->result();
 	}
 

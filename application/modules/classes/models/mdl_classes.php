@@ -95,6 +95,13 @@ class mdl_Classes extends CI_Model{
 		//die(var_dump($final));
 		$data[$gradeDesc] = $grade;
 
+		foreach($classIDs as $c){
+			$has_class = $this->db->select('1')->get_where('studclass', "studID = $studID AND classID = ".$c, 1)->row();
+			if(!$has_class){
+				$this->db->insert("studclass", ['studID'=>$studID, 'classID'=>$c, 'status' => 'Enrolled']);
+			}
+		}
+
 		if($gradeDesc == 'prelim'){
 			if($grade == 'Dropped' && ($midterm['grade'] != '' || $prefi['grade'] != '' || $final['grade'] != '')){
 				$has_error = true;

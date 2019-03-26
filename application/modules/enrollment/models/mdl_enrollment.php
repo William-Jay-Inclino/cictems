@@ -20,6 +20,7 @@ class mdl_Enrollment extends CI_Model{
 		->join('class c','sc.classID = c.classID')
 		->join('subject s','c.subID = s.subID')
 		->join('day d','c.dayID = d.dayID')
+		->order_by('day,c.timeIn', 'ASC')
 		->get_where('studclass sc', "sc.studID = $studID AND c.termID = $termID");
 		// echo $this->db->last_query(); die();
 		$row = $query->result();
